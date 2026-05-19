@@ -120,7 +120,9 @@
       "priority": "Öncelik",
       "status": "Durum",
       "assignee": "Atanan Personel",
-      "unassigned": "Atama bekliyor"
+      "unassigned": "Atama bekliyor",
+      "actions": "İşlemler",
+      "detailAction": "Detay"
     },
     "empty": {
       "title": "Kayıt bulunamadı",
@@ -131,6 +133,39 @@
       "title": "Yeni servis kaydı formu sıradaki fazda açılacak",
       "description": "Bu rota, yeni kayıt formunun bilgi mimarisini sabitlemek için ayrıldı. Sonraki frontend fazında müşteri, cihaz ve arıza bilgileri burada toplanacak.",
       "backToList": "Kayıt listesine dön"
+    },
+    "detail": {
+      "backToList": "Listeye dön",
+      "receivedAtLabel": "Kabul zamanı: {date}",
+      "summary": {
+        "issue": "Arıza özeti",
+        "customer": "Müşteri",
+        "device": "Cihaz",
+        "assignee": "Atanan personel",
+        "serialNumber": "Seri No"
+      },
+      "timeline": {
+        "title": "Operasyon geçmişi",
+        "subtitle": "Timeline",
+        "actorLabel": "İşlemi yapan: {name}",
+        "emptyTitle": "Henüz timeline kaydı yok",
+        "emptyDescription": "Bu servis kaydı için operasyon geçmişi oluştuğunda burada görünecek.",
+        "eventTypes": {
+          "STATUS_CHANGED": "Durum değişimi",
+          "NOTE_ADDED": "Not",
+          "ASSIGNED": "Atama",
+          "PART_ORDERED": "Parça"
+        }
+      },
+      "workItems": {
+        "title": "Notlar ve iş kalemleri",
+        "description": "Bu bölüm sonraki fazda teknik notlar, yapılacaklar ve iş kalemleri ile doldurulacaktır."
+      },
+      "notFound": {
+        "eyebrow": "Kayıt bulunamadı",
+        "title": "Servis kaydı görüntülenemedi",
+        "description": "{id} kimliğine sahip servis kaydı bulunamadı veya görüntüleme kapsamı dışında."
+      }
     }
   },
   "serviceStatuses": {

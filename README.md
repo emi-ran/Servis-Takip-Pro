@@ -94,6 +94,8 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - Tenant verisi her zaman `company_id` ile filtrelenir.
 - UI metinleri `messages/tr.json` ve `messages/en.json` üzerinden gelir.
 - Servis kayıtları araması; takip no, müşteri ve cihaz metinlerinde her zaman çalışır; sorgu yalnızca rakam ve telefon biçim karakterleri içeriyorsa normalize edilmiş telefon numarasında da kısmi eşleşme yapar.
+- Servis kayıt listesi satırları ve “Detay” aksiyonu `/[locale]/service-records/[id]` detay rotasına gider.
+- Servis kayıt detay ekranı; özet kartları, timeline iskeleti, not/iş kalemi placeholder alanı ve bulunamayan kayıt durumu içerir.
 - Kritik write işlemleri audit log üretir.
 - Demo kodu üretim kodu sayılmaz; gerektiğinde modüler şekilde `apps/web` altına taşınır.
 - Build, lint ve typecheck hatası bırakılmamalıdır.

@@ -112,7 +112,9 @@ function ServiceRecordRow({ locale, dictionary, record }: { locale: Locale; dict
   return (
     <tr className="transition hover:bg-slate-50" key={record.id}>
       <td className="px-4 py-4 align-top sm:px-6">
-        <p className="font-mono text-sm text-slate-700">{record.trackingCode}</p>
+        <Link className="font-mono text-sm text-blue-700 transition hover:text-blue-800 hover:underline" href={`/${locale}/service-records/${record.id}`}>
+          {record.trackingCode}
+        </Link>
         <p className="mt-1 text-xs text-slate-500">{formattedDate}</p>
       </td>
       <td className="px-4 py-4 align-top sm:px-6">
@@ -130,6 +132,15 @@ function ServiceRecordRow({ locale, dictionary, record }: { locale: Locale; dict
         <StatusBadge tone={statusTones[record.status]}>{dictionary.serviceStatuses[record.status]}</StatusBadge>
       </td>
       <td className="px-4 py-4 align-top sm:px-6 text-sm text-slate-600">{record.assigneeName ?? dictionary.serviceRecords.table.unassigned}</td>
+      <td className="px-4 py-4 align-top sm:px-6">
+        <Link
+          className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+          href={`/${locale}/service-records/${record.id}`}
+        >
+          {dictionary.serviceRecords.table.detailAction}
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </td>
     </tr>
   );
 }
@@ -268,7 +279,7 @@ export function ServiceRecordsView({ locale, dictionary, data }: ServiceRecordsV
       <Panel className="overflow-hidden rounded-xl shadow-sm">
         <div className="overflow-x-auto">
           {filteredRecords.length > 0 ? (
-            <table className="min-w-[920px] w-full text-left text-sm">
+            <table className="min-w-[980px] w-full text-left text-sm">
               <thead className="bg-slate-50 text-slate-500">
                 <tr>
                   <th className="px-4 py-3 font-medium sm:px-6">{dictionary.serviceRecords.table.trackingCode}</th>
@@ -277,6 +288,7 @@ export function ServiceRecordsView({ locale, dictionary, data }: ServiceRecordsV
                   <th className="px-4 py-3 font-medium sm:px-6">{dictionary.serviceRecords.table.priority}</th>
                   <th className="px-4 py-3 font-medium sm:px-6">{dictionary.serviceRecords.table.status}</th>
                   <th className="px-4 py-3 font-medium sm:px-6">{dictionary.serviceRecords.table.assignee}</th>
+                  <th className="px-4 py-3 font-medium sm:px-6">{dictionary.serviceRecords.table.actions}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">

@@ -120,7 +120,9 @@
       "priority": "Priority",
       "status": "Status",
       "assignee": "Assigned Staff",
-      "unassigned": "Awaiting assignment"
+      "unassigned": "Awaiting assignment",
+      "actions": "Actions",
+      "detailAction": "Details"
     },
     "empty": {
       "title": "No records found",
@@ -131,6 +133,39 @@
       "title": "The new service record form will open in the next phase",
       "description": "This route is reserved to lock the information architecture for the new record form. Customer, device, and fault details will be collected here in the next frontend phase.",
       "backToList": "Back to record list"
+    },
+    "detail": {
+      "backToList": "Back to list",
+      "receivedAtLabel": "Received at: {date}",
+      "summary": {
+        "issue": "Issue summary",
+        "customer": "Customer",
+        "device": "Device",
+        "assignee": "Assigned staff",
+        "serialNumber": "Serial No"
+      },
+      "timeline": {
+        "title": "Operation history",
+        "subtitle": "Timeline",
+        "actorLabel": "Handled by: {name}",
+        "emptyTitle": "No timeline event yet",
+        "emptyDescription": "Operation history for this service record will appear here.",
+        "eventTypes": {
+          "STATUS_CHANGED": "Status change",
+          "NOTE_ADDED": "Note",
+          "ASSIGNED": "Assignment",
+          "PART_ORDERED": "Part"
+        }
+      },
+      "workItems": {
+        "title": "Notes and work items",
+        "description": "This section will be populated with technical notes, to-dos, and work items in the next phase."
+      },
+      "notFound": {
+        "eyebrow": "Record not found",
+        "title": "Service record could not be displayed",
+        "description": "Service record with id {id} was not found or is out of view scope."
+      }
     }
   },
   "serviceStatuses": {

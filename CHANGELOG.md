@@ -4,6 +4,8 @@
 
 - `/[locale]/service-records` placeholder ekranı kaldırıldı; demo görsel diline uyumlu gerçek servis kayıt listesi, arama, durum/öncelik filtreleri ve boş durum davranışı eklendi.
 - `apps/web/lib/api/service-records.ts` altında mock veri katmanı oluşturuldu ve “Yeni Kayıt” aksiyonları `/[locale]/service-records/new` planlı rotasına bağlandı.
+- `/<locale>/service-records/[id]` detay rotası eklendi; servis özeti, müşteri/cihaz kartları, mock timeline geçmişi, not/iş kalemi placeholder alanı ve erişilebilir bulunamadı durumu hazırlandı.
+- Servis kayıt listesine detay navigasyonu eklendi (takip no linki + satır aksiyonu) ve i18n sözlükleri (`tr/en`) detay ekranı metinleriyle güncellendi.
 
 ## 2026-05-19
 
