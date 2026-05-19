@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "title": "Servis Takip",
+    "description": "Multi-tenant operations panel for technical service teams"
+  },
+  "brand": {
+    "name": "Servis Takip",
+    "pro": "PRO",
+    "compactName": "CetTech PRO",
+    "tagline": "Operations panel"
+  },
+  "navigation": {
+    "sections": {
+      "management": "Management",
+      "modules": "Modules"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "serviceRecords": "Service Records",
+      "customers": "Customers",
+      "parts": "Stock & Parts",
+      "cash": "Cash & Accounts",
+      "staff": "Staff",
+      "track": "Device Tracking",
+      "quickScan": "Quick Barcode Scan",
+      "settings": "General Settings",
+      "logout": "Sign Out"
+    },
+    "dashboard": "Dashboard",
+    "serviceRecords": "Service Records",
+    "customers": "Customers",
+    "parts": "Stock & Parts",
+    "cash": "Cash & Accounts",
+    "staff": "Staff",
+    "track": "Device Tracking",
+    "settings": "General Settings"
+  },
+  "header": {
+    "openNavigation": "Open menu",
+    "notifications": "Notifications",
+    "welcome": "Welcome, CetTech Management Panel"
+  },
+  "common": {
+    "viewAll": "View all",
+    "backToDashboard": "Back to dashboard"
+  },
+  "roles": {
+    "operations_manager": "Operations Manager"
+  },
+  "dashboard": {
+    "title": "Operations dashboard",
+    "description": "Track service workload, ready deliveries, and the daily finance summary from one screen.",
+    "lastUpdatedLabel": "Last update",
+    "metrics": {
+      "waiting_devices": {
+        "title": "Waiting Devices",
+        "notes": {}
+      },
+      "waiting_parts": {
+        "title": "Waiting for Parts",
+        "notes": {}
+      },
+      "ready_delivery": {
+        "title": "Ready for Delivery",
+        "notes": {}
+      },
+      "overdue": {
+        "title": "3-Day Overdue (Urgent)",
+        "notes": {
+          "legal_deadline": "Approaching the legal deadline"
+        }
+      }
+    },
+    "recentRecords": {
+      "title": "Recent Devices",
+      "description": "Most recent records received by the operations desk"
+    },
+    "table": {
+      "trackingCode": "Tracking Code",
+      "customer": "Customer",
+      "device": "Device",
+      "status": "Status"
+    },
+    "summary": {
+      "title": "Today's Summary",
+      "revenue": "Today's revenue",
+      "expense": "Today's expense",
+      "pendingApproval": "Records pending approval"
+    },
+    "quickActions": {
+      "primary": "New Record",
+      "secondary": "Search Device"
+    }
+  },
+  "serviceStatuses": {
+    "IN_PROGRESS": "In progress",
+    "WAITING_PART": "Waiting for part",
+    "READY_FOR_DELIVERY": "Ready for delivery",
+    "NEW": "New record"
+  },
+  "placeholder": {
+    "eyebrow": "Coming soon",
+    "title": "This module will open in the next phase",
+    "description": "Only the app shell and dashboard were productionized in the first frontend phase. This route is already reserved to lock the information architecture."
+  }
+}

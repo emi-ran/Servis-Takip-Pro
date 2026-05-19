@@ -14,30 +14,80 @@ Projeye başlamadan önce şu dosyalar okunmalıdır:
 
 `UI_SCREENS.md` kaynak kabul edilmez. UI için `DEMO-APP/` sadece görsel referanstır.
 
-## Planlanan Yapı
+## Mevcut Depo Yapısı
 
 ```text
 servis-takip/
   DEMO-APP/
   apps/
     web/
+  CHANGELOG.md
+  .env.example
+  PLAN.md
+  DATABASE_DESIGN.md
+  AGENTS.md
+  package.json
+  pnpm-workspace.yaml
+  README.md
+```
+
+`DEMO-APP/` yalnızca görsel referans ve başlangıç prototipidir; üretim uygulama yapısı değildir.
+
+## Planlanan / Hedef Yapı
+
+PLAN.md içinde tanımlanan uzun vadeli monorepo hedefi aşağıdaki yapıdadır:
+
+```text
+servis-takip/
+  DEMO-APP/
+  apps/
     api/
   packages/
     shared/
     config/
-  PLAN.md
-  DATABASE_DESIGN.md
-  AGENTS.md
   docker-compose.yml
-  .env.example
   README.md
 ```
 
 ## Teknoloji Stack
 
-- Frontend: Next.js App Router, React, TypeScript, Tailwind CSS, shadcn/ui, next-intl
+- Frontend (mevcut): Next.js App Router, React, TypeScript, Tailwind CSS
+- i18n (mevcut): JSON dictionary tabanlı
+- Frontend (planlanan/target): shadcn/ui
 - Backend: NestJS, TypeScript, PostgreSQL, Prisma, JWT auth
 - Tooling: pnpm, ESLint, Prettier, Docker Compose
+
+## Geliştirme
+
+```bash
+pnpm install
+pnpm dev:web
+```
+
+Diğer komutlar:
+
+```bash
+pnpm build:web
+pnpm lint:web
+pnpm typecheck:web
+```
+
+Notlar:
+
+- Bu komutlar root `package.json` içinde tanımlıdır ve mevcut `apps/web` workspace'ini hedefler.
+- `pnpm dev:web` → frontend geliştirme sunucusu
+- `pnpm build:web` → frontend üretim derlemesi
+- `pnpm lint:web` → frontend lint kontrolü
+- `pnpm typecheck:web` → frontend TypeScript kontrolü
+
+## Ortam Değişkenleri
+
+Hedef ortam değişkenleri:
+
+- `NEXT_PUBLIC_API_URL` — gelecekteki backend adresi
+- `NEXT_PUBLIC_APP_URL` — public frontend origin / Docker proxy hedefi
+
+VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde planlanmıştır; Dockerfile varsayımı yapılmaz.
 
 ## Geliştirme İlkeleri
 

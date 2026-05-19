@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "title": "Servis Takip",
+    "description": "Teknik servis ekipleri için çok firmalı operasyon paneli"
+  },
+  "brand": {
+    "name": "Servis Takip",
+    "pro": "PRO",
+    "compactName": "CetTech PRO",
+    "tagline": "Operasyon paneli"
+  },
+  "navigation": {
+    "sections": {
+      "management": "Yönetim",
+      "modules": "Modüller"
+    },
+    "items": {
+      "dashboard": "Özet Durum",
+      "serviceRecords": "Servis Kayıtları",
+      "customers": "Müşteriler",
+      "parts": "Stok & Parça",
+      "cash": "Kasa & Cari",
+      "staff": "Personel",
+      "track": "Cihaz Sorgulama",
+      "quickScan": "Hızlı Barkod Oku",
+      "settings": "Genel Ayarlar",
+      "logout": "Çıkış Yap"
+    },
+    "dashboard": "Özet Durum",
+    "serviceRecords": "Servis Kayıtları",
+    "customers": "Müşteriler",
+    "parts": "Stok & Parça",
+    "cash": "Kasa & Cari",
+    "staff": "Personel",
+    "track": "Cihaz Sorgulama",
+    "settings": "Genel Ayarlar"
+  },
+  "header": {
+    "openNavigation": "Menüyü aç",
+    "notifications": "Bildirimler",
+    "welcome": "Hoşgeldiniz, CetTech Yönetici Paneli"
+  },
+  "common": {
+    "viewAll": "Tümünü Gör",
+    "backToDashboard": "Dashboard'a dön"
+  },
+  "roles": {
+    "operations_manager": "Operasyon Yöneticisi"
+  },
+  "dashboard": {
+    "title": "Genel durum paneli",
+    "description": "Servis yoğunluğunu, teslim bekleyen işleri ve gün içi finans özetini tek ekranda takip edin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "metrics": {
+      "waiting_devices": {
+        "title": "Bekleyen Cihazlar",
+        "notes": {}
+      },
+      "waiting_parts": {
+        "title": "Parça Bekleyen",
+        "notes": {}
+      },
+      "ready_delivery": {
+        "title": "Teslime Hazır",
+        "notes": {}
+      },
+      "overdue": {
+        "title": "3 Gün Aşımı (Acil)",
+        "notes": {
+          "legal_deadline": "Yasal süresi yaklaşıyor"
+        }
+      }
+    },
+    "recentRecords": {
+      "title": "Son Gelen Cihazlar",
+      "description": "Operasyon masasının en son aldığı kayıtlar"
+    },
+    "table": {
+      "trackingCode": "Takip No",
+      "customer": "Müşteri",
+      "device": "Cihaz",
+      "status": "Durum"
+    },
+    "summary": {
+      "title": "Günün Özeti",
+      "revenue": "Bugünkü tahsilat",
+      "expense": "Bugünkü gider",
+      "pendingApproval": "Onay bekleyen kayıt"
+    },
+    "quickActions": {
+      "primary": "Yeni Kayıt",
+      "secondary": "Cihaz Sorgula"
+    }
+  },
+  "serviceStatuses": {
+    "IN_PROGRESS": "İşlemde",
+    "WAITING_PART": "Parça bekliyor",
+    "READY_FOR_DELIVERY": "Teslime hazır",
+    "NEW": "Yeni kayıt"
+  },
+  "placeholder": {
+    "eyebrow": "Yakında",
+    "title": "Bu modül sonraki fazda açılacak",
+    "description": "İlk frontend fazında sadece app shell ve dashboard üretime hazırlandı. Bu rota, bilgi mimarisini sabitlemek için şimdiden ayrıldı."
+  }
+}

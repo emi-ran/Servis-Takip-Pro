@@ -6,6 +6,7 @@ node_modules/
 dist/
 dist-ssr/
 .next/
+.vercel/
 out/
 build/
 coverage/
@@ -40,3 +41,9 @@ Thumbs.db
 .turbo/
 .eslintcache
 *.tsbuildinfo
+.opencode-playwright/
+
+# Next.js / workspace
+apps/*/.next/
+apps/*/node_modules/
+apps/*/.env.local
