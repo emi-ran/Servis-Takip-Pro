@@ -47,3 +47,6 @@ Thumbs.db
 apps/*/.next/
 apps/*/node_modules/
 apps/*/.env.local
+
+# Moat task system
+.moat/

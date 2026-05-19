@@ -156,7 +156,7 @@ export function DashboardView({ locale, dictionary, data }: DashboardViewProps) 
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-2">
-              <Link className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 p-2 text-sm text-white transition hover:bg-blue-700" href={`/${locale}/service-records`}>
+              <Link className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 p-2 text-sm text-white transition hover:bg-blue-700" href={`/${locale}/service-records/new`}>
                 <Plus className="h-4 w-4" />
                 {dictionary.dashboard.quickActions.primary}
               </Link>

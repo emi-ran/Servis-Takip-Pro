@@ -92,11 +92,61 @@
       "secondary": "Cihaz Sorgula"
     }
   },
+  "serviceRecords": {
+    "title": "Servis kayıtları",
+    "description": "Operasyon masasındaki tüm servis kayıtlarını takip edin, filtreleyin ve yeni kayıt akışına buradan ilerleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "resultsLabel": "Toplam {count} kayıt gösteriliyor",
+    "actions": {
+      "new": "Yeni Kayıt"
+    },
+    "summary": {
+      "total": "Açık kayıt havuzu",
+      "urgent": "Acil öncelikli kayıt",
+      "ready": "Teslime hazır"
+    },
+    "filters": {
+      "searchPlaceholder": "Takip no, müşteri veya cihaz ile ara...",
+      "statusLabel": "Durum filtresi",
+      "priorityLabel": "Öncelik filtresi",
+      "allStatuses": "Tüm durumlar",
+      "allPriorities": "Tüm öncelikler",
+      "reset": "Filtreleri temizle"
+    },
+    "table": {
+      "trackingCode": "Takip No",
+      "customer": "Müşteri",
+      "device": "Cihaz",
+      "priority": "Öncelik",
+      "status": "Durum",
+      "assignee": "Atanan Personel",
+      "unassigned": "Atama bekliyor"
+    },
+    "empty": {
+      "title": "Kayıt bulunamadı",
+      "description": "Seçili arama ve filtrelere uyan servis kaydı yok. Filtreleri temizleyip tekrar deneyin."
+    },
+    "newPage": {
+      "eyebrow": "Planlanan akış",
+      "title": "Yeni servis kaydı formu sıradaki fazda açılacak",
+      "description": "Bu rota, yeni kayıt formunun bilgi mimarisini sabitlemek için ayrıldı. Sonraki frontend fazında müşteri, cihaz ve arıza bilgileri burada toplanacak.",
+      "backToList": "Kayıt listesine dön"
+    }
+  },
   "serviceStatuses": {
+    "WAITING_CUSTOMER_APPROVAL": "Müşteri onayı bekliyor",
+    "DELIVERED": "Teslim edildi",
+    "CANCELLED": "İptal edildi",
     "IN_PROGRESS": "İşlemde",
     "WAITING_PART": "Parça bekliyor",
     "READY_FOR_DELIVERY": "Teslime hazır",
     "NEW": "Yeni kayıt"
+  },
+  "servicePriorities": {
+    "LOW": "Düşük",
+    "NORMAL": "Normal",
+    "HIGH": "Yüksek",
+    "URGENT": "Acil"
   },
   "placeholder": {
     "eyebrow": "Yakında",

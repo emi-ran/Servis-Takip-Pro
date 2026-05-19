@@ -92,11 +92,61 @@
       "secondary": "Search Device"
     }
   },
+  "serviceRecords": {
+    "title": "Service records",
+    "description": "Track every service record on the operations desk, filter the list, and continue to the new-record flow from here.",
+    "lastUpdatedLabel": "Last update",
+    "resultsLabel": "Showing {count} records",
+    "actions": {
+      "new": "New Record"
+    },
+    "summary": {
+      "total": "Open record pool",
+      "urgent": "Urgent priority record",
+      "ready": "Ready for delivery"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by tracking code, customer, or device...",
+      "statusLabel": "Status filter",
+      "priorityLabel": "Priority filter",
+      "allStatuses": "All statuses",
+      "allPriorities": "All priorities",
+      "reset": "Clear filters"
+    },
+    "table": {
+      "trackingCode": "Tracking Code",
+      "customer": "Customer",
+      "device": "Device",
+      "priority": "Priority",
+      "status": "Status",
+      "assignee": "Assigned Staff",
+      "unassigned": "Awaiting assignment"
+    },
+    "empty": {
+      "title": "No records found",
+      "description": "There are no service records matching the current search and filters. Clear the filters and try again."
+    },
+    "newPage": {
+      "eyebrow": "Planned flow",
+      "title": "The new service record form will open in the next phase",
+      "description": "This route is reserved to lock the information architecture for the new record form. Customer, device, and fault details will be collected here in the next frontend phase.",
+      "backToList": "Back to record list"
+    }
+  },
   "serviceStatuses": {
+    "WAITING_CUSTOMER_APPROVAL": "Waiting for customer approval",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled",
     "IN_PROGRESS": "In progress",
     "WAITING_PART": "Waiting for part",
     "READY_FOR_DELIVERY": "Ready for delivery",
     "NEW": "New record"
+  },
+  "servicePriorities": {
+    "LOW": "Low",
+    "NORMAL": "Normal",
+    "HIGH": "High",
+    "URGENT": "Urgent"
   },
   "placeholder": {
     "eyebrow": "Coming soon",
