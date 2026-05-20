@@ -9,6 +9,62 @@ export type ServiceStatus =
 
 export type ServicePriority = "LOW" | "NORMAL" | "HIGH" | "URGENT";
 
+export type MockCustomer = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+};
+
+export type MockDevice = {
+  id: string;
+  customerId: string;
+  brand: string;
+  model: string;
+  serialOrImei: string;
+};
+
+export type CreateServiceRecordInput = {
+  customerId?: string;
+  newCustomer?: {
+    name: string;
+    phone: string;
+    email?: string;
+  };
+  deviceId?: string;
+  newDevice?: {
+    brand: string;
+    model: string;
+    serialOrImei?: string;
+  };
+  issueSummary: string;
+  issueDescription: string;
+  priority: ServicePriority;
+  status: ServiceStatus;
+  assigneeId: string;
+  internalNote: string;
+};
+
+export type CreateServiceRecordFormOptions = {
+  statuses: ServiceStatus[];
+  priorities: ServicePriority[];
+  customers: MockCustomer[];
+  devices: MockDevice[];
+  assignees: Array<{
+    id: string;
+    name: string;
+  }>;
+};
+
+export type MockCustomerSearchResult = {
+  query: string;
+  minQueryLength: number;
+  limit: number;
+  totalCount: number;
+  hasMore: boolean;
+  customers: MockCustomer[];
+};
+
 export type ServiceRecordListItem = {
   id: string;
   trackingCode: string;
@@ -137,6 +193,73 @@ export async function getServiceRecordsOverview(): Promise<ServiceRecordsOvervie
       },
     ],
   };
+}
+
+const createServiceRecordFormOptions: CreateServiceRecordFormOptions = {
+  statuses: ["NEW", "IN_PROGRESS", "WAITING_PART", "WAITING_CUSTOMER_APPROVAL", "READY_FOR_DELIVERY", "DELIVERED", "CANCELLED"],
+  priorities: ["LOW", "NORMAL", "HIGH", "URGENT"],
+  customers: [
+    { id: "cust-001", name: "Ahmet Yılmaz", phone: "+90 532 000 10 10", email: "ahmet.yilmaz@example.com" },
+    { id: "cust-002", name: "Ayşe Demir", phone: "+90 533 111 20 20", email: "ayse.demir@example.com" },
+    { id: "cust-003", name: "Mehmet Öz", phone: "+90 535 222 30 30", email: "mehmet.oz@example.com" },
+    { id: "cust-004", name: "Zeynep Kaya", phone: "+90 537 333 40 40", email: "zeynep.kaya@example.com" },
+  ],
+  devices: [
+    { id: "dev-001", customerId: "cust-001", brand: "Samsung", model: "Galaxy S23", serialOrImei: "SM-S911B-TR-10021" },
+    { id: "dev-002", customerId: "cust-001", brand: "Apple", model: "iPhone 13", serialOrImei: "A2633-IMEI-94421" },
+    { id: "dev-003", customerId: "cust-002", brand: "Bosch", model: "WGA142", serialOrImei: "BS-WGA142-77210" },
+    { id: "dev-004", customerId: "cust-003", brand: "Apple", model: "MacBook Pro M1", serialOrImei: "APL-MBP-2021-31104" },
+    { id: "dev-005", customerId: "cust-004", brand: "Sony", model: "Bravia 55 OLED", serialOrImei: "SONY-BRV-55-76119" },
+  ],
+  assignees: [
+    { id: "staff-001", name: "Mert Aydın" },
+    { id: "staff-002", name: "Ece Tunalı" },
+    { id: "staff-003", name: "Burak Kılıç" },
+  ],
+};
+
+export async function getCreateServiceRecordFormOptions(): Promise<CreateServiceRecordFormOptions> {
+  return createServiceRecordFormOptions;
+}
+
+export async function searchMockCustomers(query: string, limit = 8, minQueryLength = 2): Promise<MockCustomerSearchResult> {
+  const normalizedQuery = query.trim();
+
+  if (normalizedQuery.length < minQueryLength) {
+    return {
+      query: normalizedQuery,
+      minQueryLength,
+      limit,
+      totalCount: 0,
+      hasMore: false,
+      customers: [],
+    };
+  }
+
+  const loweredQuery = normalizedQuery.toLocaleLowerCase("tr-TR");
+  const matchedCustomers = createServiceRecordFormOptions.customers.filter((customer) => {
+    const searchable = `${customer.name} ${customer.phone} ${customer.email}`.toLocaleLowerCase("tr-TR");
+    return searchable.includes(loweredQuery);
+  });
+
+  return {
+    query: normalizedQuery,
+    minQueryLength,
+    limit,
+    totalCount: matchedCustomers.length,
+    hasMore: matchedCustomers.length > limit,
+    customers: matchedCustomers.slice(0, limit),
+  };
+}
+
+export async function createMockServiceRecord(input: CreateServiceRecordInput): Promise<{ trackingCode: string }> {
+  const year = new Date().getUTCFullYear();
+  const randomNumber = Math.floor(Math.random() * 900 + 100);
+  const trackingCode = `SRV-${year}-${randomNumber}`;
+
+  void input;
+
+  return { trackingCode };
 }
 
 const serviceRecordDetailsById: Record<string, ServiceRecordDetail> = {

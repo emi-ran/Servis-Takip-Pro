@@ -134,6 +134,84 @@
       "description": "Bu rota, yeni kayıt formunun bilgi mimarisini sabitlemek için ayrıldı. Sonraki frontend fazında müşteri, cihaz ve arıza bilgileri burada toplanacak.",
       "backToList": "Kayıt listesine dön"
     },
+    "newForm": {
+      "eyebrow": "Yeni kayıt akışı",
+      "title": "Yeni servis kaydı oluştur",
+      "description": "Servis kaydını mevcut bir müşteriyle ilişkilendirerek açın; gerekirse yeni müşteri ve cihazı form içinde ekleyin.",
+      "sections": {
+        "customer": "Müşteri seçimi",
+        "device": "Cihaz seçimi",
+        "service": "Servis detayları"
+      },
+      "fields": {
+        "customerMode": "Müşteri kaynağı",
+        "customerModeExisting": "Mevcut müşteri seç",
+        "customerModeNew": "Yeni müşteri ekle",
+        "customerSearch": "Müşteri ara",
+        "customerSearchPlaceholder": "Ad, telefon veya e-posta ile ara",
+        "customerSelect": "Müşteri",
+        "customerSelectPlaceholder": "Müşteri seçin",
+        "customerName": "Müşteri adı",
+        "customerPhone": "Müşteri telefonu",
+        "customerEmail": "Müşteri e-posta (opsiyonel)",
+        "emailNotProvided": "E-posta bilgisi yok",
+        "deviceMode": "Cihaz kaynağı",
+        "deviceModeExisting": "Müşterinin kayıtlı cihazını seç",
+        "deviceModeNew": "Yeni cihaz ekle",
+        "deviceSelect": "Cihaz",
+        "deviceSelectPlaceholder": "Cihaz seçin",
+        "deviceSelectCustomerFirst": "Önce müşteri seçin",
+        "deviceBrand": "Cihaz markası",
+        "deviceModel": "Cihaz modeli",
+        "serialOrImei": "Seri no / IMEI (opsiyonel)",
+        "issueSummary": "Arıza özeti",
+        "issueDescription": "Arıza açıklaması",
+        "priority": "Öncelik",
+        "status": "İlk durum",
+        "assignee": "Atanan personel",
+        "assigneePlaceholder": "Atama bekliyor",
+        "internalNote": "İç not (opsiyonel)"
+      },
+      "validation": {
+        "customerRequired": "Mevcut bir müşteri seçin veya yeni müşteri bilgilerini doldurun.",
+        "customerName": "Müşteri adı zorunludur.",
+        "customerPhone": "Müşteri telefonu zorunludur.",
+        "deviceRequired": "Mevcut bir cihaz seçin veya yeni cihaz bilgilerini doldurun.",
+        "deviceBrand": "Cihaz markası zorunludur.",
+        "deviceModel": "Cihaz modeli zorunludur.",
+        "issueSummary": "Arıza özeti zorunludur.",
+        "issueDescription": "Arıza açıklaması zorunludur.",
+        "priority": "Öncelik seçimi zorunludur.",
+        "status": "Durum seçimi zorunludur."
+      },
+      "hints": {
+        "noDeviceForCustomer": "Bu müşteriye kayıtlı cihaz bulunamadı. Lütfen yeni cihaz ekleyin."
+      },
+      "customerSelector": {
+        "emptyTitle": "Henüz müşteri seçilmedi",
+        "emptyDescription": "Mevcut müşteri ile devam etmek için arama ekranını açın veya yeni müşteri ekleyin.",
+        "modalTitle": "Müşteri ara ve seç",
+        "modalDescription": "Ad, telefon veya e-posta ile arama yaparak müşteri seçin.",
+        "closeModalAriaLabel": "Müşteri arama penceresini kapat",
+        "minCharactersHint": "Sonuçları görmek için en az 2 karakter yazın.",
+        "noResultTitle": "Müşteri bulunamadı",
+        "noResultDescription": "Aramaya uygun müşteri yok. İsterseniz yeni müşteri ekleyerek devam edin.",
+        "refineSearchHint": "Daha fazla eşleşme var. Sonuçları daraltmak için aramayı netleştirin."
+      },
+      "actions": {
+        "cancel": "Listeye geri dön",
+        "searchCustomer": "Müşteri ara / seç",
+        "changeCustomer": "Müşteriyi değiştir",
+        "newCustomer": "Yeni müşteri ekle",
+        "closeSearch": "Aramayı kapat",
+        "submit": "Servis kaydını oluştur",
+        "submitting": "Oluşturuluyor..."
+      },
+      "success": {
+        "title": "Servis kaydı oluşturuldu",
+        "description": "Mock kayıt tamamlandı. Takip kodu: {code}"
+      }
+    },
     "detail": {
       "backToList": "Listeye dön",
       "receivedAtLabel": "Kabul zamanı: {date}",

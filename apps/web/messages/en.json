@@ -134,6 +134,84 @@
       "description": "This route is reserved to lock the information architecture for the new record form. Customer, device, and fault details will be collected here in the next frontend phase.",
       "backToList": "Back to record list"
     },
+    "newForm": {
+      "eyebrow": "New record flow",
+      "title": "Create a new service record",
+      "description": "Create the service record linked to an existing customer; add a new customer and device inline when needed.",
+      "sections": {
+        "customer": "Customer selection",
+        "device": "Device selection",
+        "service": "Service details"
+      },
+      "fields": {
+        "customerMode": "Customer source",
+        "customerModeExisting": "Select existing customer",
+        "customerModeNew": "Add new customer",
+        "customerSearch": "Search customer",
+        "customerSearchPlaceholder": "Search by name, phone, or email",
+        "customerSelect": "Customer",
+        "customerSelectPlaceholder": "Select a customer",
+        "customerName": "Customer name",
+        "customerPhone": "Customer phone",
+        "customerEmail": "Customer email (optional)",
+        "emailNotProvided": "No email provided",
+        "deviceMode": "Device source",
+        "deviceModeExisting": "Select saved customer device",
+        "deviceModeNew": "Add new device",
+        "deviceSelect": "Device",
+        "deviceSelectPlaceholder": "Select a device",
+        "deviceSelectCustomerFirst": "Select a customer first",
+        "deviceBrand": "Device brand",
+        "deviceModel": "Device model",
+        "serialOrImei": "Serial number / IMEI (optional)",
+        "issueSummary": "Issue summary",
+        "issueDescription": "Issue description",
+        "priority": "Priority",
+        "status": "Initial status",
+        "assignee": "Assignee",
+        "assigneePlaceholder": "Awaiting assignment",
+        "internalNote": "Internal note (optional)"
+      },
+      "validation": {
+        "customerRequired": "Select an existing customer or complete the new customer fields.",
+        "customerName": "Customer name is required.",
+        "customerPhone": "Customer phone is required.",
+        "deviceRequired": "Select an existing device or complete the new device fields.",
+        "deviceBrand": "Device brand is required.",
+        "deviceModel": "Device model is required.",
+        "issueSummary": "Issue summary is required.",
+        "issueDescription": "Issue description is required.",
+        "priority": "Priority is required.",
+        "status": "Status is required."
+      },
+      "hints": {
+        "noDeviceForCustomer": "No saved device found for this customer. Please add a new device."
+      },
+      "customerSelector": {
+        "emptyTitle": "No customer selected yet",
+        "emptyDescription": "Open customer search to continue with an existing customer, or add a new one.",
+        "modalTitle": "Search and select customer",
+        "modalDescription": "Search by name, phone, or email to select a customer.",
+        "closeModalAriaLabel": "Close customer search modal",
+        "minCharactersHint": "Type at least 2 characters to see results.",
+        "noResultTitle": "No customer found",
+        "noResultDescription": "No customer matched this search. You can continue by adding a new customer.",
+        "refineSearchHint": "More matches exist. Refine your search to narrow down results."
+      },
+      "actions": {
+        "cancel": "Back to list",
+        "searchCustomer": "Search / select customer",
+        "changeCustomer": "Change customer",
+        "newCustomer": "Add new customer",
+        "closeSearch": "Close search",
+        "submit": "Create service record",
+        "submitting": "Creating..."
+      },
+      "success": {
+        "title": "Service record created",
+        "description": "Mock submission completed. Tracking code: {code}"
+      }
+    },
     "detail": {
       "backToList": "Back to list",
       "receivedAtLabel": "Received at: {date}",
