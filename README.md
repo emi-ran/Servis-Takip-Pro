@@ -105,6 +105,10 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - `/[locale]/customers/[id]` müşteri detay ekranı aktif hale getirildi; iletişim kartı artık açık adres bilgisini içerir, bağlı cihaz listesi ve servis geçmişi (takip kodu-durum-cihaz-tarih) korunur.
 - Müşteri detayındaki bağlı cihazlar için müşteri kapsamlı cihaz detay modalı eklendi; marka/model/seri, cihaz sahibi ve sadece o cihaza ait servis geçmişi görüntülenir, eşleşmeyen cihaz kimliği engellenir.
 - Müşteri modülü mock veri katmanı `apps/web/lib/api/customers.ts` içinde tutulur; müşteri listesi arama helper'ı, mock create helper'ı, müşteri detail helper'ı ve customer-scope device detail helper'ı UI dışından sağlanır.
+- `/[locale]/devices` placeholder kaldırıldı; cihaz listesi aktif hale getirildi. Marka/model/seri/IMEI/müşteri adı/telefon araması, müşteri sahipliği görünürlüğü, boş durum ve cihaz detayına yönlendirme eklendi.
+- `/[locale]/devices/[id]` cihaz detay rotası eklendi; cihaz özeti, müşteri sahibi kartı (iletişim + adres), cihaza ait servis geçmişi (takip kodu/durum/tarih) ve erişilebilir bulunamadı durumu hazırlandı.
+- Cihaz modülü müşteriye bağlılık kuralını mock API katmanında korur; cihaz listesi ve detay helper'ları sadece geçerli müşteri sahibi bağlamıyla veri döndürür.
+- Cihaz detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new` rotasına bağlıdır; bu fazda cihaz/müşteri ön-seçimi aktarımı placeholder davranış olarak bilerek bırakılmıştır.
 - Kritik write işlemleri audit log üretir.
 - Demo kodu üretim kodu sayılmaz; gerektiğinde modüler şekilde `apps/web` altına taşınır.
 - Build, lint ve typecheck hatası bırakılmamalıdır.

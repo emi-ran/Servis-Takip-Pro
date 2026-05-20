@@ -3,11 +3,12 @@ export type ShellRoleKey = "operations_manager";
 export type ShellNavigationItem = {
   id: string;
   href: string;
-  icon: "dashboard" | "serviceRecords" | "customers" | "parts" | "cash" | "staff" | "track" | "qr" | "settings" | "logout";
+  icon: "dashboard" | "serviceRecords" | "customers" | "devices" | "parts" | "cash" | "staff" | "track" | "qr" | "settings" | "logout";
   labelKey:
     | "dashboard"
     | "serviceRecords"
     | "customers"
+    | "devices"
     | "parts"
     | "cash"
     | "staff"
@@ -37,6 +38,7 @@ export async function getShellContext() {
           { id: "dashboard", href: "/dashboard", icon: "dashboard", labelKey: "dashboard" as const },
           { id: "service-records", href: "/service-records", icon: "serviceRecords", labelKey: "serviceRecords" as const },
           { id: "customers", href: "/customers", icon: "customers", labelKey: "customers" as const },
+          { id: "devices", href: "/devices", icon: "devices", labelKey: "devices" as const },
           { id: "parts", href: "/parts", icon: "parts", labelKey: "parts" as const },
           { id: "cash", href: "/cash", icon: "cash", labelKey: "cash" as const },
           { id: "staff", href: "/staff", icon: "staff", labelKey: "staff" as const },

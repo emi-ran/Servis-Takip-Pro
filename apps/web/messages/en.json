@@ -18,6 +18,7 @@
       "dashboard": "Dashboard",
       "serviceRecords": "Service Records",
       "customers": "Customers",
+      "devices": "Devices",
       "parts": "Stock & Parts",
       "cash": "Cash & Accounts",
       "staff": "Staff",
@@ -29,6 +30,7 @@
     "dashboard": "Dashboard",
     "serviceRecords": "Service Records",
     "customers": "Customers",
+    "devices": "Devices",
     "parts": "Stock & Parts",
     "cash": "Cash & Accounts",
     "staff": "Staff",
@@ -344,6 +346,67 @@
         "title": "Customer creation completed",
         "description": "Mock customer created for {name}. Temporary customer id: {id}",
         "nonPersistent": "In this phase the record is not persisted; refreshing the page will not update the list."
+      }
+    }
+  },
+  "devices": {
+    "deviceTypes": {
+      "PHONE": "Phone",
+      "COMPUTER": "Computer",
+      "WHITE_GOOD": "Home appliance",
+      "TV": "Television"
+    },
+    "list": {
+      "title": "Device list",
+      "description": "Search devices by brand/model or customer information and track ownership context through customer cards.",
+      "searchLabel": "Device search",
+      "searchPlaceholder": "Search by brand, model, serial, IMEI, customer name, or phone...",
+      "resultsLabel": "Showing {count} devices",
+      "summary": {
+        "totalDevices": "Total devices",
+        "totalOwners": "Total customer owners",
+        "openServices": "Open service records"
+      },
+      "row": {
+        "serialLabel": "Serial No: {serial}",
+        "imeiLabel": "IMEI: {imei}",
+        "openServicesLabel": "Open records",
+        "detailAction": "Device details"
+      },
+      "empty": {
+        "defaultTitle": "No devices yet",
+        "searchTitle": "No device matched this search",
+        "description": "The device list does not match this criteria. Try a different search value."
+      }
+    },
+    "detail": {
+      "backToList": "Back to device list",
+      "actions": {
+        "newServiceRecord": "Create service record for this device"
+      },
+      "summary": {
+        "title": "Device summary",
+        "brandModel": "Brand / model",
+        "type": "Device type",
+        "serialNumber": "Serial number",
+        "imei": "IMEI",
+        "notAvailable": "Not provided"
+      },
+      "owner": {
+        "title": "Device owner"
+      },
+      "serviceHistory": {
+        "title": "Service history for this device",
+        "description": "Service records linked to this device are listed with tracking code and status.",
+        "dateLabel": "Received date: {date}",
+        "emptyTitle": "No service history for this device",
+        "emptyDescription": "It will appear here when a new service record is created."
+      },
+      "createServiceRecordHint": "The new service record action currently navigates to /service-records/new. Device/customer preselection is not yet passed in this phase.",
+      "notFound": {
+        "eyebrow": "Device not found",
+        "title": "Device details could not be displayed",
+        "description": "Device with id {id} was not found or is out of view scope."
       }
     }
   },

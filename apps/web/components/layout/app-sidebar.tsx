@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Globe, LayoutDashboard, LogOut, Package, QrCode, Settings, UserCog, Users, Wallet, Wrench, X } from "lucide-react";
+import { Globe, Laptop, LayoutDashboard, LogOut, Package, QrCode, Settings, UserCog, Users, Wallet, Wrench, X } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n/settings";
 
@@ -19,6 +19,7 @@ const icons = {
   dashboard: LayoutDashboard,
   serviceRecords: Wrench,
   customers: Users,
+  devices: Laptop,
   parts: Package,
   cash: Wallet,
   staff: UserCog,

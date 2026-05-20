@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `/[locale]/devices` placeholder kaldırıldı; gerçek cihaz listesi eklendi. Arama (marka/model/seri/IMEI/müşteri adı/telefon), özet metrikler, boş durum ve cihaz detayına yönlendirme hazırlandı.
+- `/<locale>/devices/[id]` cihaz detay rotası eklendi; cihaz özeti, müşteri sahibi kartı, cihaza ait servis geçmişi, servis kaydı aç aksiyonu, bu fazda bilinçli bırakılan cihaz/müşteri ön-seçim placeholder davranışı ve erişilebilir bulunamadı durumu sağlandı.
+- `apps/web/lib/api/customers.ts` cihaz modülü için genişletildi: cihaz tip/IMEI alanları, `searchDevices` list helper'ı ve `getDeviceDetail` owner-context detail helper'ı eklendi.
+- Sidebar navigasyonuna Cihazlar modülü eklendi (`apps/web/lib/api/shell.ts`, `apps/web/components/layout/app-sidebar.tsx`).
+- i18n sözlükleri (`apps/web/messages/tr.json` ve `apps/web/messages/en.json`) devices list/detail metinleri ve navigation label'larıyla güncellendi.
 - `/[locale]/customers` listesine "Yeni müşteri oluştur" aksiyonu ve erişilebilir modal akışı eklendi; ad soyad, telefon ve açık adres zorunlu alan doğrulaması ile mock create başarı mesajı/kimliği sağlandı.
 - Yeni müşteri oluşturma akışında kayıtların bu fazda kalıcı olmadığı başarı mesajı ve dokümantasyon notu ile açıklandı.
 - `apps/web/lib/api/customers.ts` create input/type sözleşmesi genişletildi; müşteri modeline açık adres alanı eklendi ve mock `createMockCustomer` helper'ı tanımlandı.

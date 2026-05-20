@@ -28,6 +28,8 @@ export type CustomerDevice = {
   brand: string;
   model: string;
   serialNumber: string;
+  imei?: string;
+  type: "PHONE" | "COMPUTER" | "WHITE_GOOD" | "TV";
   nickname: string;
 };
 
@@ -68,6 +70,29 @@ export type CustomerDeviceDetail = {
   serviceHistory: Array<
     CustomerServiceHistoryItem & {
       deviceName: string | null;
+    }
+  >;
+};
+
+export type DeviceListItem = CustomerDevice & {
+  customer: Pick<Customer, "id" | "name" | "phone">;
+  openServiceCount: number;
+  lastServiceAt: string | null;
+};
+
+export type DeviceListResult = {
+  query: string;
+  totalCount: number;
+  hasMore: boolean;
+  items: DeviceListItem[];
+};
+
+export type DeviceDetail = {
+  device: CustomerDevice;
+  customer: Customer;
+  serviceHistory: Array<
+    CustomerServiceHistoryItem & {
+      deviceName: string;
     }
   >;
 };
@@ -127,12 +152,62 @@ const customers: Customer[] = [
 ];
 
 const devices: CustomerDevice[] = [
-  { id: "dev-001", customerId: "cust-001", brand: "Samsung", model: "Galaxy S23", serialNumber: "SM-S911B-TR-10021", nickname: "Ana Telefon" },
-  { id: "dev-002", customerId: "cust-001", brand: "Apple", model: "iPhone 13", serialNumber: "A2633-IMEI-94421", nickname: "Yedek Telefon" },
-  { id: "dev-003", customerId: "cust-002", brand: "Bosch", model: "WGA142", serialNumber: "BS-WGA142-77210", nickname: "Çamaşır Makinesi" },
-  { id: "dev-004", customerId: "cust-003", brand: "Apple", model: "MacBook Pro M1", serialNumber: "APL-MBP-2021-31104", nickname: "Ofis Bilgisayarı" },
-  { id: "dev-005", customerId: "cust-004", brand: "Sony", model: "Bravia 55 OLED", serialNumber: "SONY-BRV-55-76119", nickname: "Salon TV" },
-  { id: "dev-006", customerId: "cust-005", brand: "Lenovo", model: "ThinkPad E14", serialNumber: "LEN-E14-44090", nickname: "İş Laptopu" },
+  {
+    id: "dev-001",
+    customerId: "cust-001",
+    brand: "Samsung",
+    model: "Galaxy S23",
+    serialNumber: "SM-S911B-TR-10021",
+    imei: "356732110002481",
+    type: "PHONE",
+    nickname: "Ana Telefon",
+  },
+  {
+    id: "dev-002",
+    customerId: "cust-001",
+    brand: "Apple",
+    model: "iPhone 13",
+    serialNumber: "A2633-IMEI-94421",
+    imei: "353847992451220",
+    type: "PHONE",
+    nickname: "Yedek Telefon",
+  },
+  {
+    id: "dev-003",
+    customerId: "cust-002",
+    brand: "Bosch",
+    model: "WGA142",
+    serialNumber: "BS-WGA142-77210",
+    type: "WHITE_GOOD",
+    nickname: "Çamaşır Makinesi",
+  },
+  {
+    id: "dev-004",
+    customerId: "cust-003",
+    brand: "Apple",
+    model: "MacBook Pro M1",
+    serialNumber: "APL-MBP-2021-31104",
+    type: "COMPUTER",
+    nickname: "Ofis Bilgisayarı",
+  },
+  {
+    id: "dev-005",
+    customerId: "cust-004",
+    brand: "Sony",
+    model: "Bravia 55 OLED",
+    serialNumber: "SONY-BRV-55-76119",
+    type: "TV",
+    nickname: "Salon TV",
+  },
+  {
+    id: "dev-006",
+    customerId: "cust-005",
+    brand: "Lenovo",
+    model: "ThinkPad E14",
+    serialNumber: "LEN-E14-44090",
+    type: "COMPUTER",
+    nickname: "İş Laptopu",
+  },
 ];
 
 const serviceHistory: CustomerServiceHistoryItem[] = [
@@ -247,5 +322,81 @@ export async function createMockCustomer(input: CreateCustomerInput): Promise<{ 
   return {
     customerId: generatedId,
     customerName: input.name.trim(),
+  };
+}
+
+export async function searchDevices(query: string, limit = 30): Promise<DeviceListResult> {
+  const normalizedQuery = query.trim().toLocaleLowerCase("tr-TR");
+
+  const items = devices
+    .map((device) => {
+      const customer = customers.find((entry) => entry.id === device.customerId);
+
+      if (!customer) {
+        return null;
+      }
+
+      const deviceServices = serviceHistory.filter((service) => service.deviceId === device.id);
+
+      return {
+        ...device,
+        customer: {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+        },
+        openServiceCount: deviceServices.filter((service) => isOpenStatus(service.status)).length,
+        lastServiceAt: deviceServices.length > 0 ? deviceServices.sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime())[0].receivedAt : null,
+      } satisfies DeviceListItem;
+    })
+    .filter((item): item is DeviceListItem => Boolean(item));
+
+  const filteredItems = items.filter((device) => {
+    if (!normalizedQuery) {
+      return true;
+    }
+
+    const searchable = `${device.brand} ${device.model} ${device.serialNumber} ${device.imei ?? ""} ${device.customer.name} ${device.customer.phone}`.toLocaleLowerCase(
+      "tr-TR",
+    );
+
+    return searchable.includes(normalizedQuery);
+  });
+
+  return {
+    query,
+    totalCount: filteredItems.length,
+    hasMore: filteredItems.length > limit,
+    items: filteredItems.slice(0, limit),
+  };
+}
+
+export async function getDeviceDetail(deviceId: string): Promise<DeviceDetail | null> {
+  const device = devices.find((entry) => entry.id === deviceId);
+
+  if (!device) {
+    return null;
+  }
+
+  const customer = customers.find((entry) => entry.id === device.customerId);
+
+  if (!customer) {
+    return null;
+  }
+
+  const deviceName = `${device.brand} ${device.model}`;
+
+  const deviceServiceHistory = serviceHistory
+    .filter((service) => service.deviceId === deviceId && service.customerId === customer.id)
+    .sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime())
+    .map((service) => ({
+      ...service,
+      deviceName,
+    }));
+
+  return {
+    device,
+    customer,
+    serviceHistory: deviceServiceHistory,
   };
 }

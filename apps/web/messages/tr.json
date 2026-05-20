@@ -18,6 +18,7 @@
       "dashboard": "Özet Durum",
       "serviceRecords": "Servis Kayıtları",
       "customers": "Müşteriler",
+      "devices": "Cihazlar",
       "parts": "Stok & Parça",
       "cash": "Kasa & Cari",
       "staff": "Personel",
@@ -29,6 +30,7 @@
     "dashboard": "Özet Durum",
     "serviceRecords": "Servis Kayıtları",
     "customers": "Müşteriler",
+    "devices": "Cihazlar",
     "parts": "Stok & Parça",
     "cash": "Kasa & Cari",
     "staff": "Personel",
@@ -344,6 +346,67 @@
         "title": "Müşteri oluşturma tamamlandı",
         "description": "{name} için mock müşteri kaydı hazırlandı. Geçici müşteri kimliği: {id}",
         "nonPersistent": "Bu fazda kayıtlar kalıcı değildir; sayfa yenilendiğinde liste güncellenmez."
+      }
+    }
+  },
+  "devices": {
+    "deviceTypes": {
+      "PHONE": "Telefon",
+      "COMPUTER": "Bilgisayar",
+      "WHITE_GOOD": "Beyaz eşya",
+      "TV": "Televizyon"
+    },
+    "list": {
+      "title": "Cihaz listesi",
+      "description": "Cihazları marka/model veya müşteri bilgisine göre arayın ve sahiplik bağını müşteri kartı üzerinden takip edin.",
+      "searchLabel": "Cihaz araması",
+      "searchPlaceholder": "Marka, model, seri no, IMEI, müşteri adı veya telefon ile ara...",
+      "resultsLabel": "Toplam {count} cihaz gösteriliyor",
+      "summary": {
+        "totalDevices": "Toplam cihaz",
+        "totalOwners": "Toplam müşteri sahibi",
+        "openServices": "Açık servis kaydı"
+      },
+      "row": {
+        "serialLabel": "Seri No: {serial}",
+        "imeiLabel": "IMEI: {imei}",
+        "openServicesLabel": "Açık kayıt",
+        "detailAction": "Cihaz detayı"
+      },
+      "empty": {
+        "defaultTitle": "Henüz cihaz bulunmuyor",
+        "searchTitle": "Aramaya uygun cihaz bulunamadı",
+        "description": "Cihaz listesi bu kriterlerle eşleşmiyor. Farklı bir arama değeri deneyin."
+      }
+    },
+    "detail": {
+      "backToList": "Cihaz listesine dön",
+      "actions": {
+        "newServiceRecord": "Bu cihaz için servis kaydı aç"
+      },
+      "summary": {
+        "title": "Cihaz özeti",
+        "brandModel": "Marka / model",
+        "type": "Cihaz tipi",
+        "serialNumber": "Seri numarası",
+        "imei": "IMEI",
+        "notAvailable": "Belirtilmedi"
+      },
+      "owner": {
+        "title": "Cihaz sahibi"
+      },
+      "serviceHistory": {
+        "title": "Cihaza ait servis geçmişi",
+        "description": "Bu cihaza bağlı servis kayıtları takip kodu ve durum bilgisiyle listelenir.",
+        "dateLabel": "Kabul tarihi: {date}",
+        "emptyTitle": "Bu cihaza ait servis geçmişi bulunmuyor",
+        "emptyDescription": "Yeni servis kaydı oluştuğunda burada görünecek."
+      },
+      "createServiceRecordHint": "Yeni servis kaydı aksiyonu şu an /service-records/new sayfasına yönlendirir. Bu fazda cihaz/müşteri ön-seçimi otomatik aktarılmaz.",
+      "notFound": {
+        "eyebrow": "Cihaz bulunamadı",
+        "title": "Cihaz detayı görüntülenemedi",
+        "description": "{id} kimliğine sahip cihaz bulunamadı veya görüntüleme kapsamı dışında."
       }
     }
   },
