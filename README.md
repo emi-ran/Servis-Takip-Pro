@@ -100,6 +100,11 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - Yeni servis kaydı müşteri seçimi, inline tüm müşteri listesini kaldıran modal arama akışına taşınmıştır; en az 2 karakter ile sınırlı sonuç gösterimi ve daha fazla eşleşme için arama daraltma yönlendirmesi içerir.
 - Yeni servis kaydı create modeli ID bazlıdır: mevcut müşteri seçilirse `customerId`, mevcut cihaz seçilirse `deviceId` gönderilir; yeni müşteri/cihaz senaryosunda backend önce müşteri kaydını oluşturup dönen müşteri ID'siyle cihazı, ardından servis kaydını oluşturmalıdır.
 - Yeni kayıt formunun select seçenekleri ve mock submit adaptörü UI dışında `apps/web/lib/api/service-records.ts` içinde tutulur.
+- `/[locale]/customers` müşteri listesi aktif hale getirildi; ad/telefon/e-posta araması, müşteri bazlı cihaz ve açık servis sayısı özetleri, boş durum ve müşteri detayına navigasyon içerir.
+- `/[locale]/customers` ekranına erişilebilir "Yeni müşteri oluştur" modal akışı eklendi; zorunlu alanlar ad soyad + telefon + açık adres olarak doğrulanır, başarıda geçici mock müşteri kimliği döner ve bu fazda kalıcı olmadığını açıkça belirtir.
+- `/[locale]/customers/[id]` müşteri detay ekranı aktif hale getirildi; iletişim kartı artık açık adres bilgisini içerir, bağlı cihaz listesi ve servis geçmişi (takip kodu-durum-cihaz-tarih) korunur.
+- Müşteri detayındaki bağlı cihazlar için müşteri kapsamlı cihaz detay modalı eklendi; marka/model/seri, cihaz sahibi ve sadece o cihaza ait servis geçmişi görüntülenir, eşleşmeyen cihaz kimliği engellenir.
+- Müşteri modülü mock veri katmanı `apps/web/lib/api/customers.ts` içinde tutulur; müşteri listesi arama helper'ı, mock create helper'ı, müşteri detail helper'ı ve customer-scope device detail helper'ı UI dışından sağlanır.
 - Kritik write işlemleri audit log üretir.
 - Demo kodu üretim kodu sayılmaz; gerektiğinde modüler şekilde `apps/web` altına taşınır.
 - Build, lint ve typecheck hatası bırakılmamalıdır.

@@ -246,6 +246,107 @@
       }
     }
   },
+  "customers": {
+    "list": {
+      "title": "Müşteri listesi",
+      "description": "Müşterileri arayın, cihaz sayılarını ve açık servis yoğunluğunu tek ekranda takip edin.",
+      "actions": {
+        "create": "Yeni müşteri oluştur"
+      },
+      "searchLabel": "Müşteri araması",
+      "searchPlaceholder": "Ad, telefon veya e-posta ile ara...",
+      "resultsLabel": "Toplam {count} müşteri gösteriliyor",
+      "summary": {
+        "totalCustomers": "Toplam müşteri",
+        "totalDevices": "Kayıtlı cihaz",
+        "openServices": "Açık servis kaydı"
+      },
+      "row": {
+        "devicesLabel": "Cihaz",
+        "openServicesLabel": "Açık kayıt",
+        "detailAction": "Müşteri detayı"
+      },
+      "empty": {
+        "defaultTitle": "Henüz müşteri bulunmuyor",
+        "searchTitle": "Aramaya uygun müşteri bulunamadı",
+        "description": "Müşteri listesi bu kriterlerle eşleşmiyor. Farklı bir arama değeri deneyin."
+      }
+    },
+    "detail": {
+      "backToList": "Müşteri listesine dön",
+      "actions": {
+        "newServiceRecord": "Bu müşteri için servis kaydı aç"
+      },
+      "contactCard": {
+        "title": "İletişim özeti",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "city": "Şehir",
+        "district": "İlçe",
+        "address": "Açık adres"
+      },
+      "devices": {
+        "title": "Bağlı cihazlar",
+        "countLabel": "Toplam {count} cihaz",
+        "serialLabel": "Seri No: {serial}",
+        "detailAction": "Cihaz detayını görüntüle",
+        "modalTitle": "Cihaz detayları",
+        "closeModalAriaLabel": "Cihaz detay penceresini kapat",
+        "loading": "Cihaz detayları yükleniyor...",
+        "ownerLabel": "Cihaz sahibi: {name}",
+        "serviceHistoryTitle": "Bu cihaza ait servis geçmişi",
+        "noDeviceHistory": "Bu cihaza ait servis geçmişi bulunmuyor.",
+        "mismatchError": "Bu cihaz bu müşteriye bağlı değil veya görüntüleme kapsamı dışında.",
+        "emptyTitle": "Bu müşteriye bağlı cihaz yok",
+        "emptyDescription": "Yeni cihaz eklendiğinde bu bölümde listelenecek."
+      },
+      "serviceHistory": {
+        "title": "Servis geçmişi",
+        "description": "Müşteriye ait son servis kayıtları takip kodu ve durum bilgisiyle listelenir.",
+        "deviceLabel": "Cihaz",
+        "dateLabel": "Kabul tarihi: {date}",
+        "unknownDevice": "Bilinmeyen cihaz",
+        "emptyTitle": "Servis geçmişi bulunmuyor",
+        "emptyDescription": "Bu müşteri için servis kaydı oluştuğunda burada görünecek."
+      },
+      "notFound": {
+        "eyebrow": "Müşteri bulunamadı",
+        "title": "Müşteri detayı görüntülenemedi",
+        "description": "{id} kimliğine sahip müşteri bulunamadı veya görüntüleme kapsamı dışında."
+      }
+    },
+    "create": {
+      "title": "Yeni müşteri oluştur",
+      "description": "Önce müşteriyi ekleyin, ardından müşteriye bağlı cihazları servis akışına bağlayın.",
+      "fields": {
+        "name": "Ad soyad",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "city": "Şehir",
+        "district": "İlçe",
+        "address": "Açık adres",
+        "note": "Not",
+        "optional": "opsiyonel"
+      },
+      "validation": {
+        "name": "Müşteri adı zorunludur.",
+        "phone": "Telefon zorunludur.",
+        "address": "Açık adres zorunludur.",
+        "summary": "Müşteriyi oluşturmak için zorunlu alanları tamamlayın."
+      },
+      "actions": {
+        "submit": "Müşteriyi oluştur",
+        "submitting": "Oluşturuluyor...",
+        "cancel": "Vazgeç",
+        "close": "Yeni müşteri penceresini kapat"
+      },
+      "success": {
+        "title": "Müşteri oluşturma tamamlandı",
+        "description": "{name} için mock müşteri kaydı hazırlandı. Geçici müşteri kimliği: {id}",
+        "nonPersistent": "Bu fazda kayıtlar kalıcı değildir; sayfa yenilendiğinde liste güncellenmez."
+      }
+    }
+  },
   "serviceStatuses": {
     "WAITING_CUSTOMER_APPROVAL": "Müşteri onayı bekliyor",
     "DELIVERED": "Teslim edildi",

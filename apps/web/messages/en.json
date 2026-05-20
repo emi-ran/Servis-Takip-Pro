@@ -246,6 +246,107 @@
       }
     }
   },
+  "customers": {
+    "list": {
+      "title": "Customer list",
+      "description": "Search customers and track device counts with open service workload on a single screen.",
+      "actions": {
+        "create": "Create new customer"
+      },
+      "searchLabel": "Customer search",
+      "searchPlaceholder": "Search by name, phone, or email...",
+      "resultsLabel": "Showing {count} customers",
+      "summary": {
+        "totalCustomers": "Total customers",
+        "totalDevices": "Registered devices",
+        "openServices": "Open service records"
+      },
+      "row": {
+        "devicesLabel": "Devices",
+        "openServicesLabel": "Open records",
+        "detailAction": "Customer details"
+      },
+      "empty": {
+        "defaultTitle": "No customers yet",
+        "searchTitle": "No customer matched this search",
+        "description": "The customer list does not match this criteria. Try a different search value."
+      }
+    },
+    "detail": {
+      "backToList": "Back to customer list",
+      "actions": {
+        "newServiceRecord": "Create service record for this customer"
+      },
+      "contactCard": {
+        "title": "Contact summary",
+        "phone": "Phone",
+        "email": "Email",
+        "city": "City",
+        "district": "District",
+        "address": "Open address"
+      },
+      "devices": {
+        "title": "Linked devices",
+        "countLabel": "Total {count} devices",
+        "serialLabel": "Serial No: {serial}",
+        "detailAction": "View device details",
+        "modalTitle": "Device details",
+        "closeModalAriaLabel": "Close device detail modal",
+        "loading": "Loading device details...",
+        "ownerLabel": "Device owner: {name}",
+        "serviceHistoryTitle": "Service history for this device",
+        "noDeviceHistory": "No service history for this device.",
+        "mismatchError": "This device is not linked to this customer or is out of view scope.",
+        "emptyTitle": "No device linked to this customer",
+        "emptyDescription": "This section will list devices when a new one is added."
+      },
+      "serviceHistory": {
+        "title": "Service history",
+        "description": "Recent customer service records are listed with tracking code and status.",
+        "deviceLabel": "Device",
+        "dateLabel": "Received date: {date}",
+        "unknownDevice": "Unknown device",
+        "emptyTitle": "No service history",
+        "emptyDescription": "Service records for this customer will appear here."
+      },
+      "notFound": {
+        "eyebrow": "Customer not found",
+        "title": "Customer details could not be displayed",
+        "description": "Customer with id {id} was not found or is out of view scope."
+      }
+    },
+    "create": {
+      "title": "Create new customer",
+      "description": "Create the customer first, then attach customer-linked devices in the service flow.",
+      "fields": {
+        "name": "Full name",
+        "phone": "Phone",
+        "email": "Email",
+        "city": "City",
+        "district": "District",
+        "address": "Open address",
+        "note": "Note",
+        "optional": "optional"
+      },
+      "validation": {
+        "name": "Customer name is required.",
+        "phone": "Phone is required.",
+        "address": "Open address is required.",
+        "summary": "Complete the required fields to create the customer."
+      },
+      "actions": {
+        "submit": "Create customer",
+        "submitting": "Creating...",
+        "cancel": "Cancel",
+        "close": "Close create customer modal"
+      },
+      "success": {
+        "title": "Customer creation completed",
+        "description": "Mock customer created for {name}. Temporary customer id: {id}",
+        "nonPersistent": "In this phase the record is not persisted; refreshing the page will not update the list."
+      }
+    }
+  },
   "serviceStatuses": {
     "WAITING_CUSTOMER_APPROVAL": "Waiting for customer approval",
     "DELIVERED": "Delivered",

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `/[locale]/customers` listesine "Yeni müşteri oluştur" aksiyonu ve erişilebilir modal akışı eklendi; ad soyad, telefon ve açık adres zorunlu alan doğrulaması ile mock create başarı mesajı/kimliği sağlandı.
+- Yeni müşteri oluşturma akışında kayıtların bu fazda kalıcı olmadığı başarı mesajı ve dokümantasyon notu ile açıklandı.
+- `apps/web/lib/api/customers.ts` create input/type sözleşmesi genişletildi; müşteri modeline açık adres alanı eklendi ve mock `createMockCustomer` helper'ı tanımlandı.
+- `/<locale>/customers/[id]` detay ekranında müşteri iletişim kartı açık adresi gösterecek şekilde güncellendi.
+- Müşteri detayındaki bağlı cihazlar için erişilebilir cihaz detay modalı eklendi; marka/model/seri, müşteri bağlamı ve cihaza özel servis geçmişi görüntüleniyor.
+- Cihaz detayını çeken müşteri kapsamlı helper (`getCustomerDeviceDetail`) eklendi; eşleşmeyen veya başka müşteriye ait cihaz kimlikleri için veri gösterimi engellendi.
+- `/[locale]/customers` placeholder kaldırıldı; müşteri listesi, ad/telefon/e-posta araması, cihaz/açık servis özet metrikleri, boş durum ve müşteri detayına yönlendirme eklendi.
+- `/<locale>/customers/[id]` detay rotası eklendi; iletişim özeti, bağlı cihazlar, servis geçmişi (takip kodu, durum, cihaz, tarih), servis kaydı açma aksiyonu ve erişilebilir bulunamadı durumu hazırlandı.
+- `apps/web/lib/api/customers.ts` mock veri katmanı eklendi; müşteri arama/list helper'ı ile müşteri+cihaz+servis geçmişi detail helper'ı UI bileşenlerinden ayrıldı.
 - Yeni servis kaydı formunda mevcut müşteri seçimi inline liste yerine erişilebilir modal arama akışına taşındı; varsayılan olarak tüm müşteri listesi gösterimi kaldırıldı, en az 2 karakter şartı ve sınırlı sonuç + aramayı daraltma ipucu eklendi.
 - Yeni müşteri seçici boş durum kartı, modal içi "yeni müşteri ekle" aksiyonu ve cihaz seçiminde "önce müşteri seç" yönlendirmesi eklendi; müşteri-cihaz bağ modeli korunarak doğrulama davranışı güncellendi.
 - `apps/web/lib/api/service-records.ts` içine `searchMockCustomers` helper'ı eklendi; limitli sonuç, toplam eşleşme ve `hasMore` bilgisi mock veri katmanına taşındı.
