@@ -118,11 +118,23 @@ function ServiceRecordRow({ locale, dictionary, record }: { locale: Locale; dict
         <p className="mt-1 text-xs text-slate-500">{formattedDate}</p>
       </td>
       <td className="px-4 py-4 align-top sm:px-6">
-        <p className="font-medium text-slate-900">{record.customerName}</p>
+        {record.customerId ? (
+          <Link className="font-medium text-slate-900 underline-offset-2 transition hover:underline" href={`/${locale}/customers/${record.customerId}`}>
+            {record.customerName}
+          </Link>
+        ) : (
+          <p className="font-medium text-slate-900">{record.customerName}</p>
+        )}
         <p className="mt-1 text-xs text-slate-500">{record.customerPhone}</p>
       </td>
       <td className="px-4 py-4 align-top sm:px-6">
-        <p className="font-medium text-slate-800">{record.deviceName}</p>
+        {record.deviceId ? (
+          <Link className="font-medium text-slate-800 underline-offset-2 transition hover:underline" href={`/${locale}/devices/${record.deviceId}`}>
+            {record.deviceName}
+          </Link>
+        ) : (
+          <p className="font-medium text-slate-800">{record.deviceName}</p>
+        )}
         <p className="mt-1 text-xs text-slate-500">{record.issueSummary}</p>
       </td>
       <td className="px-4 py-4 align-top sm:px-6">

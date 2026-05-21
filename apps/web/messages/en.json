@@ -16,6 +16,7 @@
     },
     "items": {
       "dashboard": "Dashboard",
+      "today": "Today's Work",
       "serviceRecords": "Service Records",
       "customers": "Customers",
       "devices": "Devices",
@@ -28,6 +29,7 @@
       "logout": "Sign Out"
     },
     "dashboard": "Dashboard",
+    "today": "Today's Work",
     "serviceRecords": "Service Records",
     "customers": "Customers",
     "devices": "Devices",
@@ -92,6 +94,50 @@
     "quickActions": {
       "primary": "New Record",
       "secondary": "Search Device"
+    }
+  },
+  "today": {
+    "title": "Today's work",
+    "description": "Manage today's appointments, urgent records, and action-required service items for the operations team on one screen.",
+    "lastUpdatedLabel": "Last update",
+    "summary": {
+      "dueToday": "Needs action today",
+      "openRecords": "Open service records",
+      "urgent": "Urgent / high priority",
+      "completed": "Completed today"
+    },
+    "filters": {
+      "all": "All",
+      "appointments": "Appointments",
+      "urgent": "Urgent",
+      "completed": "Completed"
+    },
+    "sections": {
+      "appointments": {
+        "title": "Today's appointments",
+        "customerLabel": "Customer",
+        "deviceLabel": "Device",
+        "addressLabel": "Address",
+        "addressUnavailable": "No address available",
+        "assigneeLabel": "Assigned staff",
+        "unassigned": "Awaiting assignment",
+        "relatedRecordAction": "Open service record"
+      },
+      "attention": {
+        "title": "Service records needing attention",
+        "customerLabel": "Customer",
+        "deviceLabel": "Device",
+        "detailAction": "Go to details"
+      }
+    },
+    "appointmentStatuses": {
+      "SCHEDULED": "Scheduled",
+      "IN_PROGRESS": "On-site in progress",
+      "COMPLETED": "Completed"
+    },
+    "empty": {
+      "title": "No work for today",
+      "description": "No appointments or attention-required records match the selected filter."
     }
   },
   "serviceRecords": {

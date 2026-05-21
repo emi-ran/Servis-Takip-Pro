@@ -76,8 +76,10 @@ export type MockCustomerSearchResult = {
 export type ServiceRecordListItem = {
   id: string;
   trackingCode: string;
+  customerId?: string;
   customerName: string;
   customerPhone: string;
+  deviceId?: string;
   deviceName: string;
   issueSummary: string;
   status: ServiceStatus;
@@ -130,8 +132,10 @@ export async function getServiceRecordsOverview(): Promise<ServiceRecordsOvervie
       {
         id: "srv-201",
         trackingCode: "SRV-2026-201",
+        customerId: "cust-001",
         customerName: "Ahmet Yılmaz",
         customerPhone: "+90 532 000 10 10",
+        deviceId: "dev-001",
         deviceName: "Samsung Galaxy S23",
         issueSummary: "Ekran değişimi sonrası test süreci devam ediyor",
         status: "IN_PROGRESS",
@@ -142,8 +146,10 @@ export async function getServiceRecordsOverview(): Promise<ServiceRecordsOvervie
       {
         id: "srv-202",
         trackingCode: "SRV-2026-202",
+        customerId: "cust-002",
         customerName: "Ayşe Demir",
         customerPhone: "+90 533 111 20 20",
+        deviceId: "dev-003",
         deviceName: "Bosch WGA142 Çamaşır Makinesi",
         issueSummary: "Pompa siparişi geçildi, parça bekleniyor",
         status: "WAITING_PART",
@@ -154,8 +160,10 @@ export async function getServiceRecordsOverview(): Promise<ServiceRecordsOvervie
       {
         id: "srv-203",
         trackingCode: "SRV-2026-203",
+        customerId: "cust-003",
         customerName: "Mehmet Öz",
         customerPhone: "+90 535 222 30 30",
+        deviceId: "dev-004",
         deviceName: "Apple MacBook Pro M1",
         issueSummary: "Sıvı teması sonrası ilk kontrol tamamlandı",
         status: "WAITING_CUSTOMER_APPROVAL",
@@ -166,8 +174,10 @@ export async function getServiceRecordsOverview(): Promise<ServiceRecordsOvervie
       {
         id: "srv-204",
         trackingCode: "SRV-2026-204",
+        customerId: "cust-004",
         customerName: "Zeynep Kaya",
         customerPhone: "+90 537 333 40 40",
+        deviceId: "dev-005",
         deviceName: "Sony Bravia 55 OLED TV",
         issueSummary: "Panel testi tamamlandı, teslimat planlanıyor",
         status: "READY_FOR_DELIVERY",

@@ -92,6 +92,9 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 ## Geliştirme İlkeleri
 
 - Tenant verisi her zaman `company_id` ile filtrelenir.
+- Auth/session ve RBAC henüz tamamlanmadı; yetkilendirme yalnızca buton gizleme ile değil her zaman server-side zorlanmalıdır.
+- Public tracking kodları tahmin edilemez/token tabanlı olmalı; iç notlar, maliyetler ve personel logları kesinlikle sızdırılmamalıdır.
+- Dosya ve fotoğraflar public bucket/URL ile servis edilmemeli; authorization-aware signed URL yaklaşımı kullanılmalıdır.
 - UI metinleri `messages/tr.json` ve `messages/en.json` üzerinden gelir.
 - Servis kayıtları araması; takip no, müşteri ve cihaz metinlerinde her zaman çalışır; sorgu yalnızca rakam ve telefon biçim karakterleri içeriyorsa normalize edilmiş telefon numarasında da kısmi eşleşme yapar.
 - Servis kayıt listesi satırları ve “Detay” aksiyonu `/[locale]/service-records/[id]` detay rotasına gider.
@@ -108,6 +111,10 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - `/[locale]/devices` placeholder kaldırıldı; cihaz listesi aktif hale getirildi. Marka/model/seri/IMEI/müşteri adı/telefon araması, müşteri sahipliği görünürlüğü, boş durum ve cihaz detayına yönlendirme eklendi.
 - `/[locale]/devices/[id]` cihaz detay rotası eklendi; cihaz özeti, müşteri sahibi kartı (iletişim + adres), cihaza ait servis geçmişi (takip kodu/durum/tarih) ve erişilebilir bulunamadı durumu hazırlandı.
 - Cihaz modülü müşteriye bağlılık kuralını mock API katmanında korur; cihaz listesi ve detay helper'ları sadece geçerli müşteri sahibi bağlamıyla veri döndürür.
+- `/[locale]/today` placeholder kaldırıldı; Bugünün İşleri ekranı aktif hale getirildi. Günlük özet kartları, filtreler (tümü/randevular/acil/tamamlanan), bugünkü randevu listesi (saat, müşteri, cihaz, adres, personel, durum) ve aksiyon bekleyen servis kayıtları (detay + müşteri/cihaz linkleri) eklendi.
+- Operasyon ekranlarında (Bugünün İşleri, Servis Kayıtları, Özet Durum) müşteri/cihaz/servis referansları, ilgili ID mevcutsa detay rotalarına deep link olarak gösterilir; ID yoksa metin plain olarak kalır.
+- Bugünün İşleri mock veri katmanı `apps/web/lib/api/today.ts` altında tutulur; açık kayıt ve öncelik hesapları mevcut servis kayıtları mock katmanından türetilir.
+- Sidebar navigasyonuna Bugünün İşleri modülü eklendi (`/[locale]/today`); nested route'larda (`/[locale]/service-records/[id]`, `settings/*` gibi) ilgili menü öğesi active-state korur.
 - Müşteri detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<id>` desenini kullanır ve formu müşteri ön-seçimi ile açar.
 - Cihaz detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<ownerId>&deviceId=<deviceId>` desenini kullanır; form müşteri+cihaz ön-seçimi ile açılır.
 - `/[locale]/service-records/new` rotası `customerId` ve `deviceId` query parametrelerini doğrular; geçerli eşleşmelerde ön-seçim uygulanır, sadece `deviceId` geldiğinde cihaz sahibinden müşteri güvenli şekilde türetilir, geçersiz/uyumsuz kimliklerde seçim uygulanmaz ve lokalize uyarı gösterilir.

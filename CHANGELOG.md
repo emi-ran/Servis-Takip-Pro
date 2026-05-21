@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Security backlog notu eklendi: auth/session + RBAC server-side zorlanmalı, multi-tenant sorgular `company_id` ile sınırlandırılmalı, public tracking kodları tokenized/non-guessable olmalı ve dosya/fotoğraflar signed URL ile yetkilendirilmelidir.
+- `/[locale]/today` placeholder kaldırıldı ve Bugünün İşleri ekranı aktif hale getirildi; günlük özet kartları (aksiyon bekleyen, açık kayıt, acil/yüksek, tamamlanan) eklendi.
+- Bugünün İşleri için filtre sekmeleri (tümü, randevular, acil, tamamlanan), boş durum davranışı ve mobil uyumlu iki kolonlu içerik düzeni eklendi.
+- Bugünkü randevu listesi saat, müşteri, cihaz, adres, atanan personel ve durum bilgileriyle; ilgili servis kaydı aksiyonu ile birlikte eklendi.
+- Aksiyon bekleyen servis kayıtları bölümü eklendi; servis detayına, mevcutsa müşteri detayına ve cihaz detayına linkler bağlandı.
+- Global UX kuralı uygulandı: operasyon ekranlarındaki müşteri/cihaz/servis referansları (Özet Durum + Servis Kayıtları dahil) ID mevcutsa hover ile belirgin deep link olarak davranır, ID yoksa plain metin olarak kalır.
+- Yeni mock API katmanı `apps/web/lib/api/today.ts` eklendi; bugünün özeti ve dikkat gerektiren kayıtlar `service-records` mock katmanından türetilerek UI dışına taşındı.
+- `apps/web/lib/api/service-records.ts` list öğeleri müşteri ve cihaz detay linklerini desteklemek için opsiyonel `customerId`/`deviceId` alanlarıyla genişletildi.
+- Sidebar navigasyonuna Bugünün İşleri modülü eklendi (`apps/web/lib/api/shell.ts`, `apps/web/components/layout/app-sidebar.tsx`).
+- Sidebar active-state davranışı düzeltildi; nested rotalarda ilgili üst menü öğesi seçili görünmeye devam eder.
+- i18n sözlükleri (`apps/web/messages/tr.json` ve `apps/web/messages/en.json`) today ekran metinleri ve navigation label'larıyla güncellendi.
+
 - `/[locale]/service-records/new` formuna query param preselect desteği eklendi: `customerId` geçerliyse müşteri ön-seçilir, `customerId+deviceId` eşleşiyorsa cihaz da ön-seçilir, sadece `deviceId` geldiğinde cihaz sahibinden müşteri güvenli şekilde türetilir.
 - Geçersiz veya müşteri-cihaz eşleşmesi bozuk query kimliklerinde ön-seçim uygulanmıyor; form içinde lokalize, non-blocking uyarı mesajı gösteriliyor.
 - Müşteri detayındaki servis kaydı aksiyonu `?customerId=<id>` ile; cihaz detayındaki aksiyon `?customerId=<ownerId>&deviceId=<deviceId>` ile güncellendi.

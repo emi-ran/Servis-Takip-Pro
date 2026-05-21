@@ -8,7 +8,9 @@ export type DashboardOverview = {
   recentRecords: Array<{
     id: string;
     trackingCode: string;
+    customerId?: string;
     customerName: string;
+    deviceId?: string;
     deviceName: string;
     status: "IN_PROGRESS" | "WAITING_PART" | "READY_FOR_DELIVERY" | "NEW";
   }>;
@@ -29,11 +31,43 @@ export async function getDashboardOverview(): Promise<DashboardOverview> {
       { id: "overdue", value: 4, note: "legal_deadline" },
     ],
     recentRecords: [
-      { id: "1", trackingCode: "SRV-2026-101", customerName: "Ahmet Yılmaz", deviceName: "Samsung Galaxy S23", status: "IN_PROGRESS" },
-      { id: "2", trackingCode: "SRV-2026-102", customerName: "Ayşe Demir", deviceName: "Bosch WGA142", status: "WAITING_PART" },
-      { id: "3", trackingCode: "SRV-2026-103", customerName: "Mehmet Öz", deviceName: "Apple MacBook Pro M1", status: "NEW" },
-      { id: "4", trackingCode: "SRV-2026-104", customerName: "Zeynep Kaya", deviceName: "Sony Bravia TV", status: "READY_FOR_DELIVERY" },
-      { id: "5", trackingCode: "SRV-2026-105", customerName: "Bora Akın", deviceName: "Dyson V15 Detect", status: "IN_PROGRESS" },
+      {
+        id: "srv-201",
+        trackingCode: "SRV-2026-201",
+        customerId: "cust-001",
+        customerName: "Ahmet Yılmaz",
+        deviceId: "dev-001",
+        deviceName: "Samsung Galaxy S23",
+        status: "IN_PROGRESS",
+      },
+      {
+        id: "srv-202",
+        trackingCode: "SRV-2026-202",
+        customerId: "cust-002",
+        customerName: "Ayşe Demir",
+        deviceId: "dev-003",
+        deviceName: "Bosch WGA142",
+        status: "WAITING_PART",
+      },
+      {
+        id: "srv-203",
+        trackingCode: "SRV-2026-203",
+        customerId: "cust-003",
+        customerName: "Mehmet Öz",
+        deviceId: "dev-004",
+        deviceName: "Apple MacBook Pro M1",
+        status: "NEW",
+      },
+      {
+        id: "srv-204",
+        trackingCode: "SRV-2026-204",
+        customerId: "cust-004",
+        customerName: "Zeynep Kaya",
+        deviceId: "dev-005",
+        deviceName: "Sony Bravia TV",
+        status: "READY_FOR_DELIVERY",
+      },
+      { id: "srv-205", trackingCode: "SRV-2026-205", customerName: "Bora Akın", deviceName: "Dyson V15 Detect", status: "IN_PROGRESS" },
     ],
     dailySummary: {
       revenue: 18450,

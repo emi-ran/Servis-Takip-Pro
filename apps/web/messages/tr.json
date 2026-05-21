@@ -16,6 +16,7 @@
     },
     "items": {
       "dashboard": "Özet Durum",
+      "today": "Bugünün İşleri",
       "serviceRecords": "Servis Kayıtları",
       "customers": "Müşteriler",
       "devices": "Cihazlar",
@@ -28,6 +29,7 @@
       "logout": "Çıkış Yap"
     },
     "dashboard": "Özet Durum",
+    "today": "Bugünün İşleri",
     "serviceRecords": "Servis Kayıtları",
     "customers": "Müşteriler",
     "devices": "Cihazlar",
@@ -92,6 +94,50 @@
     "quickActions": {
       "primary": "Yeni Kayıt",
       "secondary": "Cihaz Sorgula"
+    }
+  },
+  "today": {
+    "title": "Bugünün işleri",
+    "description": "Günün randevularını, acil kayıtlarını ve operasyon ekibinin aksiyon bekleyen işlerini tek ekranda yönetin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "summary": {
+      "dueToday": "Bugün aksiyon bekleyen",
+      "openRecords": "Açık servis kaydı",
+      "urgent": "Acil / yüksek öncelik",
+      "completed": "Bugün tamamlanan"
+    },
+    "filters": {
+      "all": "Tümü",
+      "appointments": "Randevular",
+      "urgent": "Acil",
+      "completed": "Tamamlanan"
+    },
+    "sections": {
+      "appointments": {
+        "title": "Bugünkü randevular",
+        "customerLabel": "Müşteri",
+        "deviceLabel": "Cihaz",
+        "addressLabel": "Adres",
+        "addressUnavailable": "Adres bilgisi yok",
+        "assigneeLabel": "Atanan personel",
+        "unassigned": "Atama bekliyor",
+        "relatedRecordAction": "Servis kaydını aç"
+      },
+      "attention": {
+        "title": "Aksiyon bekleyen servis kayıtları",
+        "customerLabel": "Müşteri",
+        "deviceLabel": "Cihaz",
+        "detailAction": "Detaya git"
+      }
+    },
+    "appointmentStatuses": {
+      "SCHEDULED": "Planlandı",
+      "IN_PROGRESS": "Sahada işlemde",
+      "COMPLETED": "Tamamlandı"
+    },
+    "empty": {
+      "title": "Bugün için iş bulunmuyor",
+      "description": "Seçili filtreye göre listelenecek randevu veya aksiyon bekleyen kayıt bulunmuyor."
     }
   },
   "serviceRecords": {

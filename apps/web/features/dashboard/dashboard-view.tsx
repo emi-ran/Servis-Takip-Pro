@@ -121,9 +121,29 @@ export function DashboardView({ locale, dictionary, data }: DashboardViewProps) 
               <tbody className="divide-y divide-slate-100 bg-white">
                 {data.recentRecords.map((record) => (
                   <tr className="transition hover:bg-slate-50" key={record.id}>
-                    <td className="px-4 py-3 font-mono text-slate-600">{record.trackingCode}</td>
-                    <td className="px-4 py-3 font-medium text-slate-800">{record.customerName}</td>
-                    <td className="px-4 py-3 text-slate-600">{record.deviceName}</td>
+                    <td className="px-4 py-3 font-mono text-slate-600">
+                      <Link className="text-blue-700 transition hover:text-blue-800 hover:underline" href={`/${locale}/service-records/${record.id}`}>
+                        {record.trackingCode}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 font-medium text-slate-800">
+                      {record.customerId ? (
+                        <Link className="underline-offset-2 transition hover:underline" href={`/${locale}/customers/${record.customerId}`}>
+                          {record.customerName}
+                        </Link>
+                      ) : (
+                        record.customerName
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {record.deviceId ? (
+                        <Link className="underline-offset-2 transition hover:underline" href={`/${locale}/devices/${record.deviceId}`}>
+                          {record.deviceName}
+                        </Link>
+                      ) : (
+                        record.deviceName
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <StatusBadge tone={statusTones[record.status]}>{dictionary.serviceStatuses[record.status]}</StatusBadge>
                     </td>

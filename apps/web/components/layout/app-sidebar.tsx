@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Globe, Laptop, LayoutDashboard, LogOut, Package, QrCode, Settings, UserCog, Users, Wallet, Wrench, X } from "lucide-react";
+import { CalendarCheck2, Globe, Laptop, LayoutDashboard, LogOut, Package, QrCode, Settings, UserCog, Users, Wallet, Wrench, X } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n/settings";
 
@@ -17,6 +17,7 @@ type AppSidebarProps = {
 
 const icons = {
   dashboard: LayoutDashboard,
+  today: CalendarCheck2,
   serviceRecords: Wrench,
   customers: Users,
   devices: Laptop,
@@ -31,6 +32,13 @@ const icons = {
 
 export function AppSidebar({ locale, dictionary, shellContext, pathname, isOpen, onClose }: AppSidebarProps) {
   const resolveHref = (href: string) => (href.startsWith("/track/") ? href : `/${locale}${href}`);
+  const isActivePath = (href: string) => {
+    if (href === "/track" || href === "/" || href === `/${locale}`) {
+      return pathname === href;
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
     <>
@@ -68,7 +76,7 @@ export function AppSidebar({ locale, dictionary, shellContext, pathname, isOpen,
               {section.items.map((item) => {
                 const href = resolveHref(item.href);
                 const Icon = icons[item.icon];
-                const isActive = pathname === href;
+                const isActive = isActivePath(href);
 
                 return (
                   <Link
@@ -91,7 +99,7 @@ export function AppSidebar({ locale, dictionary, shellContext, pathname, isOpen,
         <div className="border-t border-slate-100 p-4">
           <Link
             className={`flex items-center gap-3 rounded-lg px-4 py-3 transition-colors duration-200 ${
-              pathname === `/${locale}/settings` ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-slate-100 hover:text-blue-600"
+              isActivePath(`/${locale}/settings`) ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-slate-100 hover:text-blue-600"
             }`}
             href={`/${locale}/settings`}
             onClick={onClose}
