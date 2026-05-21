@@ -189,6 +189,11 @@
       "hints": {
         "noDeviceForCustomer": "Bu müşteriye kayıtlı cihaz bulunamadı. Lütfen yeni cihaz ekleyin."
       },
+      "preselectWarnings": {
+        "customerNotFound": "Bağlantıdaki müşteri kaydı bulunamadığı için ön seçim uygulanamadı.",
+        "deviceNotFound": "Bağlantıdaki cihaz kaydı bulunamadığı için cihaz ön seçimi uygulanamadı.",
+        "deviceCustomerMismatch": "Seçilen cihaz bu müşteriye ait olmadığı için cihaz ön seçimi uygulanamadı."
+      },
       "customerSelector": {
         "emptyTitle": "Henüz müşteri seçilmedi",
         "emptyDescription": "Mevcut müşteri ile devam etmek için arama ekranını açın veya yeni müşteri ekleyin.",

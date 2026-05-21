@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+- `/[locale]/service-records/new` formuna query param preselect desteği eklendi: `customerId` geçerliyse müşteri ön-seçilir, `customerId+deviceId` eşleşiyorsa cihaz da ön-seçilir, sadece `deviceId` geldiğinde cihaz sahibinden müşteri güvenli şekilde türetilir.
+- Geçersiz veya müşteri-cihaz eşleşmesi bozuk query kimliklerinde ön-seçim uygulanmıyor; form içinde lokalize, non-blocking uyarı mesajı gösteriliyor.
+- Müşteri detayındaki servis kaydı aksiyonu `?customerId=<id>` ile; cihaz detayındaki aksiyon `?customerId=<ownerId>&deviceId=<deviceId>` ile güncellendi.
+- `apps/web/lib/api/service-records.ts` içine form ön-seçim çözümleyici helper eklendi; query doğrulama ve müşteri-cihaz bağ kontrolü UI dışına taşındı.
 - `/[locale]/devices` placeholder kaldırıldı; gerçek cihaz listesi eklendi. Arama (marka/model/seri/IMEI/müşteri adı/telefon), özet metrikler, boş durum ve cihaz detayına yönlendirme hazırlandı.
-- `/<locale>/devices/[id]` cihaz detay rotası eklendi; cihaz özeti, müşteri sahibi kartı, cihaza ait servis geçmişi, servis kaydı aç aksiyonu, bu fazda bilinçli bırakılan cihaz/müşteri ön-seçim placeholder davranışı ve erişilebilir bulunamadı durumu sağlandı.
+- `/<locale>/devices/[id]` cihaz detay rotası eklendi; cihaz özeti, müşteri sahibi kartı, cihaza ait servis geçmişi, servis kaydı aç aksiyonu ve erişilebilir bulunamadı durumu sağlandı.
 - `apps/web/lib/api/customers.ts` cihaz modülü için genişletildi: cihaz tip/IMEI alanları, `searchDevices` list helper'ı ve `getDeviceDetail` owner-context detail helper'ı eklendi.
 - Sidebar navigasyonuna Cihazlar modülü eklendi (`apps/web/lib/api/shell.ts`, `apps/web/components/layout/app-sidebar.tsx`).
 - i18n sözlükleri (`apps/web/messages/tr.json` ve `apps/web/messages/en.json`) devices list/detail metinleri ve navigation label'larıyla güncellendi.

@@ -87,26 +87,30 @@ export function DevicesListView({ locale, dictionary, initialData }: DevicesList
         {filteredItems.length > 0 ? (
           <div className="divide-y divide-slate-100 bg-white">
             {filteredItems.map((device) => (
-              <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between" key={device.id}>
-                <div className="min-w-0">
-                  <Link className="text-base font-semibold text-blue-700 transition hover:text-blue-800 hover:underline" href={`/${locale}/devices/${device.id}`}>
+              <div className="grid gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1.2fr)_minmax(7.5rem,0.6fr)_auto] lg:items-center" key={device.id}>
+                <div className="min-w-0 space-y-1.5">
+                  <Link className="block truncate text-base font-semibold text-blue-700 transition hover:text-blue-800 hover:underline" href={`/${locale}/devices/${device.id}`}>
                     {device.brand} {device.model}
                   </Link>
-                  <p className="mt-1 text-sm text-slate-600">{dictionary.devices.list.row.serialLabel.replace("{serial}", device.serialNumber)}</p>
-                  {device.imei ? <p className="mt-1 text-sm text-slate-500">{dictionary.devices.list.row.imeiLabel.replace("{imei}", device.imei)}</p> : null}
+                  <p className="truncate text-sm text-slate-600">{dictionary.devices.list.row.serialLabel.replace("{serial}", device.serialNumber)}</p>
+                  {device.imei ? <p className="truncate text-sm text-slate-500">{dictionary.devices.list.row.imeiLabel.replace("{imei}", device.imei)}</p> : null}
                 </div>
 
-                <div className="flex flex-col gap-1 text-sm text-slate-600">
-                  <Link className="font-semibold text-blue-600 transition hover:text-blue-700 hover:underline" href={`/${locale}/customers/${device.customer.id}`}>
+                <div className="min-w-0 space-y-1.5 text-sm text-slate-600">
+                  <Link className="block truncate font-semibold text-blue-600 transition hover:text-blue-700 hover:underline" href={`/${locale}/customers/${device.customer.id}`}>
                     {device.customer.name}
                   </Link>
-                  <p>{device.customer.phone}</p>
-                  <p>
-                    {dictionary.devices.list.row.openServicesLabel}: <span className="font-semibold text-slate-800">{device.openServiceCount}</span>
-                  </p>
+                  <p className="truncate text-slate-500">{device.customer.phone}</p>
                 </div>
 
-                <Link className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 transition hover:text-blue-700" href={`/${locale}/devices/${device.id}`}>
+                <div className="lg:justify-self-start">
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{dictionary.devices.list.row.openServicesLabel}</p>
+                  <div className="mt-2 inline-flex min-w-12 items-center justify-center rounded-full bg-orange-50 px-3 py-1 text-sm font-semibold text-orange-700 ring-1 ring-inset ring-orange-100">
+                    {device.openServiceCount}
+                  </div>
+                </div>
+
+                <Link className="inline-flex items-center gap-1 self-start text-sm font-semibold text-blue-600 transition hover:text-blue-700 lg:justify-self-end lg:self-center" href={`/${locale}/devices/${device.id}`}>
                   {dictionary.devices.list.row.detailAction}
                   <ArrowRight className="h-4 w-4" />
                 </Link>

@@ -189,6 +189,11 @@
       "hints": {
         "noDeviceForCustomer": "No saved device found for this customer. Please add a new device."
       },
+      "preselectWarnings": {
+        "customerNotFound": "Preselection was not applied because the customer in the link was not found.",
+        "deviceNotFound": "Device preselection was not applied because the device in the link was not found.",
+        "deviceCustomerMismatch": "Device preselection was not applied because the selected device does not belong to this customer."
+      },
       "customerSelector": {
         "emptyTitle": "No customer selected yet",
         "emptyDescription": "Open customer search to continue with an existing customer, or add a new one.",

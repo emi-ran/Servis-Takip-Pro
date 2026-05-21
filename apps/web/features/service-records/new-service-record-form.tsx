@@ -9,6 +9,8 @@ import {
   type CreateServiceRecordFormOptions,
   type CreateServiceRecordInput,
   type MockCustomerSearchResult,
+  type ServiceRecordFormPreselection,
+  type ServiceRecordPreselectionWarning,
   type ServicePriority,
   type ServiceStatus,
   searchMockCustomers,
@@ -21,6 +23,7 @@ type NewServiceRecordFormProps = {
   locale: Locale;
   dictionary: Dictionary;
   options: CreateServiceRecordFormOptions;
+  preselection: ServiceRecordFormPreselection;
 };
 
 type FormState = {
@@ -114,8 +117,21 @@ function validate(formState: FormState, dictionary: Dictionary): FormErrors {
   return errors;
 }
 
-export function NewServiceRecordForm({ locale, dictionary, options }: NewServiceRecordFormProps) {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
+function getPreselectionWarningMessage(dictionary: Dictionary, warning: ServiceRecordPreselectionWarning | null): string | null {
+  if (!warning) {
+    return null;
+  }
+
+  return dictionary.serviceRecords.newForm.preselectWarnings[warning];
+}
+
+export function NewServiceRecordForm({ locale, dictionary, options, preselection }: NewServiceRecordFormProps) {
+  const [formState, setFormState] = useState<FormState>({
+    ...initialFormState,
+    selectedCustomerId: preselection.selectedCustomerId,
+    selectedDeviceId: preselection.selectedDeviceId,
+  });
+  const [preselectionWarning, setPreselectionWarning] = useState<string | null>(getPreselectionWarningMessage(dictionary, preselection.warning));
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [trackingCode, setTrackingCode] = useState<string | null>(null);
@@ -226,6 +242,7 @@ export function NewServiceRecordForm({ locale, dictionary, options }: NewService
   const selectCustomer = (customerId: string) => {
     updateField("selectedCustomerId", customerId);
     updateField("selectedDeviceId", "");
+    setPreselectionWarning(null);
     closeCustomerSearch();
   };
 
@@ -289,6 +306,12 @@ export function NewServiceRecordForm({ locale, dictionary, options }: NewService
         <Panel className="border-emerald-200 bg-emerald-50 p-4">
           <p className="text-sm font-semibold text-emerald-800">{dictionary.serviceRecords.newForm.success.title}</p>
           <p className="mt-1 text-sm text-emerald-700">{dictionary.serviceRecords.newForm.success.description.replace("{code}", trackingCode)}</p>
+        </Panel>
+      ) : null}
+
+      {preselectionWarning ? (
+        <Panel className="border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm text-amber-800">{preselectionWarning}</p>
         </Panel>
       ) : null}
 

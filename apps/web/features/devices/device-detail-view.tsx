@@ -61,7 +61,10 @@ export function DeviceDetailView({ locale, dictionary, id, detail }: DeviceDetai
           <p className="mt-1 text-sm text-slate-500">{detail.device.nickname}</p>
         </div>
 
-        <Link className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700" href={`/${locale}/service-records/new`}>
+        <Link
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+          href={`/${locale}/service-records/new?customerId=${detail.customer.id}&deviceId=${detail.device.id}`}
+        >
           {dictionary.devices.detail.actions.newServiceRecord}
           <ArrowRight className="h-4 w-4" />
         </Link>

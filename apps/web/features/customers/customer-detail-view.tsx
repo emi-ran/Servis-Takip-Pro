@@ -92,7 +92,7 @@ export function CustomerDetailView({ locale, dictionary, id, detail }: CustomerD
 
         <Link
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
-          href={`/${locale}/service-records/new`}
+          href={`/${locale}/service-records/new?customerId=${detail.customer.id}`}
         >
           {dictionary.customers.detail.actions.newServiceRecord}
           <ArrowRight className="h-4 w-4" />

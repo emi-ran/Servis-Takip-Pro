@@ -56,6 +56,14 @@ export type CreateServiceRecordFormOptions = {
   }>;
 };
 
+export type ServiceRecordPreselectionWarning = "customerNotFound" | "deviceNotFound" | "deviceCustomerMismatch";
+
+export type ServiceRecordFormPreselection = {
+  selectedCustomerId: string;
+  selectedDeviceId: string;
+  warning: ServiceRecordPreselectionWarning | null;
+};
+
 export type MockCustomerSearchResult = {
   query: string;
   minQueryLength: number;
@@ -220,6 +228,79 @@ const createServiceRecordFormOptions: CreateServiceRecordFormOptions = {
 
 export async function getCreateServiceRecordFormOptions(): Promise<CreateServiceRecordFormOptions> {
   return createServiceRecordFormOptions;
+}
+
+export async function resolveServiceRecordFormPreselection(params: {
+  customerId?: string;
+  deviceId?: string;
+}): Promise<ServiceRecordFormPreselection> {
+  const customerId = params.customerId?.trim() ?? "";
+  const deviceId = params.deviceId?.trim() ?? "";
+
+  if (!customerId && !deviceId) {
+    return {
+      selectedCustomerId: "",
+      selectedDeviceId: "",
+      warning: null,
+    };
+  }
+
+  const selectedCustomer = customerId ? createServiceRecordFormOptions.customers.find((customer) => customer.id === customerId) : undefined;
+  const selectedDevice = deviceId ? createServiceRecordFormOptions.devices.find((device) => device.id === deviceId) : undefined;
+
+  if (customerId && !selectedCustomer) {
+    return {
+      selectedCustomerId: "",
+      selectedDeviceId: "",
+      warning: "customerNotFound",
+    };
+  }
+
+  if (deviceId && !selectedDevice) {
+    return {
+      selectedCustomerId: selectedCustomer?.id ?? "",
+      selectedDeviceId: "",
+      warning: "deviceNotFound",
+    };
+  }
+
+  if (selectedCustomer && selectedDevice) {
+    if (selectedDevice.customerId !== selectedCustomer.id) {
+      return {
+        selectedCustomerId: selectedCustomer.id,
+        selectedDeviceId: "",
+        warning: "deviceCustomerMismatch",
+      };
+    }
+
+    return {
+      selectedCustomerId: selectedCustomer.id,
+      selectedDeviceId: selectedDevice.id,
+      warning: null,
+    };
+  }
+
+  if (selectedCustomer) {
+    return {
+      selectedCustomerId: selectedCustomer.id,
+      selectedDeviceId: "",
+      warning: null,
+    };
+  }
+
+  if (selectedDevice) {
+    return {
+      selectedCustomerId: selectedDevice.customerId,
+      selectedDeviceId: selectedDevice.id,
+      warning: null,
+    };
+  }
+
+  return {
+    selectedCustomerId: "",
+    selectedDeviceId: "",
+    warning: null,
+  };
 }
 
 export async function searchMockCustomers(query: string, limit = 8, minQueryLength = 2): Promise<MockCustomerSearchResult> {

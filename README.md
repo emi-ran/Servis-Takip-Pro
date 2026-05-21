@@ -108,7 +108,9 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - `/[locale]/devices` placeholder kaldırıldı; cihaz listesi aktif hale getirildi. Marka/model/seri/IMEI/müşteri adı/telefon araması, müşteri sahipliği görünürlüğü, boş durum ve cihaz detayına yönlendirme eklendi.
 - `/[locale]/devices/[id]` cihaz detay rotası eklendi; cihaz özeti, müşteri sahibi kartı (iletişim + adres), cihaza ait servis geçmişi (takip kodu/durum/tarih) ve erişilebilir bulunamadı durumu hazırlandı.
 - Cihaz modülü müşteriye bağlılık kuralını mock API katmanında korur; cihaz listesi ve detay helper'ları sadece geçerli müşteri sahibi bağlamıyla veri döndürür.
-- Cihaz detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new` rotasına bağlıdır; bu fazda cihaz/müşteri ön-seçimi aktarımı placeholder davranış olarak bilerek bırakılmıştır.
+- Müşteri detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<id>` desenini kullanır ve formu müşteri ön-seçimi ile açar.
+- Cihaz detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<ownerId>&deviceId=<deviceId>` desenini kullanır; form müşteri+cihaz ön-seçimi ile açılır.
+- `/[locale]/service-records/new` rotası `customerId` ve `deviceId` query parametrelerini doğrular; geçerli eşleşmelerde ön-seçim uygulanır, sadece `deviceId` geldiğinde cihaz sahibinden müşteri güvenli şekilde türetilir, geçersiz/uyumsuz kimliklerde seçim uygulanmaz ve lokalize uyarı gösterilir.
 - Kritik write işlemleri audit log üretir.
 - Demo kodu üretim kodu sayılmaz; gerektiğinde modüler şekilde `apps/web` altına taşınır.
 - Build, lint ve typecheck hatası bırakılmamalıdır.
