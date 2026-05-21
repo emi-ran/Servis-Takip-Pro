@@ -50,3 +50,4 @@ apps/*/.env.local
 
 # Moat task system
 .moat/
+.opencode/
