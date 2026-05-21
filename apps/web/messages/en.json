@@ -140,6 +140,57 @@
       "description": "No appointments or attention-required records match the selected filter."
     }
   },
+  "cash": {
+    "title": "Cash & accounts",
+    "description": "Monitor daily collections, expenses, and pending receivables from a single list.",
+    "lastUpdatedLabel": "Last update",
+    "summary": {
+      "todayIncome": "Today's collection",
+      "todayExpense": "Today's expense",
+      "netCash": "Net cash",
+      "pendingReceivables": "Pending receivables"
+    },
+    "filters": {
+      "all": "All",
+      "income": "Income",
+      "expense": "Expense",
+      "pending": "Pending"
+    },
+    "transactionTypes": {
+      "PAYMENT": "Payment",
+      "EXPENSE": "Expense",
+      "PENDING": "Pending receivable"
+    },
+    "notes": {
+      "service_collection": "Service collection",
+      "fuel_expense": "Service vehicle fuel expense",
+      "parts_and_labor_collection": "Parts and labor collection",
+      "awaiting_customer_approval": "Collection pending after customer approval",
+      "supplier_parts_payment": "Spare parts supplier payment",
+      "collect_at_delivery": "To be collected at delivery",
+      "corporate_bulk_collection": "Corporate bulk collection"
+    },
+    "methods": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "BANK_TRANSFER": "Bank transfer",
+      "OTHER": "Other",
+      "notAvailable": "—"
+    },
+    "table": {
+      "title": "Transaction list",
+      "description": "Items linked to service records or customers provide direct navigation to detail pages.",
+      "method": "Method",
+      "customer": "Customer",
+      "serviceRecord": "Service record",
+      "notLinked": "Not linked"
+    },
+    "empty": {
+      "defaultTitle": "No cash transactions yet",
+      "filteredTitle": "No transactions in this filter",
+      "description": "There are no income, expense, or pending receivable items to display for the selected view."
+    }
+  },
   "serviceRecords": {
     "title": "Service records",
     "description": "Track every service record on the operations desk, filter the list, and continue to the new-record flow from here.",

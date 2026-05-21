@@ -140,6 +140,57 @@
       "description": "Seçili filtreye göre listelenecek randevu veya aksiyon bekleyen kayıt bulunmuyor."
     }
   },
+  "cash": {
+    "title": "Kasa & cari",
+    "description": "Gün içi tahsilat, gider ve bekleyen alacak hareketlerini tek listede izleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "summary": {
+      "todayIncome": "Bugünkü tahsilat",
+      "todayExpense": "Bugünkü gider",
+      "netCash": "Net kasa",
+      "pendingReceivables": "Bekleyen alacak"
+    },
+    "filters": {
+      "all": "Tümü",
+      "income": "Tahsilat",
+      "expense": "Gider",
+      "pending": "Bekleyen"
+    },
+    "transactionTypes": {
+      "PAYMENT": "Tahsilat",
+      "EXPENSE": "Gider",
+      "PENDING": "Bekleyen alacak"
+    },
+    "notes": {
+      "service_collection": "Servis tahsilatı",
+      "fuel_expense": "Servis aracı yakıt gideri",
+      "parts_and_labor_collection": "Parça ve işçilik tahsilatı",
+      "awaiting_customer_approval": "Müşteri onayı sonrası tahsilat bekleniyor",
+      "supplier_parts_payment": "Yedek parça tedarik ödemesi",
+      "collect_at_delivery": "Teslimatta tahsil edilecek",
+      "corporate_bulk_collection": "Kurumsal müşteri toplu tahsilatı"
+    },
+    "methods": {
+      "CASH": "Nakit",
+      "CARD": "Kart",
+      "BANK_TRANSFER": "Banka transferi",
+      "OTHER": "Diğer",
+      "notAvailable": "—"
+    },
+    "table": {
+      "title": "Hareket listesi",
+      "description": "Servis kaydı veya müşteri bağlantısı olan kalemlerde detay ekranlarına geçiş yapılabilir.",
+      "method": "Yöntem",
+      "customer": "Müşteri",
+      "serviceRecord": "Servis kaydı",
+      "notLinked": "Bağlantı yok"
+    },
+    "empty": {
+      "defaultTitle": "Henüz kasa hareketi yok",
+      "filteredTitle": "Bu filtrede hareket bulunamadı",
+      "description": "Seçili görünüm için listelenecek tahsilat, gider veya bekleyen alacak kaydı bulunmuyor."
+    }
+  },
   "serviceRecords": {
     "title": "Servis kayıtları",
     "description": "Operasyon masasındaki tüm servis kayıtlarını takip edin, filtreleyin ve yeni kayıt akışına buradan ilerleyin.",

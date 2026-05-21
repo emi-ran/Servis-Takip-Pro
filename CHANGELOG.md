@@ -3,6 +3,11 @@
 ## Unreleased
 
 - Security backlog notu eklendi: auth/session + RBAC server-side zorlanmalı, multi-tenant sorgular `company_id` ile sınırlandırılmalı, public tracking kodları tokenized/non-guessable olmalı ve dosya/fotoğraflar signed URL ile yetkilendirilmelidir.
+- `/[locale]/cash` placeholder kaldırıldı ve Kasa & Cari ekranı aktif hale getirildi; günlük özet kartları (tahsilat, gider, net kasa, bekleyen alacak) eklendi.
+- Kasa & Cari ekranına filtre sekmeleri (tümü, tahsilat, gider, bekleyen), filtreye bağlı boş durum davranışı ve mobil uyumlu liste düzeni eklendi.
+- Hareket listesi satırları işlem tipi, tutar, tarih/saat, yöntem ve not alanlarıyla genişletildi; müşteri ve servis kaydı referansları mevcut ID'lerde detay rotalarına linklendi.
+- Yeni mock API katmanı `apps/web/lib/api/cash.ts` eklendi; kasa özeti ve hareket verisi UI bileşeninden ayrıldı.
+- i18n sözlükleri (`apps/web/messages/tr.json` ve `apps/web/messages/en.json`) cash ekranı metinleriyle güncellendi.
 - `/[locale]/today` placeholder kaldırıldı ve Bugünün İşleri ekranı aktif hale getirildi; günlük özet kartları (aksiyon bekleyen, açık kayıt, acil/yüksek, tamamlanan) eklendi.
 - Bugünün İşleri için filtre sekmeleri (tümü, randevular, acil, tamamlanan), boş durum davranışı ve mobil uyumlu iki kolonlu içerik düzeni eklendi.
 - Bugünkü randevu listesi saat, müşteri, cihaz, adres, atanan personel ve durum bilgileriyle; ilgili servis kaydı aksiyonu ile birlikte eklendi.

@@ -112,9 +112,12 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - `/[locale]/devices/[id]` cihaz detay rotası eklendi; cihaz özeti, müşteri sahibi kartı (iletişim + adres), cihaza ait servis geçmişi (takip kodu/durum/tarih) ve erişilebilir bulunamadı durumu hazırlandı.
 - Cihaz modülü müşteriye bağlılık kuralını mock API katmanında korur; cihaz listesi ve detay helper'ları sadece geçerli müşteri sahibi bağlamıyla veri döndürür.
 - `/[locale]/today` placeholder kaldırıldı; Bugünün İşleri ekranı aktif hale getirildi. Günlük özet kartları, filtreler (tümü/randevular/acil/tamamlanan), bugünkü randevu listesi (saat, müşteri, cihaz, adres, personel, durum) ve aksiyon bekleyen servis kayıtları (detay + müşteri/cihaz linkleri) eklendi.
+- `/[locale]/cash` placeholder kaldırıldı; Kasa & Cari ekranı aktif hale getirildi. Günlük özet kartları (tahsilat, gider, net kasa, bekleyen alacak), işlem filtreleri (tümü/tahsilat/gider/bekleyen), müşteri-servis bağlantılı hareket listesi ve filtreye özel boş durum eklendi.
 - Operasyon ekranlarında (Bugünün İşleri, Servis Kayıtları, Özet Durum) müşteri/cihaz/servis referansları, ilgili ID mevcutsa detay rotalarına deep link olarak gösterilir; ID yoksa metin plain olarak kalır.
 - Bugünün İşleri mock veri katmanı `apps/web/lib/api/today.ts` altında tutulur; açık kayıt ve öncelik hesapları mevcut servis kayıtları mock katmanından türetilir.
 - Sidebar navigasyonuna Bugünün İşleri modülü eklendi (`/[locale]/today`); nested route'larda (`/[locale]/service-records/[id]`, `settings/*` gibi) ilgili menü öğesi active-state korur.
+- Kasa/Cari mock veri katmanı `apps/web/lib/api/cash.ts` altında tutulur; UI, günlük özet ve hareket listesini bu katmandan alır.
+- Kasa/Cari ekranındaki müşteri ve servis referansları ID varsa sırasıyla `/[locale]/customers/[id]` ve `/[locale]/service-records/[id]` rotalarına deep link verir; ID yoksa plain metin gösterilir.
 - Müşteri detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<id>` desenini kullanır ve formu müşteri ön-seçimi ile açar.
 - Cihaz detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<ownerId>&deviceId=<deviceId>` desenini kullanır; form müşteri+cihaz ön-seçimi ile açılır.
 - `/[locale]/service-records/new` rotası `customerId` ve `deviceId` query parametrelerini doğrular; geçerli eşleşmelerde ön-seçim uygulanır, sadece `deviceId` geldiğinde cihaz sahibinden müşteri güvenli şekilde türetilir, geçersiz/uyumsuz kimliklerde seçim uygulanmaz ve lokalize uyarı gösterilir.
