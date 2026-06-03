@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `/<locale>/service-records/[id]` detay ekranına mock operasyon paneli eklendi; mevcut shell korunarak durum akışı, personel ataması, tahsilat notu/kasa bağlamı ve parça-rezervasyon özeti aynı detay görünümüne taşındı.
+- Mock durum ve atama aksiyonları detay sayfasındaki status badge, atanan personel kartı ve timeline görünümünü istemci tarafında anlık güncelliyor; yeni olaylar özellikle mock + customer-safe olarak işaretleniyor.
+- Tahsilat paneli permission-sensitive/non-persistent mock olarak açıkça etiketlendi, cash modülüne link verildi ve parça bağlamı reserved/used mock satırlarıyla parts modülüne bağlandı.
+- `apps/web/lib/api/service-records.ts` mock detail modeli operasyon bağlamı (staff seçenekleri, ödeme özeti, parça satırları) ve client-side mock update helper'ları ile genişletildi; UI içine yeni dataset gömülmedi.
+- README, CHANGELOG ve detail caveat metinleri gerçek durum değişikliği, atama, ödeme, servis-parça kullanımı ve audit logging için backend RBAC + tenant guard + kalıcı write endpoint gereksinimini netleştirecek şekilde güncellendi.
+
 - `/track/[code]` public tracking mock ekranı locale dışı route üzerinde güvenli müşteri görünümü olarak güncellendi; sidebar kullanılmıyor, geçerli kodlarda sadece takip kodu, durum, cihaz marka/model, arıza özeti, kabul tarihi, tahmini tamamlanma, müşteri güvenli timeline ve şube iletişimi gösteriliyor.
 - Public tracking route'una küçük yerel sözlük deseni eklendi; Türkçe varsayılan korunurken `?lang=en` ile İngilizce görünüm desteklendi ve route yapısı değiştirilmedi.
 - Public tracking mock veri katmanı daraltıldı; gereksiz internal note, staff, audit, ödeme ve cost alanları kaldırıldı, token format doğrulaması + generic invalid/expired davranışı eklendi.

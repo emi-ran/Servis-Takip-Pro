@@ -856,6 +856,10 @@
     "detail": {
       "backToList": "Listeye dön",
       "receivedAtLabel": "Kabul zamanı: {date}",
+      "mockBanner": {
+        "title": "Operasyon aksiyonları yalnızca frontend mock",
+        "description": "Bu panel durum değişikliği, personel ataması, tahsilat notu ve parça bağlamını sadece istemci tarafında simüle eder. Gerçek uygulama için backend RBAC, tenant guard ve audit log zorunludur."
+      },
       "summary": {
         "issue": "Arıza özeti",
         "customer": "Müşteri",
@@ -869,6 +873,8 @@
         "actorLabel": "İşlemi yapan: {name}",
         "emptyTitle": "Henüz timeline kaydı yok",
         "emptyDescription": "Bu servis kaydı için operasyon geçmişi oluştuğunda burada görünecek.",
+        "mockBadge": "Mock",
+        "customerSafeBadge": "Müşteri güvenli",
         "eventTypes": {
           "STATUS_CHANGED": "Durum değişimi",
           "NOTE_ADDED": "Not",
@@ -876,9 +882,88 @@
           "PART_ORDERED": "Parça"
         }
       },
+      "operations": {
+        "title": "Mock operasyon aksiyonları",
+        "description": "Durum, atama ve tahsilat notu akışları bu oturumda görünümü günceller; kayıt, yetki ve tenant enforcement yapılmaz.",
+        "mockOnlyBadge": "Sadece mock",
+        "mockActor": "Operasyon mock paneli",
+        "feedback": {
+          "title": "Mock aksiyon uygulandı",
+          "nonPersistent": "Bu değişiklik timeline ve kart görünümünde geçicidir; kalıcılık, audit log ve güvenlik enforcement henüz yoktur.",
+          "statusChanged": "Servis durumu mock olarak {status} aşamasına geçirildi.",
+          "assigneeChanged": "Atanan personel mock olarak {name} olarak güncellendi.",
+          "paymentNoteAdded": "Mock tahsilat notu timeline'a eklendi."
+        },
+        "status": {
+          "title": "Durum akışı",
+          "description": "Mevcut durumdan ilerleyebilecek sonraki mock adımı seçin.",
+          "nextStatusLabel": "Sonraki durum",
+          "defaultSubmitLabel": "Durumu güncelle",
+          "noTransitionDescription": "Bu durum için yeni mock geçiş tanımlı değil. Gerçek teslim/iptal sonrası akış backend kurallarıyla kapanmalıdır.",
+          "submitLabels": {
+            "NEW": "Durumu güncelle",
+            "IN_PROGRESS": "Teşhis / işlem sürecine al",
+            "WAITING_PART": "Parça bekliyor olarak işaretle",
+            "WAITING_CUSTOMER_APPROVAL": "Müşteri onayı bekliyor olarak işaretle",
+            "READY_FOR_DELIVERY": "Teslime hazır olarak işaretle",
+            "DELIVERED": "Teslim edildi olarak işaretle",
+            "CANCELLED": "İptal edildi olarak işaretle"
+          },
+          "eventTitles": {
+            "NEW": "Durum mock olarak güncellendi",
+            "IN_PROGRESS": "Kayıt mock olarak teşhis / işlem sürecine alındı",
+            "WAITING_PART": "Kayıt mock olarak parça bekliyor durumuna alındı",
+            "WAITING_CUSTOMER_APPROVAL": "Kayıt mock olarak müşteri onayı bekliyor durumuna alındı",
+            "READY_FOR_DELIVERY": "Kayıt mock olarak teslime hazır işaretlendi",
+            "DELIVERED": "Kayıt mock olarak teslim edildi işaretlendi",
+            "CANCELLED": "Kayıt mock olarak iptal edildi işaretlendi"
+          },
+          "eventDescriptions": {
+            "NEW": "Durum akışı mock panel üzerinden yeniden planlandı.",
+            "IN_PROGRESS": "Müşteri güvenli açıklama ile teşhis / teknik işlem adımı mock olarak başlatıldı.",
+            "WAITING_PART": "Parça temini bekleniyor bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "WAITING_CUSTOMER_APPROVAL": "Onay bekleme bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "READY_FOR_DELIVERY": "Teslime hazır bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "DELIVERED": "Teslim tamamlandı bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "CANCELLED": "İptal bilgisi müşteri güvenli mock olay olarak eklendi."
+          }
+        },
+        "assignment": {
+          "title": "Personel ataması",
+          "description": "Mock personel listesinden seçim yapın; bu atama yalnızca mevcut detay görünümünde güncellenir.",
+          "assigneeLabel": "Atanacak personel",
+          "submitLabel": "Mock atamayı uygula",
+          "eventTitle": "Kayıt mock olarak {name} personeline atandı",
+          "eventDescription": "Atama değişikliği müşteri güvenli operasyon olayı olarak timeline'a eklendi. Yeni atanan: {name}."
+        },
+        "payment": {
+          "title": "Tahsilat notu ve kasa bağlamı",
+          "description": "Tahsilat alanı permission-sensitive ve non-persistent mock planlama yüzeyidir; gerçek ödeme kaydı oluşturulmaz.",
+          "permissionSensitiveBadge": "Permission-sensitive",
+          "outstandingLabel": "Kalan tahsilat",
+          "collectedLabel": "Mock tahsil edilen",
+          "notePreviewLabel": "Tahsilat notu taslağı",
+          "submitLabel": "Mock tahsilat notunu ekle",
+          "openCashAction": "Kasa bağlamını aç",
+          "eventTitle": "Mock tahsilat notu eklendi",
+          "eventDescription": "Tahsilat planı {amount} için müşteri güvenli mock not olarak işlendi: {note}"
+        },
+        "parts": {
+          "title": "Parça / rezervasyon bağlamı",
+          "description": "Kullanılan veya ayrılmış mock parçalar görüntülenir; gerçek stok hareketi ve rezervasyon backend olmadan uygulanmış sayılmaz.",
+          "openPartsAction": "Parça modülünü aç",
+          "emptyDescription": "Bu kayda bağlı mock parça veya rezervasyon görünmüyor. Gerçek kullanım için stok hareketi ve servis-parça write akışı gerekir.",
+          "quantityLabel": "Adet: {count}",
+          "statuses": {
+            "USED": "Kullanıldı",
+            "RESERVED": "Ayrıldı"
+          }
+        }
+      },
       "workItems": {
         "title": "Notlar ve iş kalemleri",
-        "description": "Bu bölüm sonraki fazda teknik notlar, yapılacaklar ve iş kalemleri ile doldurulacaktır."
+        "description": "Bu bölüm sonraki fazda teknik notlar, yapılacaklar ve iş kalemleri ile doldurulacaktır.",
+        "mockSafetyNote": "İç notlar ve private açıklamalar müşteri güvenli timeline olaylarına taşınmamalıdır; bu fazdaki mock aksiyonlar bilerek güvenli/genel açıklama üretir."
       },
       "notFound": {
         "eyebrow": "Kayıt bulunamadı",

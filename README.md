@@ -102,6 +102,9 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - Servis kayıtları araması; takip no, müşteri ve cihaz metinlerinde her zaman çalışır; sorgu yalnızca rakam ve telefon biçim karakterleri içeriyorsa normalize edilmiş telefon numarasında da kısmi eşleşme yapar.
 - Servis kayıt listesi satırları ve “Detay” aksiyonu `/[locale]/service-records/[id]` detay rotasına gider.
 - Servis kayıt detay ekranı; özet kartları, timeline iskeleti, not/iş kalemi placeholder alanı ve bulunamayan kayıt durumu içerir.
+- Servis kayıt detayına mock operasyon paneli eklendi; durum akışı, personel ataması, tahsilat notu/kasa bağlamı ve parça-rezervasyon özeti yalnızca istemci oturum görünümünde güncellenir.
+- Detay ekranındaki mock aksiyonlar status badge, atanan personel özeti ve timeline'ı anlık günceller; eklenen olaylar özellikle mock ve müşteri güvenli olarak işaretlenir, private/iç not yazımı taklit edilmez.
+- Gerçek durum değişikliği, atama, tahsilat/ödeme kaydı, servis-parça kullanımı ve operasyon timeline write işlemleri backend RBAC, tenant guard, audit log ve kalıcı endpoint'ler olmadan uygulanmış/güvenli sayılmamalıdır.
 - `/[locale]/service-records/new` rotası, servis kaydını müşteriye bağlı açacak şekilde güncellenmiştir; mevcut müşteri arama-seçme, müşteriye bağlı cihaz seçimi, inline yeni müşteri/cihaz ekleme, doğrulama hataları ve mock tracking kodu üretimi içerir.
 - Yeni servis kaydı müşteri seçimi, inline tüm müşteri listesini kaldıran modal arama akışına taşınmıştır; en az 2 karakter ile sınırlı sonuç gösterimi ve daha fazla eşleşme için arama daraltma yönlendirmesi içerir.
 - Yeni servis kaydı create modeli ID bazlıdır: mevcut müşteri seçilirse `customerId`, mevcut cihaz seçilirse `deviceId` gönderilir; yeni müşteri/cihaz senaryosunda backend önce müşteri kaydını oluşturup dönen müşteri ID'siyle cihazı, ardından servis kaydını oluşturmalıdır.

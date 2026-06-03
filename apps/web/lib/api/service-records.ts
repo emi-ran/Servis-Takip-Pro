@@ -103,6 +103,36 @@ export type ServiceTimelineEvent = {
   actorName: string;
   title: string;
   description: string;
+  isMock?: boolean;
+  visibility?: "CUSTOMER_SAFE" | "INTERNAL";
+};
+
+export type ServiceRecordStaffOption = {
+  id: string;
+  name: string;
+};
+
+export type ServiceRecordPaymentContext = {
+  currency: string;
+  outstandingAmount: number;
+  collectedAmount: number;
+  notePreview: string;
+};
+
+export type ServiceRecordPartReservationStatus = "USED" | "RESERVED";
+
+export type ServiceRecordPartReservationItem = {
+  id: string;
+  name: string;
+  sku: string;
+  quantity: number;
+  status: ServiceRecordPartReservationStatus;
+};
+
+export type ServiceRecordOperationsContext = {
+  staffOptions: ServiceRecordStaffOption[];
+  payment: ServiceRecordPaymentContext;
+  parts: ServiceRecordPartReservationItem[];
 };
 
 export type ServiceRecordDetail = {
@@ -122,9 +152,96 @@ export type ServiceRecordDetail = {
     model: string;
     serialNumber: string;
   };
+  assigneeId: string | null;
   assigneeName: string | null;
   timeline: ServiceTimelineEvent[];
+  operations: ServiceRecordOperationsContext;
 };
+
+const mockOperationalStaffOptions: ServiceRecordStaffOption[] = [
+  { id: "staff-001", name: "Mert Aydın" },
+  { id: "staff-002", name: "Ece Tunalı" },
+  { id: "staff-003", name: "Burak Kılıç" },
+];
+
+const mockStatusTransitions: Record<ServiceStatus, ServiceStatus[]> = {
+  NEW: ["IN_PROGRESS", "WAITING_CUSTOMER_APPROVAL", "CANCELLED"],
+  IN_PROGRESS: ["WAITING_PART", "WAITING_CUSTOMER_APPROVAL", "READY_FOR_DELIVERY", "CANCELLED"],
+  WAITING_PART: ["IN_PROGRESS", "READY_FOR_DELIVERY", "CANCELLED"],
+  WAITING_CUSTOMER_APPROVAL: ["IN_PROGRESS", "READY_FOR_DELIVERY", "CANCELLED"],
+  READY_FOR_DELIVERY: ["DELIVERED"],
+  DELIVERED: [],
+  CANCELLED: [],
+};
+
+function cloneServiceRecordDetail(detail: ServiceRecordDetail): ServiceRecordDetail {
+  return {
+    ...detail,
+    customer: { ...detail.customer },
+    device: { ...detail.device },
+    timeline: detail.timeline.map((event) => ({ ...event })),
+    operations: {
+      staffOptions: detail.operations.staffOptions.map((staff) => ({ ...staff })),
+      payment: { ...detail.operations.payment },
+      parts: detail.operations.parts.map((part) => ({ ...part })),
+    },
+  };
+}
+
+export function getMockServiceStatusTransitions(status: ServiceStatus): ServiceStatus[] {
+  return mockStatusTransitions[status];
+}
+
+export function getMockServiceStaffOptions(): ServiceRecordStaffOption[] {
+  return mockOperationalStaffOptions.map((staff) => ({ ...staff }));
+}
+
+export function createMockTimelineEvent(input: {
+  id: string;
+  type: ServiceTimelineEventType;
+  actorName: string;
+  title: string;
+  description: string;
+  createdAt?: string;
+  visibility?: "CUSTOMER_SAFE" | "INTERNAL";
+}): ServiceTimelineEvent {
+  return {
+    id: input.id,
+    type: input.type,
+    actorName: input.actorName,
+    title: input.title,
+    description: input.description,
+    createdAt: input.createdAt ?? new Date().toISOString(),
+    isMock: true,
+    visibility: input.visibility ?? "CUSTOMER_SAFE",
+  };
+}
+
+export function applyMockTimelineEvent(detail: ServiceRecordDetail, event: ServiceTimelineEvent): ServiceRecordDetail {
+  const nextDetail = cloneServiceRecordDetail(detail);
+  nextDetail.timeline = [event, ...nextDetail.timeline];
+  return nextDetail;
+}
+
+export function applyMockStatusUpdate(detail: ServiceRecordDetail, status: ServiceStatus, event: ServiceTimelineEvent): ServiceRecordDetail {
+  const nextDetail = applyMockTimelineEvent(detail, event);
+  nextDetail.status = status;
+  return nextDetail;
+}
+
+export function applyMockAssignmentUpdate(detail: ServiceRecordDetail, assigneeId: string | null, event: ServiceTimelineEvent): ServiceRecordDetail {
+  const nextDetail = applyMockTimelineEvent(detail, event);
+  const nextAssignee = nextDetail.operations.staffOptions.find((staff) => staff.id === assigneeId) ?? null;
+
+  nextDetail.assigneeId = nextAssignee?.id ?? null;
+  nextDetail.assigneeName = nextAssignee?.name ?? null;
+
+  return nextDetail;
+}
+
+export function applyMockPaymentNote(detail: ServiceRecordDetail, event: ServiceTimelineEvent): ServiceRecordDetail {
+  return applyMockTimelineEvent(detail, event);
+}
 
 export async function getServiceRecordsOverview(): Promise<ServiceRecordsOverview> {
   return {
@@ -230,11 +347,7 @@ const createServiceRecordFormOptions: CreateServiceRecordFormOptions = {
     { id: "dev-004", customerId: "cust-003", brand: "Apple", model: "MacBook Pro M1", serialOrImei: "APL-MBP-2021-31104", registeredAt: "2025-11-19T10:30:00.000Z" },
     { id: "dev-005", customerId: "cust-004", brand: "Sony", model: "Bravia 55 OLED", serialOrImei: "SONY-BRV-55-76119", registeredAt: "2026-03-02T08:50:00.000Z" },
   ],
-  assignees: [
-    { id: "staff-001", name: "Mert Aydın" },
-    { id: "staff-002", name: "Ece Tunalı" },
-    { id: "staff-003", name: "Burak Kılıç" },
-  ],
+  assignees: mockOperationalStaffOptions,
 };
 
 export async function getCreateServiceRecordFormOptions(): Promise<CreateServiceRecordFormOptions> {
@@ -372,6 +485,7 @@ const serviceRecordDetailsById: Record<string, ServiceRecordDetail> = {
       model: "Galaxy S23",
       serialNumber: "SM-S911B-TR-10021",
     },
+    assigneeId: "staff-001",
     assigneeName: "Mert Aydın",
     timeline: [
       {
@@ -407,6 +521,31 @@ const serviceRecordDetailsById: Record<string, ServiceRecordDetail> = {
         description: "Cihaz teslim alındı ve ilk arıza bilgileri eklendi.",
       },
     ],
+    operations: {
+      staffOptions: mockOperationalStaffOptions,
+      payment: {
+        currency: "TRY",
+        outstandingAmount: 2450,
+        collectedAmount: 750,
+        notePreview: "Teslimat öncesi kalan ekran + işçilik tutarı için mock tahsilat notu planlandı.",
+      },
+      parts: [
+        {
+          id: "srv-201-part-1",
+          name: "OLED ekran modülü",
+          sku: "SCR-S23-OLED",
+          quantity: 1,
+          status: "USED",
+        },
+        {
+          id: "srv-201-part-2",
+          name: "Koruyucu çerçeve bandı",
+          sku: "ACC-FRM-TAPE",
+          quantity: 1,
+          status: "RESERVED",
+        },
+      ],
+    },
   },
   "srv-202": {
     id: "srv-202",
@@ -425,6 +564,7 @@ const serviceRecordDetailsById: Record<string, ServiceRecordDetail> = {
       model: "WGA142",
       serialNumber: "BS-WGA142-77210",
     },
+    assigneeId: "staff-002",
     assigneeName: "Ece Tunalı",
     timeline: [
       {
@@ -444,6 +584,24 @@ const serviceRecordDetailsById: Record<string, ServiceRecordDetail> = {
         description: "Parça gelene kadar kayıt bekleme durumuna alındı.",
       },
     ],
+    operations: {
+      staffOptions: mockOperationalStaffOptions,
+      payment: {
+        currency: "TRY",
+        outstandingAmount: 1800,
+        collectedAmount: 0,
+        notePreview: "Pompa parçası geldikten sonra işçilikle birlikte mock tahsilat planlanıyor.",
+      },
+      parts: [
+        {
+          id: "srv-202-part-1",
+          name: "Tahliye pompası",
+          sku: "PMP-BSH-WGA142",
+          quantity: 1,
+          status: "RESERVED",
+        },
+      ],
+    },
   },
   "srv-203": {
     id: "srv-203",
@@ -462,6 +620,7 @@ const serviceRecordDetailsById: Record<string, ServiceRecordDetail> = {
       model: "MacBook Pro M1",
       serialNumber: "APL-MBP-2021-31104",
     },
+    assigneeId: "staff-003",
     assigneeName: "Burak Kılıç",
     timeline: [
       {
@@ -481,6 +640,16 @@ const serviceRecordDetailsById: Record<string, ServiceRecordDetail> = {
         description: "Müşteriye onarım maliyeti iletildi.",
       },
     ],
+    operations: {
+      staffOptions: mockOperationalStaffOptions,
+      payment: {
+        currency: "TRY",
+        outstandingAmount: 6200,
+        collectedAmount: 0,
+        notePreview: "Müşteri onayı sonrası kapora veya tam tahsilat için mock not akışı planlandı.",
+      },
+      parts: [],
+    },
   },
 };
 

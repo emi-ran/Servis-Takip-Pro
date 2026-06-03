@@ -856,6 +856,10 @@
     "detail": {
       "backToList": "Back to list",
       "receivedAtLabel": "Received at: {date}",
+      "mockBanner": {
+        "title": "Operational actions are frontend mock only",
+        "description": "This panel simulates status changes, staff assignment, collection notes, and parts context only on the client. Real implementation requires backend RBAC, tenant guard, and audit logging."
+      },
       "summary": {
         "issue": "Issue summary",
         "customer": "Customer",
@@ -869,6 +873,8 @@
         "actorLabel": "Handled by: {name}",
         "emptyTitle": "No timeline event yet",
         "emptyDescription": "Operation history for this service record will appear here.",
+        "mockBadge": "Mock",
+        "customerSafeBadge": "Customer-safe",
         "eventTypes": {
           "STATUS_CHANGED": "Status change",
           "NOTE_ADDED": "Note",
@@ -876,9 +882,88 @@
           "PART_ORDERED": "Part"
         }
       },
+      "operations": {
+        "title": "Mock operational actions",
+        "description": "Status, assignment, and collection-note flows update the current session view only; no persistence, authorization, or tenant enforcement is applied.",
+        "mockOnlyBadge": "Mock only",
+        "mockActor": "Operations mock panel",
+        "feedback": {
+          "title": "Mock action applied",
+          "nonPersistent": "This change is temporary in the card and timeline view; persistence, audit logging, and security enforcement do not exist yet.",
+          "statusChanged": "Service status was moved to mock {status}.",
+          "assigneeChanged": "Assigned staff was mock-updated to {name}.",
+          "paymentNoteAdded": "A mock collection note was added to the timeline."
+        },
+        "status": {
+          "title": "Status flow",
+          "description": "Select the next mock operational step available from the current status.",
+          "nextStatusLabel": "Next status",
+          "defaultSubmitLabel": "Update status",
+          "noTransitionDescription": "No new mock transition is defined for this status. Real delivery/cancellation closure should be enforced by backend rules.",
+          "submitLabels": {
+            "NEW": "Update status",
+            "IN_PROGRESS": "Move into diagnosis / work",
+            "WAITING_PART": "Mark as waiting for part",
+            "WAITING_CUSTOMER_APPROVAL": "Mark as waiting for customer approval",
+            "READY_FOR_DELIVERY": "Mark as ready for delivery",
+            "DELIVERED": "Mark as delivered",
+            "CANCELLED": "Mark as cancelled"
+          },
+          "eventTitles": {
+            "NEW": "Status was mock-updated",
+            "IN_PROGRESS": "Record was mock-moved into diagnosis / work",
+            "WAITING_PART": "Record was mock-moved to waiting for part",
+            "WAITING_CUSTOMER_APPROVAL": "Record was mock-moved to waiting for customer approval",
+            "READY_FOR_DELIVERY": "Record was mock-marked ready for delivery",
+            "DELIVERED": "Record was mock-marked delivered",
+            "CANCELLED": "Record was mock-marked cancelled"
+          },
+          "eventDescriptions": {
+            "NEW": "The status flow was re-planned from the mock panel.",
+            "IN_PROGRESS": "A customer-safe description was added for the diagnosis / technical work step.",
+            "WAITING_PART": "Waiting for part was appended as a customer-safe mock event.",
+            "WAITING_CUSTOMER_APPROVAL": "Waiting for customer approval was appended as a customer-safe mock event.",
+            "READY_FOR_DELIVERY": "Ready-for-delivery was appended as a customer-safe mock event.",
+            "DELIVERED": "Delivery completion was appended as a customer-safe mock event.",
+            "CANCELLED": "Cancellation was appended as a customer-safe mock event."
+          }
+        },
+        "assignment": {
+          "title": "Staff assignment",
+          "description": "Select from the mock staff list; this assignment updates only the current detail surface.",
+          "assigneeLabel": "Staff to assign",
+          "submitLabel": "Apply mock assignment",
+          "eventTitle": "Record was mock-assigned to {name}",
+          "eventDescription": "The assignment change was added to the timeline as a customer-safe operational event. New assignee: {name}."
+        },
+        "payment": {
+          "title": "Collection note and cash context",
+          "description": "The collection surface is a permission-sensitive, non-persistent mock planning area; no real payment record is created.",
+          "permissionSensitiveBadge": "Permission-sensitive",
+          "outstandingLabel": "Outstanding collection",
+          "collectedLabel": "Mock collected",
+          "notePreviewLabel": "Collection note draft",
+          "submitLabel": "Add mock collection note",
+          "openCashAction": "Open cash context",
+          "eventTitle": "Mock collection note added",
+          "eventDescription": "A customer-safe mock collection note was logged for {amount}: {note}"
+        },
+        "parts": {
+          "title": "Parts / reservation context",
+          "description": "Used or reserved mock parts are shown here; real stock movement and reservation are not implemented without backend support.",
+          "openPartsAction": "Open parts module",
+          "emptyDescription": "No mock part usage or reservation is visible for this record. Real usage requires stock movement and service-part write flows.",
+          "quantityLabel": "Quantity: {count}",
+          "statuses": {
+            "USED": "Used",
+            "RESERVED": "Reserved"
+          }
+        }
+      },
       "workItems": {
         "title": "Notes and work items",
-        "description": "This section will be populated with technical notes, to-dos, and work items in the next phase."
+        "description": "This section will be populated with technical notes, to-dos, and work items in the next phase.",
+        "mockSafetyNote": "Internal notes and private explanations must not be mirrored into customer-safe timeline events; this phase intentionally creates only safe/general mock text."
       },
       "notFound": {
         "eyebrow": "Record not found",
