@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+- `/[locale]/reports` placeholder kaldırıldı ve Reports overview ekranı aktif hale getirildi; tarih aralığı mock filtreleri (bugün / bu hafta / bu ay / son 30 gün), operasyon özet kartları, finans özet kartları, servis durum dağılımı ve kategori/cihaz/servis tipi kırılımı eklendi.
+- Reports ekranında finans metrikleri ile personel iş yükü/performance alanları permission-sensitive mock olarak işaretlendi; gerçek görünürlük, tenant scope ve RBAC enforcement olmadığı özellikle belirtildi.
+- Export readiness paneli ve mock “Raporu / export'u hazırla” aksiyonu eklendi; gerçek PDF/Excel üretimi yapılmıyor, yalnızca non-persistent başarı/readiness mesajı gösteriliyor.
+- `apps/web/lib/api/reports.ts` mock veri katmanı eklendi; tarih aralığına göre değişen rapor dataset'leri ve mock export hazırlık helper'ı UI dışına taşındı.
+- `apps/web/lib/api/shell.ts`, `apps/web/components/layout/app-sidebar.tsx`, `apps/web/messages/tr.json` ve `apps/web/messages/en.json` reports rotası/navigasyon etiketi ve caveat metinleriyle güncellendi.
+- Backend backlog notu reports modülü için genişletildi: gerçek aggregation, tenant filtering, server-side RBAC ve export/audit logging olmadan bu ekranın güvenli raporlama yüzeyi sayılmaması gerekir.
+
+- `/[locale]/parts` placeholder kaldırıldı ve Stok & Parça overview ekranı aktif hale getirildi; toplam parça, düşük stok, ayrılmış adet ve mock/hassas satış değeri özet kartları eklendi.
+- Parça ekranına SKU/parça adı/marka/cihaz tipi araması, stok durumu + kategori filtreleri, mobil uyumlu parça kartları ve maliyet görünürlüğü için permission-sensitive mock uyarısı eklendi.
+- Düşük stok uyarı paneli ve son stok hareketleri listesi eklendi; servis kaydı referansı olan hareketler `/[locale]/service-records/[id]` rotasına deep link veriyor.
+- Mock “Servis için ayır” modal akışı eklendi; seçili parça + servis kaydı ile non-persistent rezervasyon/hareket üretiliyor, görünürdeki reserved quantity güncelleniyor ve başarı mesajı backend audit log/RBAC/tenant enforcement gereksinimini açıkça belirtiyor.
+- `apps/web/lib/api/parts.ts` mock veri katmanı eklendi; parça listesi, hareketler, düşük stok uyarıları, servis kaydı seçenekleri ve mock rezervasyon helper'ı UI dışına taşındı.
+- `apps/web/messages/tr.json` ve `apps/web/messages/en.json` parts ekranı metinleri, filtreler, uyarılar ve mock güvenlik notlarıyla güncellendi.
+
+- `/[locale]/settings` placeholder kaldırıldı ve Genel Ayarlar ekranı aktif hale getirildi; firma profili kartı, şube/operasyon özeti, bildirim readiness alanı ve güvenlik checklist'i aynı görünümde toplandı.
+- Ayarlar ekranında firma adı, vergi numarası, telefon, e-posta, varsayılan dil/para birimi/saat dilimi için mock düzenleme + mock kaydet akışı eklendi; başarı mesajı açıkça kalıcı olmadığını belirtir ve veri yalnızca istemci görünümünde güncellenir.
+- `apps/web/lib/api/settings.ts` mock veri katmanı eklendi; ayar overview verisi ve non-persistent mock save helper'ı UI dışına taşındı.
+- Güvenlik/readiness checklist'i salt okunur bırakıldı; gerçek auth, RBAC, tenant guard, audit log ve signed file URL enforcement için backend implementasyonu gerektiği UI ve dokümantasyonda açıkça belirtildi.
+- `apps/web/messages/tr.json` ve `apps/web/messages/en.json` settings ekranı metinleri, validasyon uyarıları ve mock/backend caveat notlarıyla güncellendi.
+
 - `/[locale]/staff` ekranına mock personel oluşturma modalı eklendi; ad soyad + rol zorunlu alan doğrulaması, varsayılan aktif durum, üretilmiş demo personel kimliği ve kalıcı olmadığını açıkça belirten başarı mesajı sağlandı.
 - Personel kartlarından açılan detay modalı eklendi; profil özeti, telefon/e-posta, açık atama + bugün atanan sayaçları ve son servis atamalarının detay link'leri gösteriliyor.
 - Personel detayında mock düzenleme modu eklendi; ad soyad, rol, iletişim bilgileri ve durum sadece istemci oturum görünümünde güncelleniyor, backend write/audit/RBAC enforcement olmadığı açıkça belirtiliyor.

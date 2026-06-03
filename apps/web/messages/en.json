@@ -22,6 +22,7 @@
       "devices": "Devices",
       "parts": "Stock & Parts",
       "cash": "Cash & Accounts",
+      "reports": "Reports",
       "staff": "Staff",
       "track": "Device Tracking",
       "quickScan": "Quick Barcode Scan",
@@ -35,6 +36,7 @@
     "devices": "Devices",
     "parts": "Stock & Parts",
     "cash": "Cash & Accounts",
+    "reports": "Reports",
     "staff": "Staff",
     "track": "Device Tracking",
     "settings": "General Settings"
@@ -191,6 +193,223 @@
       "description": "There are no income, expense, or pending receivable items to display for the selected view."
     }
   },
+  "reports": {
+    "title": "Reports",
+    "description": "Review operational visibility, sensitive finance summaries, and team workload from a mock reporting planning surface.",
+    "lastUpdatedLabel": "Last update",
+    "units": {
+      "hours": "hr",
+      "minutes": "min"
+    },
+    "mockBanner": {
+      "title": "Mock reporting surface",
+      "description": "This screen is frontend planning/mock only. Real reports require backend aggregation, tenant filtering, RBAC, and audit/export logging; this surface does not implement them."
+    },
+    "filters": {
+      "title": "Date range",
+      "description": "When the selection changes, the displayed mock data updates client-side."
+    },
+    "ranges": {
+      "today": "Today",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "last30Days": "Last 30 days"
+    },
+    "operationalSummary": {
+      "openedRecords": "Opened records",
+      "completedRecords": "Completed records",
+      "averageTurnaround": "Average turnaround",
+      "urgentQueue": "Urgent queue"
+    },
+    "financialSummary": {
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "netCash": "Net cash",
+      "permissionSensitive": "Mock · sensitive",
+      "mockNote": "Finance values are demo-only. Real visibility must be protected by backend permissions and tenant scope."
+    },
+    "statusDistribution": {
+      "title": "Service status distribution",
+      "description": "Status intensity for the selected range is shown as a mock distribution."
+    },
+    "staff": {
+      "title": "Staff workload and performance",
+      "description": "Team comparison is shown as mock, permission-sensitive planning data.",
+      "permissionSensitive": "Permission-sensitive · mock",
+      "mockOnly": "Mock only",
+      "table": {
+        "staff": "Staff",
+        "activeWorkload": "Active workload",
+        "completed": "Completed",
+        "averageTurnaround": "Avg. turnaround",
+        "urgentAssignments": "Urgent assignments"
+      }
+    },
+    "breakdowns": {
+      "title": "Category / device / service-type breakdown",
+      "description": "Category, device type, and service type intensity are summarized with planning-only mock distribution.",
+      "categoriesTitle": "Category breakdown",
+      "deviceTypesTitle": "Device-type breakdown",
+      "serviceTypesTitle": "Service-type breakdown",
+      "categoryLabels": {
+        "mobile": "Mobile devices",
+        "whiteGoods": "White goods",
+        "smallAppliance": "Small appliances",
+        "network": "Network / peripherals"
+      },
+      "deviceTypeLabels": {
+        "smartphone": "Smartphone",
+        "washingMachine": "Washing machine",
+        "combiBoiler": "Combi boiler",
+        "tablet": "Tablet"
+      },
+      "serviceTypeLabels": {
+        "workshop": "Workshop",
+        "onSite": "On-site",
+        "pickup": "Pickup",
+        "maintenance": "Maintenance"
+      }
+    },
+    "export": {
+      "title": "Report preparation and export readiness",
+      "description": "PDF, Excel, and export flows do not generate real files in this phase; they only show readiness expectations.",
+      "action": "Prepare report / export",
+      "preparing": "Preparing...",
+      "pdfTitle": "PDF not ready",
+      "excelTitle": "Excel not ready",
+      "auditTitle": "Permissions and logging requirement",
+      "notImplemented": "Real export is not implemented yet.",
+      "caveatTitle": "Backend requirements",
+      "backendRequirements": "Real reports require backend aggregation, tenant filtering, server-side RBAC, and export/audit logging.",
+      "success": {
+        "title": "Mock preparation complete",
+        "description": "Prepared a demo report for {range}: {reference} · {time}",
+        "nonPersistent": "No file was generated. This message is non-persistent and does not perform a real export."
+      }
+    }
+  },
+  "parts": {
+    "title": "Stock & parts",
+    "description": "Track spare-part visibility, low-stock risks, and recent movements from a mock planning surface.",
+    "lastUpdatedLabel": "Last update",
+    "resultsLabel": "Showing {count} parts",
+    "actions": {
+      "reserve": "Reserve for service",
+      "cancel": "Cancel",
+      "closeModal": "Close part reservation modal"
+    },
+    "mockBanner": {
+      "title": "Mock inventory surface",
+      "description": "This module is frontend planning/mock only. Prices, costs, and stock movements do not provide real security; persistence, tenant enforcement, audit logging, and RBAC are not implemented yet."
+    },
+    "summary": {
+      "totalParts": "Total parts",
+      "lowStock": "Low stock",
+      "reservedUnits": "Reserved units",
+      "estimatedRevenueValue": "Estimated sales value",
+      "permissionSensitive": "Mock · sensitive",
+      "mockValueNote": "This is a planning-only mock total. Real price/cost visibility must be constrained by backend permissions."
+    },
+    "filters": {
+      "searchPlaceholder": "Search by SKU, part name, brand, or device type",
+      "statusLabel": "Inventory status filter",
+      "categoryLabel": "Category filter",
+      "allCategories": "All categories",
+      "reset": "Clear filters",
+      "statusOptions": {
+        "all": "All statuses",
+        "low_stock": "Low stock",
+        "out_of_stock": "Out of stock",
+        "reserved": "Reserved",
+        "available": "Available"
+      }
+    },
+    "inventoryStates": {
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "reserved": "Reserved",
+      "available": "Available"
+    },
+    "categories": {
+      "SCREEN": "Screen",
+      "BATTERY": "Battery",
+      "PUMP": "Pump",
+      "BOARD": "Board",
+      "ACCESSORY": "Accessory",
+      "THERMAL": "Thermal kit"
+    },
+    "list": {
+      "title": "Parts list",
+      "description": "Sale price is visible while cost remains hidden behind a mock permission caveat.",
+      "sku": "SKU / code",
+      "compatibility": "Compatible device",
+      "stock": "Stock",
+      "reorderThreshold": "Reorder threshold",
+      "reserved": "Reserved",
+      "availableToUse": "Available to use",
+      "salePrice": "Sale price",
+      "costVisibilityTitle": "Cost visibility restricted",
+      "costVisibilityDescription": "Cost price is hidden in this phase. Real cost visibility must be protected by permission/RBAC and tenant scope."
+    },
+    "alerts": {
+      "title": "Low-stock alerts",
+      "description": "Track critical parts before service work gets blocked.",
+      "critical": "Critical",
+      "warning": "Monitor",
+      "itemDescription": "Current stock: {stock} · threshold: {threshold}",
+      "empty": "No low-stock alerts are currently visible."
+    },
+    "movements": {
+      "title": "Recent stock movements",
+      "description": "Purchase, reservation, usage, and adjustment movements are listed in a mock timeline.",
+      "serviceRecordLink": "Service record: {code}",
+      "types": {
+        "PURCHASE": "Purchase",
+        "RESERVATION": "Reserved for service",
+        "USAGE": "Usage",
+        "ADJUSTMENT": "Adjustment"
+      },
+      "notes": {
+        "supplier_restock": "Stock was refreshed through supplier purchasing.",
+        "reserved_for_waiting_part": "Part was reserved for a waiting service record.",
+        "used_in_repair": "Part was used in an active repair.",
+        "manual_cycle_adjustment": "Manual post-count adjustment was recorded.",
+        "buffer_stock_added": "Additional stock was entered as safety buffer."
+      }
+    },
+    "reserve": {
+      "title": "Reserve part for service record",
+      "description": "Link the selected part to a service record in mock mode and preview the reservation impact.",
+      "selectedPart": "Selected part",
+      "serviceRecordLabel": "Service record",
+      "serviceRecordPlaceholder": "Select a service record",
+      "quantityLabel": "Reservation quantity",
+      "quantityHint": "Maximum reservable quantity in this session: {count}",
+      "availableUnits": "Available units: {count}",
+      "mockPriceNote": "Sale price visibility is mock-only.",
+      "bannerTitle": "Not a real stock movement",
+      "bannerDescription": "This reservation updates only the client-side demo view. Real stock deduction requires a backend flow with audit logging, tenant scope, and RBAC controls.",
+      "actions": {
+        "submit": "Create mock reservation",
+        "submitting": "Creating reservation..."
+      },
+      "validation": {
+        "serviceRecordRequired": "Select a service record.",
+        "quantityRequired": "Enter a valid quantity.",
+        "quantityExceeds": "Available quantity can be at most {count}.",
+        "generic": "Mock reservation could not be completed. Check the form fields."
+      },
+      "success": {
+        "title": "Mock reservation created",
+        "description": "Reserved {count} unit(s) of {part} for {serviceRecord}.",
+        "nonPersistent": "This result is not persistent; a real stock movement must not be treated as valid until backend audit logging, tenant enforcement, and server-side RBAC exist."
+      }
+    },
+    "empty": {
+      "title": "No parts found",
+      "description": "No parts match your current search or filter criteria. Clear the filters and try again."
+    }
+  },
   "staff": {
     "title": "Staff",
     "description": "Monitor team availability, assigned workload, and recent service assignments.",
@@ -345,6 +564,148 @@
       "defaultTitle": "No staff records yet",
       "filteredTitle": "No staff found for selected filters",
       "description": "No staff members match your current search or filter criteria."
+    }
+  },
+  "settings": {
+    "title": "General settings",
+    "description": "Review company identity, operations summary, and security readiness from one screen.",
+    "lastUpdatedLabel": "Last update",
+    "actions": {
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Mock save",
+      "saving": "Saving..."
+    },
+    "mockBanner": {
+      "title": "Mock settings surface",
+      "description": "This screen is a frontend planning/mock phase. The save action only updates the client-side view; backend persistence, tenant config writes, notification delivery, and audit logging are not wired yet."
+    },
+    "validation": {
+      "summary": "Please fix the required fields.",
+      "companyNameRequired": "Company name is required.",
+      "taxNumberRequired": "Tax number is required.",
+      "phoneRequired": "Phone is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Enter a valid email address."
+    },
+    "companyProfile": {
+      "title": "Company profile",
+      "description": "Mock-edit the identity and default display fields.",
+      "mockNote": "Editing here updates only the current client-side view for this session. Real company settings persistence requires a backend endpoint, tenant checks, and audit logging.",
+      "fields": {
+        "companyName": "Company name",
+        "taxNumber": "Tax number",
+        "phone": "Phone",
+        "email": "Email",
+        "defaultLocale": "Default locale",
+        "defaultCurrency": "Default currency",
+        "timezone": "Timezone"
+      },
+      "localeOptions": {
+        "tr": "Turkish",
+        "en": "English"
+      },
+      "currencyOptions": {
+        "TRY": "Turkish lira (TRY)",
+        "USD": "US dollar (USD)",
+        "EUR": "Euro (EUR)"
+      },
+      "timezoneOptions": {
+        "Europe/Istanbul": "Istanbul (UTC+03:00)",
+        "Europe/Berlin": "Berlin (UTC+01:00 / daylight saving)",
+        "UTC": "UTC (coordinated universal time)"
+      },
+      "success": {
+        "title": "Mock settings updated",
+        "description": "The displayed company profile for {name} was updated in this session.",
+        "nonPersistent": "This success state does not mean persistent storage; the mock data resets after refresh."
+      }
+    },
+    "branchOperation": {
+      "title": "Branch and service operations",
+      "description": "Summarize branch coverage, working hours, and service record numbering.",
+      "backendNote": "Branch, working-hours, and public tracking flows are summary-only in this phase. Real configuration writes and the public customer-facing flow must be implemented on the backend.",
+      "workingHourTemplates": {
+        "MON_SAT": "Mon-Sat"
+      },
+      "sundayCoverage": {
+        "ON_CALL_INTAKE": "Sun on-call intake"
+      },
+      "publicTrackingModes": {
+        "PLANNED": "Tracking-link planning is visible, while customer-facing view and token validation still await backend integration."
+      },
+      "fields": {
+        "branchCount": "Branch count",
+        "workingHours": "Working hours",
+        "serviceRecordPrefix": "Service record prefix",
+        "nextSequence": "Next sequence",
+        "sequencePreview": "Sequence preview",
+        "publicTracking": "Public tracking summary"
+      }
+    },
+    "notifications": {
+      "title": "Notification readiness",
+      "description": "Shows the planned state of customer communication channels.",
+      "mockOnlyNote": "SMS, email, and WhatsApp are readiness toggles only in this phase; real delivery, provider integrations, and preference storage still require backend work.",
+      "channels": {
+        "sms": "Customer SMS",
+        "email": "Customer email",
+        "whatsapp": "Customer WhatsApp"
+      },
+      "channelDescriptions": {
+        "sms": "Planned channel for appointment, status-change, and ready-for-delivery notifications.",
+        "email": "Planned channel for quotes, summaries, and post-delivery communication.",
+        "whatsapp": "Channel being evaluated for tracking links and quick status responses."
+      },
+      "states": {
+        "enabled": "Readiness on",
+        "disabled": "Readiness off"
+      }
+    },
+    "security": {
+      "title": "Security and readiness",
+      "description": "Track backend-required security concerns as a read-only checklist.",
+      "readOnlyBadge": "Read only",
+      "backendRequiredTitle": "Backend implementation required",
+      "backendRequiredDescription": "The items below provide visibility only on the frontend. Auth, RBAC, tenant guards, audit logging, and signed file URL flows must be enforced on the backend for real security.",
+      "statuses": {
+        "BACKEND_REQUIRED": "Backend required",
+        "PLANNING_ONLY": "Planning only"
+      },
+      "items": {
+        "auth": {
+          "title": "Authentication",
+          "description": "Sessions, access/refresh token lifecycles, and route enforcement must be wired into the backend auth layer."
+        },
+        "rbac": {
+          "title": "RBAC guards",
+          "description": "Role and permission decisions must be validated by server-side guards/policies, not by hiding buttons."
+        },
+        "tenant_guard": {
+          "title": "Tenant guard",
+          "description": "Multi-tenant data access must be constrained by company scope across all queries."
+        },
+        "audit_log": {
+          "title": "Audit log",
+          "description": "Settings writes and critical updates must log actor, entity, and changed fields."
+        },
+        "signed_file_urls": {
+          "title": "Signed file URLs",
+          "description": "Files and photos must be served through authorization-aware signed URLs instead of public links."
+        }
+      }
+    },
+    "footerCards": {
+      "contact": {
+        "title": "Contact summary"
+      },
+      "display": {
+        "title": "Display defaults"
+      },
+      "timezone": {
+        "title": "Timezone",
+        "description": "Frontend date/time formatting is planned around this default."
+      }
     }
   },
   "serviceRecords": {

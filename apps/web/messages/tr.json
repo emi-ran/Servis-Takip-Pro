@@ -22,6 +22,7 @@
       "devices": "Cihazlar",
       "parts": "Stok & Parça",
       "cash": "Kasa & Cari",
+      "reports": "Raporlar",
       "staff": "Personel",
       "track": "Cihaz Sorgulama",
       "quickScan": "Hızlı Barkod Oku",
@@ -35,6 +36,7 @@
     "devices": "Cihazlar",
     "parts": "Stok & Parça",
     "cash": "Kasa & Cari",
+    "reports": "Raporlar",
     "staff": "Personel",
     "track": "Cihaz Sorgulama",
     "settings": "Genel Ayarlar"
@@ -191,6 +193,223 @@
       "description": "Seçili görünüm için listelenecek tahsilat, gider veya bekleyen alacak kaydı bulunmuyor."
     }
   },
+  "reports": {
+    "title": "Raporlar",
+    "description": "Operasyon görünümünü, hassas finans özetlerini ve ekip yükünü mock rapor planlama yüzeyinde inceleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "units": {
+      "hours": "sa",
+      "minutes": "dk"
+    },
+    "mockBanner": {
+      "title": "Mock rapor görünümü",
+      "description": "Bu ekran yalnızca frontend planlama/maket fazıdır. Gerçek raporlar backend aggregation, tenant filtering, RBAC ve audit/export logging gerektirir; bu yüzey bunları uygulamış sayılmaz."
+    },
+    "filters": {
+      "title": "Tarih aralığı",
+      "description": "Seçim değiştiğinde ekrandaki mock veri istemci tarafında güncellenir."
+    },
+    "ranges": {
+      "today": "Bugün",
+      "thisWeek": "Bu hafta",
+      "thisMonth": "Bu ay",
+      "last30Days": "Son 30 gün"
+    },
+    "operationalSummary": {
+      "openedRecords": "Açılan kayıtlar",
+      "completedRecords": "Tamamlanan kayıtlar",
+      "averageTurnaround": "Ortalama çevrim süresi",
+      "urgentQueue": "Acil kuyruk"
+    },
+    "financialSummary": {
+      "revenue": "Gelir",
+      "expenses": "Gider",
+      "netCash": "Net nakit",
+      "permissionSensitive": "Mock · hassas",
+      "mockNote": "Finans değerleri yalnızca demo görünümüdür. Gerçek görünürlük backend izinleri ve tenant scope ile korunmalıdır."
+    },
+    "statusDistribution": {
+      "title": "Servis durum dağılımı",
+      "description": "Seçili aralıktaki kayıtların durum yoğunluğu mock dağılım olarak gösterilir."
+    },
+    "staff": {
+      "title": "Personel iş yükü ve performans",
+      "description": "Ekip karşılaştırması mock ve permission-sensitive planlama verisi olarak gösterilir.",
+      "permissionSensitive": "Permission-sensitive · mock",
+      "mockOnly": "Sadece mock",
+      "table": {
+        "staff": "Personel",
+        "activeWorkload": "Aktif iş yükü",
+        "completed": "Tamamlanan",
+        "averageTurnaround": "Ort. çevrim",
+        "urgentAssignments": "Acil atama"
+      }
+    },
+    "breakdowns": {
+      "title": "Kategori / cihaz / servis tipi kırılımı",
+      "description": "Kategori, cihaz tipi ve servis tipi yoğunluğu planlama amaçlı mock dağılımla özetlenir.",
+      "categoriesTitle": "Kategori kırılımı",
+      "deviceTypesTitle": "Cihaz tipi kırılımı",
+      "serviceTypesTitle": "Servis tipi kırılımı",
+      "categoryLabels": {
+        "mobile": "Mobil cihazlar",
+        "whiteGoods": "Beyaz eşya",
+        "smallAppliance": "Küçük ev aletleri",
+        "network": "Ağ / çevre birimi"
+      },
+      "deviceTypeLabels": {
+        "smartphone": "Akıllı telefon",
+        "washingMachine": "Çamaşır makinesi",
+        "combiBoiler": "Kombi",
+        "tablet": "Tablet"
+      },
+      "serviceTypeLabels": {
+        "workshop": "Atölye",
+        "onSite": "Yerinde servis",
+        "pickup": "Adresten alım",
+        "maintenance": "Bakım"
+      }
+    },
+    "export": {
+      "title": "Rapor hazırlık ve export readiness",
+      "description": "PDF, Excel ve dışa aktarma akışları bu fazda gerçek dosya üretmez; yalnızca readiness beklentilerini gösterir.",
+      "action": "Raporu / export'u hazırla",
+      "preparing": "Hazırlanıyor...",
+      "pdfTitle": "PDF hazır değil",
+      "excelTitle": "Excel hazır değil",
+      "auditTitle": "İzin ve log gereksinimi",
+      "notImplemented": "Gerçek export henüz uygulanmadı.",
+      "caveatTitle": "Backend gereksinimleri",
+      "backendRequirements": "Gerçek raporlar için backend aggregation, tenant filtering, server-side RBAC ve export/audit logging zorunludur.",
+      "success": {
+        "title": "Mock hazırlık tamamlandı",
+        "description": "{range} için demo rapor hazırlandı: {reference} · {time}",
+        "nonPersistent": "Dosya üretilmedi. Bu mesaj kalıcı değildir ve gerçek export işlemi yapmaz."
+      }
+    }
+  },
+  "parts": {
+    "title": "Stok & parça",
+    "description": "Yedek parça görünürlüğünü, düşük stok risklerini ve son hareketleri mock planlama yüzeyinde takip edin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "resultsLabel": "Toplam {count} parça gösteriliyor",
+    "actions": {
+      "reserve": "Servis için ayır",
+      "cancel": "İptal",
+      "closeModal": "Parça ayırma penceresini kapat"
+    },
+    "mockBanner": {
+      "title": "Mock stok görünümü",
+      "description": "Bu modül yalnızca frontend planlama/maket fazıdır. Fiyat, maliyet ve stok hareketleri gerçek güvenlik sağlamaz; kalıcılık, tenant enforcement, audit log ve RBAC henüz uygulanmadı."
+    },
+    "summary": {
+      "totalParts": "Toplam parça",
+      "lowStock": "Düşük stok",
+      "reservedUnits": "Ayrılmış adet",
+      "estimatedRevenueValue": "Tahmini satış değeri",
+      "permissionSensitive": "Mock · hassas",
+      "mockValueNote": "Bu değer planlama amaçlı mock toplamdır. Gerçek fiyat/maliyet görünürlüğü backend izinleriyle sınırlandırılmalıdır."
+    },
+    "filters": {
+      "searchPlaceholder": "SKU, parça adı, marka veya cihaz tipi ile ara",
+      "statusLabel": "Stok durumu filtresi",
+      "categoryLabel": "Kategori filtresi",
+      "allCategories": "Tüm kategoriler",
+      "reset": "Filtreleri temizle",
+      "statusOptions": {
+        "all": "Tüm durumlar",
+        "low_stock": "Düşük stok",
+        "out_of_stock": "Stokta yok",
+        "reserved": "Ayrılmış",
+        "available": "Müsait"
+      }
+    },
+    "inventoryStates": {
+      "low_stock": "Düşük stok",
+      "out_of_stock": "Stokta yok",
+      "reserved": "Ayrılmış",
+      "available": "Müsait"
+    },
+    "categories": {
+      "SCREEN": "Ekran",
+      "BATTERY": "Batarya",
+      "PUMP": "Pompa",
+      "BOARD": "Kart / board",
+      "ACCESSORY": "Aksesuar",
+      "THERMAL": "Termal kit"
+    },
+    "list": {
+      "title": "Parça listesi",
+      "description": "Satış fiyatı görünür, maliyet alanı ise mock izin uyarısı ile gizlidir.",
+      "sku": "SKU / kod",
+      "compatibility": "Uyumlu cihaz",
+      "stock": "Stok",
+      "reorderThreshold": "Yeniden sipariş eşiği",
+      "reserved": "Ayrılmış",
+      "availableToUse": "Kullanılabilir",
+      "salePrice": "Satış fiyatı",
+      "costVisibilityTitle": "Maliyet görünürlüğü kısıtlı",
+      "costVisibilityDescription": "Maliyet fiyatı bu fazda gösterilmiyor. Gerçek maliyet görünürlüğü permission/RBAC ve tenant scope ile korunmalıdır."
+    },
+    "alerts": {
+      "title": "Düşük stok uyarıları",
+      "description": "Servis beklememesi için kritik parçaları takip edin.",
+      "critical": "Kritik",
+      "warning": "Takip et",
+      "itemDescription": "Mevcut stok: {stock} · eşik: {threshold}",
+      "empty": "Düşük stok uyarısı görünmüyor."
+    },
+    "movements": {
+      "title": "Son stok hareketleri",
+      "description": "Satın alma, ayırma, kullanım ve düzeltme hareketleri mock zaman çizelgesinde listelenir.",
+      "serviceRecordLink": "Servis kaydı: {code}",
+      "types": {
+        "PURCHASE": "Satın alma",
+        "RESERVATION": "Servis için ayırma",
+        "USAGE": "Kullanım",
+        "ADJUSTMENT": "Düzeltme"
+      },
+      "notes": {
+        "supplier_restock": "Tedarikçi alımı ile stok yenilendi.",
+        "reserved_for_waiting_part": "Bekleyen servis kaydı için parça ayrıldı.",
+        "used_in_repair": "Aktif onarımda parça kullanıldı.",
+        "manual_cycle_adjustment": "Sayım sonrası manuel düzeltme işlendi.",
+        "buffer_stock_added": "Tampon stok için ek alım girildi."
+      }
+    },
+    "reserve": {
+      "title": "Servis kaydı için parça ayır",
+      "description": "Seçili parçayı bir servis kaydına mock olarak bağlayın ve rezerv etkisini görün.",
+      "selectedPart": "Seçili parça",
+      "serviceRecordLabel": "Servis kaydı",
+      "serviceRecordPlaceholder": "Servis kaydı seçin",
+      "quantityLabel": "Ayırma adedi",
+      "quantityHint": "Bu oturumda ayrılabilecek en yüksek adet: {count}",
+      "availableUnits": "Kullanılabilir adet: {count}",
+      "mockPriceNote": "Satış fiyatı görünümü mock amaçlıdır.",
+      "bannerTitle": "Gerçek stok hareketi değildir",
+      "bannerDescription": "Bu rezervasyon yalnızca istemci tarafı demo görünümünü günceller. Gerçek stok düşümü, audit log, tenant scope ve RBAC kontrollü backend akışı gerektirir.",
+      "actions": {
+        "submit": "Mock rezervasyon oluştur",
+        "submitting": "Rezervasyon oluşturuluyor..."
+      },
+      "validation": {
+        "serviceRecordRequired": "Bir servis kaydı seçin.",
+        "quantityRequired": "Geçerli bir adet girin.",
+        "quantityExceeds": "Kullanılabilir adet en fazla {count} olabilir.",
+        "generic": "Mock rezervasyon tamamlanamadı. Lütfen form alanlarını kontrol edin."
+      },
+      "success": {
+        "title": "Mock rezervasyon oluşturuldu",
+        "description": "{part} için {count} adet, {serviceRecord} kaydına ayrıldı.",
+        "nonPersistent": "Bu sonuç kalıcı değildir; gerçek stok hareketi backend audit log, tenant enforcement ve server-side RBAC olmadan geçerli sayılmamalıdır."
+      }
+    },
+    "empty": {
+      "title": "Parça bulunamadı",
+      "description": "Arama veya filtre kriterlerinize uyan parça görünmüyor. Filtreleri temizleyip tekrar deneyin."
+    }
+  },
   "staff": {
     "title": "Personel",
     "description": "Ekip üyelerinin operasyon durumunu, atanan iş yükünü ve son servis atamalarını izleyin.",
@@ -345,6 +564,148 @@
       "defaultTitle": "Henüz personel kaydı yok",
       "filteredTitle": "Seçili filtrelerde personel bulunamadı",
       "description": "Arama veya filtre kriterlerinize göre listelenecek personel görünmüyor."
+    }
+  },
+  "settings": {
+    "title": "Genel ayarlar",
+    "description": "Firma kimliği, operasyon özeti ve güvenlik hazırlık başlıklarını tek ekranda gözden geçirin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "actions": {
+      "edit": "Düzenle",
+      "cancel": "İptal",
+      "save": "Mock kaydet",
+      "saving": "Kaydediliyor..."
+    },
+    "mockBanner": {
+      "title": "Mock ayar yüzeyi",
+      "description": "Bu ekran frontend planlama/maket fazıdır. Kaydet aksiyonu yalnızca istemci görünümünü günceller; backend kalıcılığı, tenant yapılandırma yazımı, bildirim gönderimi ve audit log henüz bağlı değildir."
+    },
+    "validation": {
+      "summary": "Lütfen zorunlu alanları düzeltin.",
+      "companyNameRequired": "Firma adı zorunludur.",
+      "taxNumberRequired": "Vergi numarası zorunludur.",
+      "phoneRequired": "Telefon zorunludur.",
+      "emailRequired": "E-posta zorunludur.",
+      "emailInvalid": "Geçerli bir e-posta adresi girin."
+    },
+    "companyProfile": {
+      "title": "Firma profili",
+      "description": "Kimlik ve varsayılan görüntüleme alanlarını mock olarak düzenleyin.",
+      "mockNote": "Buradaki düzenleme bu oturumdaki istemci görünümünü günceller. Gerçek firma ayarı kaydı için backend endpoint, tenant kontrolü ve audit log gereklidir.",
+      "fields": {
+        "companyName": "Firma adı",
+        "taxNumber": "Vergi numarası",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "defaultLocale": "Varsayılan dil",
+        "defaultCurrency": "Varsayılan para birimi",
+        "timezone": "Saat dilimi"
+      },
+      "localeOptions": {
+        "tr": "Türkçe",
+        "en": "İngilizce"
+      },
+      "currencyOptions": {
+        "TRY": "Türk lirası (TRY)",
+        "USD": "Amerikan doları (USD)",
+        "EUR": "Euro (EUR)"
+      },
+      "timezoneOptions": {
+        "Europe/Istanbul": "İstanbul (UTC+03:00)",
+        "Europe/Berlin": "Berlin (UTC+01:00 / yaz saati)",
+        "UTC": "UTC (koordineli evrensel saat)"
+      },
+      "success": {
+        "title": "Mock ayarlar güncellendi",
+        "description": "{name} için görüntülenen firma profili bu oturumda güncellendi.",
+        "nonPersistent": "Bu başarı mesajı kalıcı kayıt anlamına gelmez; sayfa yenilendiğinde mock veri geri döner."
+      }
+    },
+    "branchOperation": {
+      "title": "Şube ve servis operasyonu",
+      "description": "Şube kapsaması, çalışma saatleri ve kayıt numarası planını özetleyin.",
+      "backendNote": "Şube, mesai ve public tracking akışları bu fazda yalnızca özet görünür. Gerçek konfigürasyon yazımı ve public müşteri görünümü backend tarafında uygulanmalıdır.",
+      "workingHourTemplates": {
+        "MON_SAT": "Pzt-Cts"
+      },
+      "sundayCoverage": {
+        "ON_CALL_INTAKE": "Paz nöbetçi kabul"
+      },
+      "publicTrackingModes": {
+        "PLANNED": "Takip linki planlaması aktif, müşteri görünümü ve token doğrulaması backend entegrasyonu bekliyor."
+      },
+      "fields": {
+        "branchCount": "Şube sayısı",
+        "workingHours": "Çalışma saatleri",
+        "serviceRecordPrefix": "Servis kayıt öneki",
+        "nextSequence": "Sıradaki numara",
+        "sequencePreview": "Sıra önizlemesi",
+        "publicTracking": "Public takip özeti"
+      }
+    },
+    "notifications": {
+      "title": "Bildirim hazırlığı",
+      "description": "Müşteri iletişim kanallarının planlanan durumunu gösterir.",
+      "mockOnlyNote": "SMS, e-posta ve WhatsApp kanalları bu fazda sadece hazırlık toggle özetidir; gerçek teslimat, sağlayıcı entegrasyonu ve tercih kaydı backend gerektirir.",
+      "channels": {
+        "sms": "Müşteri SMS",
+        "email": "Müşteri e-postası",
+        "whatsapp": "Müşteri WhatsApp"
+      },
+      "channelDescriptions": {
+        "sms": "Randevu, durum değişimi ve teslim hazır bildirimleri için planlanan kanal.",
+        "email": "Teklif, özet ve teslim sonrası bilgilendirme için planlanan kanal.",
+        "whatsapp": "Takip linki ve hızlı durum yanıtları için değerlendirilen kanal."
+      },
+      "states": {
+        "enabled": "Hazırlık açık",
+        "disabled": "Hazırlık kapalı"
+      }
+    },
+    "security": {
+      "title": "Güvenlik ve readiness",
+      "description": "Gerçek güvenlik enforcement gerektiren backend başlıklarını yalnızca checklist olarak izleyin.",
+      "readOnlyBadge": "Salt okunur",
+      "backendRequiredTitle": "Backend implementasyonu zorunlu",
+      "backendRequiredDescription": "Aşağıdaki maddeler frontend'de sadece görünürlük sağlar. Auth, RBAC, tenant guard, audit log ve signed file URL akışları gerçek güvenlik için backend'de zorlanmalıdır.",
+      "statuses": {
+        "BACKEND_REQUIRED": "Backend gerekli",
+        "PLANNING_ONLY": "Sadece plan"
+      },
+      "items": {
+        "auth": {
+          "title": "Kimlik doğrulama",
+          "description": "Oturum, access/refresh token yaşam döngüsü ve route enforcement backend auth katmanına bağlanmalıdır."
+        },
+        "rbac": {
+          "title": "RBAC guard'ları",
+          "description": "Rol ve izin kararları buton gizleme ile değil server-side guard/policy ile doğrulanmalıdır."
+        },
+        "tenant_guard": {
+          "title": "Tenant guard",
+          "description": "Çok firmalı veri erişimi tüm sorgularda company scope ile sınırlandırılmalıdır."
+        },
+        "audit_log": {
+          "title": "Audit log",
+          "description": "Ayar yazımları ve kritik güncellemeler actor, entity ve değişen alanlarla loglanmalıdır."
+        },
+        "signed_file_urls": {
+          "title": "Signed file URL'leri",
+          "description": "Dosya ve fotoğraflar public URL yerine yetki kontrollü signed URL akışıyla servis edilmelidir."
+        }
+      }
+    },
+    "footerCards": {
+      "contact": {
+        "title": "İletişim özeti"
+      },
+      "display": {
+        "title": "Görüntüleme varsayılanları"
+      },
+      "timezone": {
+        "title": "Saat dilimi",
+        "description": "Frontend tarih/saat formatları bu varsayım üzerinden planlanır."
+      }
     }
   },
   "serviceRecords": {
