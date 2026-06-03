@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 
 import { createMockCustomer, type CreateCustomerInput } from "@/lib/api/customers";
 
@@ -8,9 +8,17 @@ type Dictionary = Awaited<ReturnType<typeof import("@/lib/i18n/get-dictionary").
 
 type FormErrors = Partial<Record<"name" | "phone" | "address", string>>;
 
+export type CreateCustomerCreatedPayload = {
+  customerId: string;
+  customerName: string;
+  input: CreateCustomerInput;
+};
+
 type CreateCustomerModalProps = {
   dictionary: Dictionary;
   onClose: () => void;
+  onCreated?: (createdCustomer: CreateCustomerCreatedPayload) => void;
+  closeOnSuccess?: boolean;
 };
 
 const initialState: CreateCustomerInput = {
@@ -23,7 +31,7 @@ const initialState: CreateCustomerInput = {
   note: "",
 };
 
-export function CreateCustomerModal({ dictionary, onClose }: CreateCustomerModalProps) {
+export function CreateCustomerModal({ dictionary, onClose, onCreated, closeOnSuccess = false }: CreateCustomerModalProps) {
   const [formState, setFormState] = useState<CreateCustomerInput>(initialState);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,6 +40,19 @@ export function CreateCustomerModal({ dictionary, onClose }: CreateCustomerModal
   const titleId = "create-customer-modal-title";
 
   const hasFieldErrors = useMemo(() => Object.keys(errors).length > 0, [errors]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
 
   function updateField<Key extends keyof CreateCustomerInput>(key: Key, value: CreateCustomerInput[Key]) {
     setFormState((prev) => ({ ...prev, [key]: value }));
@@ -67,7 +88,20 @@ export function CreateCustomerModal({ dictionary, onClose }: CreateCustomerModal
 
     setIsSubmitting(true);
 
-    const result = await createMockCustomer(formState);
+    const snapshot = { ...formState };
+    const result = await createMockCustomer(snapshot);
+
+    onCreated?.({
+      customerId: result.customerId,
+      customerName: result.customerName,
+      input: snapshot,
+    });
+
+    if (closeOnSuccess) {
+      setIsSubmitting(false);
+      onClose();
+      return;
+    }
 
     setIsSubmitting(false);
     setFormState(initialState);

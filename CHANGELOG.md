@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- `/[locale]/staff` ekranına mock personel oluşturma modalı eklendi; ad soyad + rol zorunlu alan doğrulaması, varsayılan aktif durum, üretilmiş demo personel kimliği ve kalıcı olmadığını açıkça belirten başarı mesajı sağlandı.
+- Personel kartlarından açılan detay modalı eklendi; profil özeti, telefon/e-posta, açık atama + bugün atanan sayaçları ve son servis atamalarının detay link'leri gösteriliyor.
+- Personel detayında mock düzenleme modu eklendi; ad soyad, rol, iletişim bilgileri ve durum sadece istemci oturum görünümünde güncelleniyor, backend write/audit/RBAC enforcement olmadığı açıkça belirtiliyor.
+- Rol/izin taslak UI'sı eklendi; servis kayıtları, müşteriler, cihazlar, kasa ve personel/ayarlar modülleri için rol bazlı planlanan erişim matrisi gösteriliyor ancak gerçek güvenlik olarak sunulmuyor.
+- `apps/web/lib/api/staff.ts` mock veri katmanı create/detail/update ve rol-izin taslak şablonlarıyla genişletildi; UI bileşenlerine gömülü mock personel verisi eklenmedi.
+- `apps/web/messages/tr.json` ve `apps/web/messages/en.json` personel create/detail/permission draft metinleri ve RBAC caveat uyarılarıyla güncellendi.
+
+- Yeni servis kaydı formunda müşteri arama-seçim akışındaki "yeni müşteri" aksiyonu, `/customers` ekranındaki ortak `CreateCustomerModal` bileşeniyle birleştirildi; başarılı mock oluşturma sonrası müşteri otomatik seçiliyor ve cihaz adımı otomatik olarak "yeni cihaz" moduna geçiyor.
+- Yeni servis kaydı formunda mevcut cihaz seçimi inline dropdown yerine müşteri kapsamlı cihaz seçici modalına taşındı; modal müşteriye bağlı tüm cihazları varsayılan olarak listeliyor, marka/model + seri/IMEI + kayıt tarihi (varsa `registeredAt`) gösteriyor.
+- `apps/web/lib/api/service-records.ts` mock cihaz modeli `registeredAt` alanı ile genişletildi; cihaz seçici ve form özeti bu alanı lokalize tarih formatıyla gösteriyor.
+
+- `/[locale]/staff` placeholder kaldırıldı ve Personel ekranı aktif hale getirildi; özet kartları (toplam personel, aktif teknisyen, bugün atanan iş, müsait olmayan) eklendi.
+- Personel ekranına arama + rol/durum filtreleri, mobil uyumlu personel kartları, açık atama/bugünkü atama sayaçları ve son atamaları servis kayıt detayına bağlayan linkler eklendi.
+- Yeni mock API katmanı `apps/web/lib/api/staff.ts` eklendi; personel listesi, durum/rol bilgisi, atama özetleri ve ekran metrikleri UI dışına taşındı.
+- Personel modülü bu fazda read-only bırakıldı; RBAC/kullanıcı yönetiminin henüz uygulanmadığına dair güvenlik/backlog notu UI ve dokümantasyonla hizalandı.
+- i18n sözlükleri (`apps/web/messages/tr.json` ve `apps/web/messages/en.json`) staff ekranı metinleriyle güncellendi.
 - Security backlog notu eklendi: auth/session + RBAC server-side zorlanmalı, multi-tenant sorgular `company_id` ile sınırlandırılmalı, public tracking kodları tokenized/non-guessable olmalı ve dosya/fotoğraflar signed URL ile yetkilendirilmelidir.
 - `/[locale]/cash` placeholder kaldırıldı ve Kasa & Cari ekranı aktif hale getirildi; günlük özet kartları (tahsilat, gider, net kasa, bekleyen alacak) eklendi.
 - Kasa & Cari ekranına filtre sekmeleri (tümü, tahsilat, gider, bekleyen), filtreye bağlı boş durum davranışı ve mobil uyumlu liste düzeni eklendi.

@@ -113,6 +113,11 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - Cihaz modülü müşteriye bağlılık kuralını mock API katmanında korur; cihaz listesi ve detay helper'ları sadece geçerli müşteri sahibi bağlamıyla veri döndürür.
 - `/[locale]/today` placeholder kaldırıldı; Bugünün İşleri ekranı aktif hale getirildi. Günlük özet kartları, filtreler (tümü/randevular/acil/tamamlanan), bugünkü randevu listesi (saat, müşteri, cihaz, adres, personel, durum) ve aksiyon bekleyen servis kayıtları (detay + müşteri/cihaz linkleri) eklendi.
 - `/[locale]/cash` placeholder kaldırıldı; Kasa & Cari ekranı aktif hale getirildi. Günlük özet kartları (tahsilat, gider, net kasa, bekleyen alacak), işlem filtreleri (tümü/tahsilat/gider/bekleyen), müşteri-servis bağlantılı hareket listesi ve filtreye özel boş durum eklendi.
+- `/[locale]/staff` placeholder kaldırıldı; Personel ekranı aktif hale getirildi. Personel özet kartları (toplam personel, aktif teknisyen, bugün atanan iş, müsait olmayan), rol/durum + arama filtreleri, kişi bazlı açık atama/bugünkü atama metrikleri ve son atamaların servis detayına linkleri eklendi.
+- `/[locale]/staff` ekranına mock personel oluşturma modalı eklendi; ad soyad + rol zorunlu, telefon/e-posta opsiyonel, varsayılan durum aktif ve başarıda kalıcı olmayan demo personel kimliği döndürülüyor.
+- Personel kartlarından açılan detay modalı; iletişim bilgileri, açık atama/bugünkü atama metrikleri, son servis atamaları ve servis kaydı deep link'leri ile aktif hale getirildi.
+- Personel detayında profil/durum/rol düzenleme akışı yalnızca mock oturum görünümünü günceller; backend create/update endpoint'i, audit log ve gerçek kullanıcı üyeliği akışı henüz bağlı değildir.
+- Personel detayında rol/izin matrisi taslak UI olarak gösterilir; bu yüzey gerçek güvenlik sağlamaz ve server-side RBAC guard'ları uygulanmadan yetki enforcement varmış gibi değerlendirilmemelidir.
 - Operasyon ekranlarında (Bugünün İşleri, Servis Kayıtları, Özet Durum) müşteri/cihaz/servis referansları, ilgili ID mevcutsa detay rotalarına deep link olarak gösterilir; ID yoksa metin plain olarak kalır.
 - Bugünün İşleri mock veri katmanı `apps/web/lib/api/today.ts` altında tutulur; açık kayıt ve öncelik hesapları mevcut servis kayıtları mock katmanından türetilir.
 - Sidebar navigasyonuna Bugünün İşleri modülü eklendi (`/[locale]/today`); nested route'larda (`/[locale]/service-records/[id]`, `settings/*` gibi) ilgili menü öğesi active-state korur.
@@ -121,6 +126,8 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - Müşteri detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<id>` desenini kullanır ve formu müşteri ön-seçimi ile açar.
 - Cihaz detayındaki "servis kaydı aç" aksiyonu `/[locale]/service-records/new?customerId=<ownerId>&deviceId=<deviceId>` desenini kullanır; form müşteri+cihaz ön-seçimi ile açılır.
 - `/[locale]/service-records/new` rotası `customerId` ve `deviceId` query parametrelerini doğrular; geçerli eşleşmelerde ön-seçim uygulanır, sadece `deviceId` geldiğinde cihaz sahibinden müşteri güvenli şekilde türetilir, geçersiz/uyumsuz kimliklerde seçim uygulanmaz ve lokalize uyarı gösterilir.
+- Yeni servis kaydı akışında müşteri arama-seçim sürecindeki "yeni müşteri" aksiyonu, müşteriler ekranındaki ortak oluşturma modalını kullanır; başarılı mock oluşturma sonrası müşteri formda otomatik seçilir ve akış yeni cihaz moduna geçer.
+- Yeni servis kaydı akışında mevcut cihaz seçimi inline select yerine müşteri kapsamlı cihaz seçici modalı ile yapılır; modal varsayılan olarak müşterinin tüm cihazlarını listeler ve varsa kayıt tarihini gösterir.
 - Kritik write işlemleri audit log üretir.
 - Demo kodu üretim kodu sayılmaz; gerektiğinde modüler şekilde `apps/web` altına taşınır.
 - Build, lint ve typecheck hatası bırakılmamalıdır.

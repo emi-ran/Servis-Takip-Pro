@@ -191,6 +191,162 @@
       "description": "Seçili görünüm için listelenecek tahsilat, gider veya bekleyen alacak kaydı bulunmuyor."
     }
   },
+  "staff": {
+    "title": "Personel",
+    "description": "Ekip üyelerinin operasyon durumunu, atanan iş yükünü ve son servis atamalarını izleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "securityNote": "Rol/yetki (RBAC) ve kullanıcı yönetimi henüz uygulanmadı. Bu ekran yalnızca MVP demo görünümüdür; gerçek erişim kısıtları backend auth + tenant guard ile zorlanacaktır.",
+    "readOnlyNote": "Personel oluşturma ve düzenleme akışları bu fazda yalnızca mock/planning yüzeyidir. Rol değişiklikleri ve izin matrisi gerçek güvenlik sağlamaz; server-side RBAC guard'ları zorunludur.",
+    "resultsLabel": "Toplam {count} personel gösteriliyor",
+    "actions": {
+      "create": "Personel ekle",
+      "detail": "Detay / düzenle",
+      "edit": "Profili düzenle",
+      "cancelEdit": "Düzenlemeyi kapat",
+      "cancel": "İptal",
+      "closeModal": "Personel penceresini kapat"
+    },
+    "summary": {
+      "totalStaff": "Toplam personel",
+      "activeTechnicians": "Aktif teknisyen",
+      "assignedJobsToday": "Bugün atanan iş",
+      "unavailable": "Müsait değil / izinli"
+    },
+    "filters": {
+      "searchLabel": "Personel ara",
+      "searchPlaceholder": "Ad, telefon veya e-posta ile ara",
+      "roleLabel": "Rol filtresi",
+      "statusLabel": "Durum filtresi",
+      "allRoles": "Tüm roller",
+      "allStatuses": "Tüm durumlar"
+    },
+    "roles": {
+      "ADMIN": "Yönetici",
+      "TECHNICIAN": "Teknisyen",
+      "RECEPTION": "Karşılama / Çağrı",
+      "ACCOUNTING": "Muhasebe"
+    },
+    "statuses": {
+      "ACTIVE": "Aktif",
+      "ON_LEAVE": "İzinli",
+      "INACTIVE": "Pasif"
+    },
+    "card": {
+      "notAvailable": "—",
+      "openAssigned": "Açık atanan kayıt",
+      "assignedToday": "Bugün atanan",
+      "recentAssignments": "Son atamalar",
+      "noRecentAssignments": "Son atama bulunmuyor"
+    },
+    "form": {
+      "optional": "opsiyonel",
+      "roleMockHint": "Rol alanı yalnızca mock planlama yüzeyidir; gerçek yetki ataması backend RBAC ile yapılmalıdır.",
+      "fields": {
+        "name": "Ad soyad",
+        "role": "Rol",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "status": "Durum"
+      }
+    },
+    "validation": {
+      "summary": "Lütfen zorunlu alanları düzeltin.",
+      "nameRequired": "Ad soyad zorunludur.",
+      "roleRequired": "Rol seçimi zorunludur."
+    },
+    "create": {
+      "title": "Yeni personel oluştur",
+      "description": "Bu modal mock kayıt üretir. Dönen personel kimliği demo amaçlıdır ve sayfa yenilendiğinde kaybolur.",
+      "actions": {
+        "submit": "Mock personel oluştur",
+        "submitting": "Oluşturuluyor..."
+      },
+      "success": {
+        "title": "Mock personel oluşturuldu",
+        "description": "{name} için demo personel kimliği üretildi: {id}",
+        "nonPersistent": "Bu sonuç kalıcı değildir; backend create endpoint'i ve audit log akışı henüz bağlı değildir."
+      }
+    },
+    "detail": {
+      "title": "Personel detayı",
+      "description": "Profil özeti, son atamalar ve rol/izin planlama yüzeyi birlikte görüntülenir.",
+      "loading": "Personel detayı yükleniyor...",
+      "notFound": "Personel detayı bulunamadı.",
+      "securityTitle": "Mock düzenleme uyarısı",
+      "securityDescription": "Bu düzenleme yüzeyi yalnızca UI planlaması içindir. Rol veya durum değişikliği gerçek erişim yetkisi vermez; backend RBAC guard'ları uygulanmadan güvenlik oluşmaz.",
+      "recentAssignmentsTitle": "Son atamalar",
+      "assignmentLinkLabel": "Servis kaydını aç",
+      "contact": {
+        "phone": "Telefon",
+        "email": "E-posta"
+      },
+      "metrics": {
+        "openAssignments": "Açık atama",
+        "assignedToday": "Bugün atanan"
+      },
+      "actions": {
+        "save": "Mock değişikliği kaydet",
+        "submitting": "Kaydediliyor..."
+      },
+      "success": {
+        "title": "Mock personel güncellendi",
+        "description": "{name} için yapılan değişiklikler sadece bu oturum görünümünde güncellendi.",
+        "nonPersistent": "Bu düzenleme backend'e yazılmadı, audit log üretmedi ve gerçek yetki modeli oluşturmadı."
+      }
+    },
+    "permissions": {
+      "title": "Rol / izin taslağı",
+      "description": "Aşağıdaki matris yalnızca planlama amaçlıdır; henüz backend enforcement yoktur.",
+      "readinessDraft": "Taslak",
+      "roleTemplateLabel": "{role} rolü için planlanan erişim görünümü",
+      "mockTitle": "RBAC uyarısı",
+      "mockDescription": "Bu tablo gerçek güvenlik değildir. Modül erişimleri backend auth, tenant scope ve server-side permission guard'larıyla zorlanmalıdır.",
+      "columns": {
+        "module": "Modül",
+        "state": "Erişim",
+        "note": "Plan notu"
+      },
+      "modules": {
+        "SERVICE_RECORDS": "Servis kayıtları",
+        "CUSTOMERS": "Müşteriler",
+        "DEVICES": "Cihazlar",
+        "CASH": "Kasa / cari",
+        "STAFF_SETTINGS": "Personel / ayarlar"
+      },
+      "states": {
+        "FULL": "Tam",
+        "LIMITED": "Sınırlı",
+        "NONE": "Yok"
+      },
+      "notes": {
+        "ADMIN_SERVICE_RECORDS": "Tüm servis kayıtlarını açma, atama ve durum güncelleme planı.",
+        "ADMIN_CUSTOMERS": "Müşteri ve bağlı cihaz kayıtlarını tam yönetme planı.",
+        "ADMIN_DEVICES": "Cihaz envanteri ve tüm servis geçmişini görüntüleme planı.",
+        "ADMIN_CASH": "Tahsilat, gider ve kasa mutabakatına tam erişim planı.",
+        "ADMIN_STAFF_SETTINGS": "Personel ve ayar yönetimi yalnızca backend RBAC guard'ları geldikten sonra etkinleştirilmelidir.",
+        "TECHNICIAN_SERVICE_RECORDS": "Atanmış servis kayıtlarında operasyonel çalışma ve durum ilerletme planı.",
+        "TECHNICIAN_CUSTOMERS": "Servis icrası için gereken müşteri iletişim verisine sınırlı görünürlük planı.",
+        "TECHNICIAN_DEVICES": "Cihaz detayları ve teknik geçmişi görüntüleme planı.",
+        "TECHNICIAN_CASH": "Backend politika tanımı olmadan kasa erişimi verilmemelidir.",
+        "TECHNICIAN_STAFF_SETTINGS": "Teknisyen için personel/ayar yönetimi planlanmamalıdır.",
+        "RECEPTION_SERVICE_RECORDS": "Kayıt açma ve durum takibi mümkün; hassas aksiyonlar ayrıca korunmalıdır.",
+        "RECEPTION_CUSTOMERS": "Müşteri iletişim ve kabul bilgilerini tam toplama planı.",
+        "RECEPTION_DEVICES": "Cihaz kabul bilgilerini sınırlı kapsamda kaydetme planı.",
+        "RECEPTION_CASH": "Tahsilat hazırlığı gibi kısıtlı finans akışları için aday erişim planı.",
+        "RECEPTION_STAFF_SETTINGS": "Karşılama rolüne personel/ayar erişimi verilmemelidir.",
+        "ACCOUNTING_SERVICE_RECORDS": "Faturalama bağlamı için servis durumunu referans alma planı.",
+        "ACCOUNTING_CUSTOMERS": "Tahsilat ve fatura için gerekli müşteri verisine sınırlı erişim planı.",
+        "ACCOUNTING_DEVICES": "Muhasebe rolü için cihaz teknik detay erişimi varsayılan olarak kapalı kalmalıdır.",
+        "ACCOUNTING_CASH": "Tahsilat, gider ve mutabakat akışlarını sahiplenme planı.",
+        "ACCOUNTING_STAFF_SETTINGS": "Muhasebe rolüne personel/ayar yönetimi verilmemelidir."
+      }
+    },
+    "empty": {
+      "defaultTitle": "Henüz personel kaydı yok",
+      "filteredTitle": "Seçili filtrelerde personel bulunamadı",
+      "description": "Arama veya filtre kriterlerinize göre listelenecek personel görünmüyor."
+    }
+  },
   "serviceRecords": {
     "title": "Servis kayıtları",
     "description": "Operasyon masasındaki tüm servis kayıtlarını takip edin, filtreleyin ve yeni kayıt akışına buradan ilerleyin.",
@@ -263,6 +419,7 @@
         "deviceBrand": "Cihaz markası",
         "deviceModel": "Cihaz modeli",
         "serialOrImei": "Seri no / IMEI (opsiyonel)",
+        "serialNotProvided": "Seri / IMEI bilgisi yok",
         "issueSummary": "Arıza özeti",
         "issueDescription": "Arıza açıklaması",
         "priority": "Öncelik",
@@ -286,6 +443,21 @@
       "hints": {
         "noDeviceForCustomer": "Bu müşteriye kayıtlı cihaz bulunamadı. Lütfen yeni cihaz ekleyin."
       },
+      "devicePicker": {
+        "emptyTitle": "Henüz cihaz seçilmedi",
+        "emptyDescription": "Müşteriye kayıtlı bir cihaz seçin veya yeni cihazla devam edin.",
+        "customerRequiredTitle": "Cihaz seçimi için müşteri gerekli",
+        "customerRequiredDescription": "Kayıtlı cihazları görmek için önce müşteri seçin.",
+        "modalTitle": "Kayıtlı cihaz seç",
+        "modalDescription": "{name} müşterisine kayıtlı cihazlar listeleniyor.",
+        "closeModalAriaLabel": "Kayıtlı cihaz seçimi penceresini kapat",
+        "searchLabel": "Kayıtlı cihazlarda ara",
+        "searchPlaceholder": "Marka, model veya seri/IMEI ile filtrele",
+        "registeredAt": "Kayıt tarihi: {date}",
+        "registeredAtUnknown": "Kayıt tarihi bilgisi yok",
+        "noResultTitle": "Cihaz bulunamadı",
+        "noResultDescription": "Bu filtre ile eşleşen cihaz yok. Yeni cihaz ekleyerek devam edebilirsiniz."
+      },
       "preselectWarnings": {
         "customerNotFound": "Bağlantıdaki müşteri kaydı bulunamadığı için ön seçim uygulanamadı.",
         "deviceNotFound": "Bağlantıdaki cihaz kaydı bulunamadığı için cihaz ön seçimi uygulanamadı.",
@@ -308,6 +480,10 @@
         "changeCustomer": "Müşteriyi değiştir",
         "newCustomer": "Yeni müşteri ekle",
         "closeSearch": "Aramayı kapat",
+        "selectRegisteredDevice": "Kayıtlı cihaz seç",
+        "changeDevice": "Cihazı değiştir",
+        "addNewDevice": "Yeni cihaz ekle",
+        "closeDevicePicker": "Cihaz seçimini kapat",
         "submit": "Servis kaydını oluştur",
         "submitting": "Oluşturuluyor..."
       },

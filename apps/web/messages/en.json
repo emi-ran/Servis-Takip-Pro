@@ -191,6 +191,162 @@
       "description": "There are no income, expense, or pending receivable items to display for the selected view."
     }
   },
+  "staff": {
+    "title": "Staff",
+    "description": "Monitor team availability, assigned workload, and recent service assignments.",
+    "lastUpdatedLabel": "Last update",
+    "securityNote": "Role/permission (RBAC) and user management are not implemented yet. This screen is an MVP demo overview; real access restrictions must be enforced by backend auth + tenant guards.",
+    "readOnlyNote": "Staff create and edit flows in this phase are mock/planning surfaces only. Role changes and permission matrices do not provide real security; server-side RBAC guards are still required.",
+    "resultsLabel": "Showing {count} staff members",
+    "actions": {
+      "create": "Add staff",
+      "detail": "Details / edit",
+      "edit": "Edit profile",
+      "cancelEdit": "Close edit mode",
+      "cancel": "Cancel",
+      "closeModal": "Close staff modal"
+    },
+    "summary": {
+      "totalStaff": "Total staff",
+      "activeTechnicians": "Active technicians",
+      "assignedJobsToday": "Assigned today",
+      "unavailable": "Unavailable / on leave"
+    },
+    "filters": {
+      "searchLabel": "Search staff",
+      "searchPlaceholder": "Search by name, phone, or email",
+      "roleLabel": "Role filter",
+      "statusLabel": "Status filter",
+      "allRoles": "All roles",
+      "allStatuses": "All statuses"
+    },
+    "roles": {
+      "ADMIN": "Admin",
+      "TECHNICIAN": "Technician",
+      "RECEPTION": "Reception / Call Desk",
+      "ACCOUNTING": "Accounting"
+    },
+    "statuses": {
+      "ACTIVE": "Active",
+      "ON_LEAVE": "On leave",
+      "INACTIVE": "Inactive"
+    },
+    "card": {
+      "notAvailable": "—",
+      "openAssigned": "Open assigned records",
+      "assignedToday": "Assigned today",
+      "recentAssignments": "Recent assignments",
+      "noRecentAssignments": "No recent assignments"
+    },
+    "form": {
+      "optional": "optional",
+      "roleMockHint": "The role field is planning-only here; real permission assignment must be enforced by backend RBAC.",
+      "fields": {
+        "name": "Full name",
+        "role": "Role",
+        "phone": "Phone",
+        "email": "Email",
+        "status": "Status"
+      }
+    },
+    "validation": {
+      "summary": "Please fix the required fields.",
+      "nameRequired": "Full name is required.",
+      "roleRequired": "Role selection is required."
+    },
+    "create": {
+      "title": "Create staff member",
+      "description": "This modal generates a mock record. The returned staff ID is for demo use only and disappears after refresh.",
+      "actions": {
+        "submit": "Create mock staff",
+        "submitting": "Creating..."
+      },
+      "success": {
+        "title": "Mock staff created",
+        "description": "Generated a demo staff ID for {name}: {id}",
+        "nonPersistent": "This result is not persistent; the backend create endpoint and audit log flow are not connected yet."
+      }
+    },
+    "detail": {
+      "title": "Staff detail",
+      "description": "View profile summary, recent assignments, and the role/permission planning surface together.",
+      "loading": "Loading staff detail...",
+      "notFound": "Staff detail could not be found.",
+      "securityTitle": "Mock editing warning",
+      "securityDescription": "This editing surface is for UI planning only. Changing role or status here does not grant real access; security does not exist until backend RBAC guards are implemented.",
+      "recentAssignmentsTitle": "Recent assignments",
+      "assignmentLinkLabel": "Open service record",
+      "contact": {
+        "phone": "Phone",
+        "email": "Email"
+      },
+      "metrics": {
+        "openAssignments": "Open assignments",
+        "assignedToday": "Assigned today"
+      },
+      "actions": {
+        "save": "Save mock change",
+        "submitting": "Saving..."
+      },
+      "success": {
+        "title": "Mock staff updated",
+        "description": "Changes for {name} were updated in this session view only.",
+        "nonPersistent": "This edit was not written to the backend, did not produce an audit log, and did not create a real permission model."
+      }
+    },
+    "permissions": {
+      "title": "Role / permission draft",
+      "description": "The matrix below is for planning only; there is no backend enforcement yet.",
+      "readinessDraft": "Draft",
+      "roleTemplateLabel": "Planned access view for the {role} role",
+      "mockTitle": "RBAC caveat",
+      "mockDescription": "This table is not real security. Module access must be enforced by backend auth, tenant scope, and server-side permission guards.",
+      "columns": {
+        "module": "Module",
+        "state": "Access",
+        "note": "Planning note"
+      },
+      "modules": {
+        "SERVICE_RECORDS": "Service records",
+        "CUSTOMERS": "Customers",
+        "DEVICES": "Devices",
+        "CASH": "Cash / ledger",
+        "STAFF_SETTINGS": "Staff / settings"
+      },
+      "states": {
+        "FULL": "Full",
+        "LIMITED": "Limited",
+        "NONE": "None"
+      },
+      "notes": {
+        "ADMIN_SERVICE_RECORDS": "Planned ability to open, assign, and update every service record.",
+        "ADMIN_CUSTOMERS": "Planned full management for customers and linked device records.",
+        "ADMIN_DEVICES": "Planned visibility into device inventory and full service history.",
+        "ADMIN_CASH": "Planned full access to collections, expenses, and cash reconciliation.",
+        "ADMIN_STAFF_SETTINGS": "Staff/settings management should only be enabled after backend RBAC guards exist.",
+        "TECHNICIAN_SERVICE_RECORDS": "Planned operational work on assigned service records and status progression.",
+        "TECHNICIAN_CUSTOMERS": "Planned limited visibility into customer contact details required for service execution.",
+        "TECHNICIAN_DEVICES": "Planned access to device details and technical history.",
+        "TECHNICIAN_CASH": "Cash access should not be granted without an explicit backend policy.",
+        "TECHNICIAN_STAFF_SETTINGS": "Staff/settings management should not be planned for technicians.",
+        "RECEPTION_SERVICE_RECORDS": "Intake creation and status follow-up can be planned, while sensitive actions stay protected.",
+        "RECEPTION_CUSTOMERS": "Planned full capture of customer contact and intake information.",
+        "RECEPTION_DEVICES": "Planned limited intake-level device registration access.",
+        "RECEPTION_CASH": "Candidate limited access for collection-ready financial flows.",
+        "RECEPTION_STAFF_SETTINGS": "Reception should not receive staff/settings access.",
+        "ACCOUNTING_SERVICE_RECORDS": "Planned reference access to service status for billing context.",
+        "ACCOUNTING_CUSTOMERS": "Planned limited access to customer data needed for billing and collections.",
+        "ACCOUNTING_DEVICES": "Technical device detail access should stay off by default for accounting.",
+        "ACCOUNTING_CASH": "Planned ownership of collections, expenses, and reconciliation workflows.",
+        "ACCOUNTING_STAFF_SETTINGS": "Accounting should not receive staff/settings management access."
+      }
+    },
+    "empty": {
+      "defaultTitle": "No staff records yet",
+      "filteredTitle": "No staff found for selected filters",
+      "description": "No staff members match your current search or filter criteria."
+    }
+  },
   "serviceRecords": {
     "title": "Service records",
     "description": "Track every service record on the operations desk, filter the list, and continue to the new-record flow from here.",
@@ -263,6 +419,7 @@
         "deviceBrand": "Device brand",
         "deviceModel": "Device model",
         "serialOrImei": "Serial number / IMEI (optional)",
+        "serialNotProvided": "No serial / IMEI provided",
         "issueSummary": "Issue summary",
         "issueDescription": "Issue description",
         "priority": "Priority",
@@ -286,6 +443,21 @@
       "hints": {
         "noDeviceForCustomer": "No saved device found for this customer. Please add a new device."
       },
+      "devicePicker": {
+        "emptyTitle": "No device selected yet",
+        "emptyDescription": "Select a registered customer device or continue with a new device.",
+        "customerRequiredTitle": "Customer required for device selection",
+        "customerRequiredDescription": "Select a customer first to list registered devices.",
+        "modalTitle": "Select registered device",
+        "modalDescription": "Showing registered devices for {name}.",
+        "closeModalAriaLabel": "Close registered device picker modal",
+        "searchLabel": "Search in registered devices",
+        "searchPlaceholder": "Filter by brand, model, or serial/IMEI",
+        "registeredAt": "Registered at: {date}",
+        "registeredAtUnknown": "Registered date is unavailable",
+        "noResultTitle": "No devices found",
+        "noResultDescription": "No devices matched this filter. You can continue by adding a new device."
+      },
       "preselectWarnings": {
         "customerNotFound": "Preselection was not applied because the customer in the link was not found.",
         "deviceNotFound": "Device preselection was not applied because the device in the link was not found.",
@@ -308,6 +480,10 @@
         "changeCustomer": "Change customer",
         "newCustomer": "Add new customer",
         "closeSearch": "Close search",
+        "selectRegisteredDevice": "Select registered device",
+        "changeDevice": "Change device",
+        "addNewDevice": "Add new device",
+        "closeDevicePicker": "Close device picker",
         "submit": "Create service record",
         "submitting": "Creating..."
       },

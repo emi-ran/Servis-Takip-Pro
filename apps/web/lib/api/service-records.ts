@@ -22,6 +22,7 @@ export type MockDevice = {
   brand: string;
   model: string;
   serialOrImei: string;
+  registeredAt?: string;
 };
 
 export type CreateServiceRecordInput = {
@@ -223,11 +224,11 @@ const createServiceRecordFormOptions: CreateServiceRecordFormOptions = {
     { id: "cust-004", name: "Zeynep Kaya", phone: "+90 537 333 40 40", email: "zeynep.kaya@example.com" },
   ],
   devices: [
-    { id: "dev-001", customerId: "cust-001", brand: "Samsung", model: "Galaxy S23", serialOrImei: "SM-S911B-TR-10021" },
-    { id: "dev-002", customerId: "cust-001", brand: "Apple", model: "iPhone 13", serialOrImei: "A2633-IMEI-94421" },
-    { id: "dev-003", customerId: "cust-002", brand: "Bosch", model: "WGA142", serialOrImei: "BS-WGA142-77210" },
-    { id: "dev-004", customerId: "cust-003", brand: "Apple", model: "MacBook Pro M1", serialOrImei: "APL-MBP-2021-31104" },
-    { id: "dev-005", customerId: "cust-004", brand: "Sony", model: "Bravia 55 OLED", serialOrImei: "SONY-BRV-55-76119" },
+    { id: "dev-001", customerId: "cust-001", brand: "Samsung", model: "Galaxy S23", serialOrImei: "SM-S911B-TR-10021", registeredAt: "2026-02-11T09:15:00.000Z" },
+    { id: "dev-002", customerId: "cust-001", brand: "Apple", model: "iPhone 13", serialOrImei: "A2633-IMEI-94421", registeredAt: "2025-12-08T13:40:00.000Z" },
+    { id: "dev-003", customerId: "cust-002", brand: "Bosch", model: "WGA142", serialOrImei: "BS-WGA142-77210", registeredAt: "2026-01-22T16:05:00.000Z" },
+    { id: "dev-004", customerId: "cust-003", brand: "Apple", model: "MacBook Pro M1", serialOrImei: "APL-MBP-2021-31104", registeredAt: "2025-11-19T10:30:00.000Z" },
+    { id: "dev-005", customerId: "cust-004", brand: "Sony", model: "Bravia 55 OLED", serialOrImei: "SONY-BRV-55-76119", registeredAt: "2026-03-02T08:50:00.000Z" },
   ],
   assignees: [
     { id: "staff-001", name: "Mert Aydın" },

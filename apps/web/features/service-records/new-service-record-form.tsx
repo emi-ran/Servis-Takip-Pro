@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 
+import { CreateCustomerModal, type CreateCustomerCreatedPayload } from "@/features/customers/create-customer-modal";
 import { Panel } from "@/components/ui/panel";
 import {
   createMockServiceRecord,
@@ -13,7 +14,6 @@ import {
   type ServiceRecordPreselectionWarning,
   type ServicePriority,
   type ServiceStatus,
-  searchMockCustomers,
 } from "@/lib/api/service-records";
 import type { Locale } from "@/lib/i18n/settings";
 
@@ -27,11 +27,7 @@ type NewServiceRecordFormProps = {
 };
 
 type FormState = {
-  customerMode: "existing" | "new";
   selectedCustomerId: string;
-  newCustomerName: string;
-  newCustomerPhone: string;
-  newCustomerEmail: string;
   deviceMode: "existing" | "new";
   selectedDeviceId: string;
   newDeviceBrand: string;
@@ -48,11 +44,7 @@ type FormState = {
 type FormErrors = Partial<Record<keyof FormState, string>>;
 
 const initialFormState: FormState = {
-  customerMode: "existing",
   selectedCustomerId: "",
-  newCustomerName: "",
-  newCustomerPhone: "",
-  newCustomerEmail: "",
   deviceMode: "existing",
   selectedDeviceId: "",
   newDeviceBrand: "",
@@ -72,17 +64,8 @@ const CUSTOMER_SEARCH_LIMIT = 8;
 function validate(formState: FormState, dictionary: Dictionary): FormErrors {
   const errors: FormErrors = {};
 
-  if (formState.customerMode === "existing") {
-    if (!formState.selectedCustomerId) {
-      errors.selectedCustomerId = dictionary.serviceRecords.newForm.validation.customerRequired;
-    }
-  } else {
-    if (!formState.newCustomerName.trim()) {
-      errors.newCustomerName = dictionary.serviceRecords.newForm.validation.customerName;
-    }
-    if (!formState.newCustomerPhone.trim()) {
-      errors.newCustomerPhone = dictionary.serviceRecords.newForm.validation.customerPhone;
-    }
+  if (!formState.selectedCustomerId) {
+    errors.selectedCustomerId = dictionary.serviceRecords.newForm.validation.customerRequired;
   }
 
   if (formState.deviceMode === "existing") {
@@ -126,6 +109,7 @@ function getPreselectionWarningMessage(dictionary: Dictionary, warning: ServiceR
 }
 
 export function NewServiceRecordForm({ locale, dictionary, options, preselection }: NewServiceRecordFormProps) {
+  const [localCustomers, setLocalCustomers] = useState(options.customers);
   const [formState, setFormState] = useState<FormState>({
     ...initialFormState,
     selectedCustomerId: preselection.selectedCustomerId,
@@ -145,32 +129,50 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
     hasMore: false,
     customers: [],
   });
+  const [isCreateCustomerModalOpen, setIsCreateCustomerModalOpen] = useState(false);
+  const [isDevicePickerOpen, setIsDevicePickerOpen] = useState(false);
+  const [devicePickerQuery, setDevicePickerQuery] = useState("");
 
   useEffect(() => {
-    let active = true;
+    const normalizedQuery = customerSearchQuery.trim();
 
-    const runSearch = async () => {
-      const result = await searchMockCustomers(customerSearchQuery, CUSTOMER_SEARCH_LIMIT, CUSTOMER_SEARCH_MIN_LENGTH);
-      if (active) {
-        setCustomerSearchResult(result);
-      }
-    };
+    if (normalizedQuery.length < CUSTOMER_SEARCH_MIN_LENGTH) {
+      setCustomerSearchResult({
+        query: normalizedQuery,
+        minQueryLength: CUSTOMER_SEARCH_MIN_LENGTH,
+        limit: CUSTOMER_SEARCH_LIMIT,
+        totalCount: 0,
+        hasMore: false,
+        customers: [],
+      });
+      return;
+    }
 
-    void runSearch();
+    const loweredQuery = normalizedQuery.toLocaleLowerCase("tr-TR");
+    const matchedCustomers = localCustomers.filter((customer) => {
+      const searchable = `${customer.name} ${customer.phone} ${customer.email}`.toLocaleLowerCase("tr-TR");
+      return searchable.includes(loweredQuery);
+    });
 
-    return () => {
-      active = false;
-    };
-  }, [customerSearchQuery]);
+    setCustomerSearchResult({
+      query: normalizedQuery,
+      minQueryLength: CUSTOMER_SEARCH_MIN_LENGTH,
+      limit: CUSTOMER_SEARCH_LIMIT,
+      totalCount: matchedCustomers.length,
+      hasMore: matchedCustomers.length > CUSTOMER_SEARCH_LIMIT,
+      customers: matchedCustomers.slice(0, CUSTOMER_SEARCH_LIMIT),
+    });
+  }, [customerSearchQuery, localCustomers]);
 
   useEffect(() => {
-    if (!isCustomerSearchOpen) {
+    if (!isCustomerSearchOpen && !isDevicePickerOpen) {
       return;
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsCustomerSearchOpen(false);
+        setIsDevicePickerOpen(false);
       }
     };
 
@@ -178,13 +180,25 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [isCustomerSearchOpen]);
+  }, [isCustomerSearchOpen, isDevicePickerOpen]);
 
-  const selectedCustomer = options.customers.find((customer) => customer.id === formState.selectedCustomerId) ?? null;
+  const selectedCustomer = localCustomers.find((customer) => customer.id === formState.selectedCustomerId) ?? null;
   const selectedCustomerDevices = useMemo(
     () => (selectedCustomer ? options.devices.filter((device) => device.customerId === selectedCustomer.id) : []),
     [options.devices, selectedCustomer],
   );
+  const selectedDevice = selectedCustomerDevices.find((device) => device.id === formState.selectedDeviceId) ?? null;
+  const filteredSelectedCustomerDevices = useMemo(() => {
+    const normalizedQuery = devicePickerQuery.trim().toLocaleLowerCase("tr-TR");
+    if (!normalizedQuery) {
+      return selectedCustomerDevices;
+    }
+
+    return selectedCustomerDevices.filter((device) => {
+      const searchable = `${device.brand} ${device.model} ${device.serialOrImei ?? ""}`.toLocaleLowerCase("tr-TR");
+      return searchable.includes(normalizedQuery);
+    });
+  }, [devicePickerQuery, selectedCustomerDevices]);
 
   const updateField = <K extends keyof FormState>(field: K, value: FormState[K]) => {
     setFormState((previousState) => ({ ...previousState, [field]: value }));
@@ -194,24 +208,6 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
       }
       const nextErrors = { ...previousErrors };
       delete nextErrors[field];
-      return nextErrors;
-    });
-  };
-
-  const handleCustomerModeChange = (mode: "existing" | "new") => {
-    setFormState((previousState) => ({
-      ...previousState,
-      customerMode: mode,
-      selectedCustomerId: mode === "existing" ? previousState.selectedCustomerId : "",
-      deviceMode: mode === "new" ? "new" : previousState.deviceMode,
-      selectedDeviceId: "",
-    }));
-    setErrors((previousErrors) => {
-      const nextErrors = { ...previousErrors };
-      delete nextErrors.selectedCustomerId;
-      delete nextErrors.newCustomerName;
-      delete nextErrors.newCustomerPhone;
-      delete nextErrors.selectedDeviceId;
       return nextErrors;
     });
   };
@@ -246,9 +242,69 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
     closeCustomerSearch();
   };
 
-  const switchToNewCustomerMode = () => {
-    handleCustomerModeChange("new");
+  const openCreateCustomerModal = () => {
     closeCustomerSearch();
+    setIsCreateCustomerModalOpen(true);
+  };
+
+  const closeCreateCustomerModal = () => {
+    setIsCreateCustomerModalOpen(false);
+  };
+
+  const openDevicePicker = () => {
+    if (!selectedCustomer) {
+      return;
+    }
+
+    setDevicePickerQuery("");
+    setIsDevicePickerOpen(true);
+  };
+
+  const closeDevicePicker = () => {
+    setIsDevicePickerOpen(false);
+    setDevicePickerQuery("");
+  };
+
+  const selectDevice = (deviceId: string) => {
+    updateField("selectedDeviceId", deviceId);
+    setErrors((previousErrors) => {
+      const nextErrors = { ...previousErrors };
+      delete nextErrors.selectedDeviceId;
+      return nextErrors;
+    });
+    closeDevicePicker();
+  };
+
+  const switchToNewDeviceMode = () => {
+    handleDeviceModeChange("new");
+    closeDevicePicker();
+  };
+
+  const handleCustomerCreatedForServiceForm = (createdCustomer: CreateCustomerCreatedPayload) => {
+    const customerToAppend = {
+      id: createdCustomer.customerId,
+      name: createdCustomer.customerName,
+      phone: createdCustomer.input.phone.trim(),
+      email: createdCustomer.input.email?.trim() || "",
+    };
+
+    setLocalCustomers((previousCustomers) => [customerToAppend, ...previousCustomers]);
+    setFormState((previousState) => ({
+      ...previousState,
+      selectedCustomerId: createdCustomer.customerId,
+      deviceMode: "new",
+      selectedDeviceId: "",
+    }));
+    setErrors((previousErrors) => {
+      const nextErrors = { ...previousErrors };
+      delete nextErrors.selectedCustomerId;
+      delete nextErrors.selectedDeviceId;
+      delete nextErrors.newDeviceBrand;
+      delete nextErrors.newDeviceModel;
+      return nextErrors;
+    });
+    setPreselectionWarning(null);
+    closeCreateCustomerModal();
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -262,15 +318,8 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
     }
 
     const input: CreateServiceRecordInput = {
-      customerId: formState.customerMode === "existing" ? formState.selectedCustomerId : undefined,
-      newCustomer:
-        formState.customerMode === "new"
-          ? {
-              name: formState.newCustomerName.trim(),
-              phone: formState.newCustomerPhone.trim(),
-              email: formState.newCustomerEmail.trim() || undefined,
-            }
-          : undefined,
+      customerId: formState.selectedCustomerId,
+      newCustomer: undefined,
       deviceId: formState.deviceMode === "existing" ? formState.selectedDeviceId : undefined,
       newDevice:
         formState.deviceMode === "new"
@@ -322,20 +371,7 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
               <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">{dictionary.serviceRecords.newForm.sections.customer}</h2>
             </div>
 
-            <SelectField
-              id="customer-mode"
-              label={dictionary.serviceRecords.newForm.fields.customerMode}
-              onChange={(value) => handleCustomerModeChange(value as "existing" | "new")}
-              options={[
-                { value: "existing", label: dictionary.serviceRecords.newForm.fields.customerModeExisting },
-                { value: "new", label: dictionary.serviceRecords.newForm.fields.customerModeNew },
-              ]}
-              value={formState.customerMode}
-            />
-
-            {formState.customerMode === "existing" ? (
-              <>
-                <div className="md:col-span-2 space-y-3">
+            <div className="md:col-span-2 space-y-3">
                   <label className="block text-sm font-medium text-slate-700" htmlFor="customer-search-action">
                     {dictionary.serviceRecords.newForm.fields.customerSelect}
                     <span className="ml-1 text-red-600">*</span>
@@ -357,7 +393,7 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
                         </button>
                         <button
                           className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                          onClick={switchToNewCustomerMode}
+                          onClick={openCreateCustomerModal}
                           type="button"
                         >
                           {dictionary.serviceRecords.newForm.actions.newCustomer}
@@ -379,7 +415,7 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
                         </button>
                         <button
                           className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                          onClick={switchToNewCustomerMode}
+                          onClick={openCreateCustomerModal}
                           type="button"
                         >
                           {dictionary.serviceRecords.newForm.actions.newCustomer}
@@ -395,43 +431,15 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
                   {isCustomerSearchOpen ? (
                     <CustomerSearchModal
                       dictionary={dictionary}
+                      onCreateCustomer={openCreateCustomerModal}
                       onClose={closeCustomerSearch}
                       onSearchQueryChange={setCustomerSearchQuery}
                       onSelectCustomer={selectCustomer}
-                      onSwitchToNewCustomer={switchToNewCustomerMode}
                       searchQuery={customerSearchQuery}
                       searchResult={customerSearchResult}
                     />
                   ) : null}
                 </div>
-              </>
-            ) : (
-              <>
-                <FormField
-                  error={errors.newCustomerName}
-                  id="new-customer-name"
-                  label={dictionary.serviceRecords.newForm.fields.customerName}
-                  onChange={(value) => updateField("newCustomerName", value)}
-                  required
-                  value={formState.newCustomerName}
-                />
-                <FormField
-                  error={errors.newCustomerPhone}
-                  id="new-customer-phone"
-                  label={dictionary.serviceRecords.newForm.fields.customerPhone}
-                  onChange={(value) => updateField("newCustomerPhone", value)}
-                  required
-                  value={formState.newCustomerPhone}
-                />
-                <FormField
-                  id="new-customer-email"
-                  label={dictionary.serviceRecords.newForm.fields.customerEmail}
-                  onChange={(value) => updateField("newCustomerEmail", value)}
-                  type="email"
-                  value={formState.newCustomerEmail}
-                />
-              </>
-            )}
 
             <div className="md:col-span-2 border-t border-slate-100 pt-5">
               <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">{dictionary.serviceRecords.newForm.sections.device}</h2>
@@ -449,27 +457,79 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
             />
 
             {formState.deviceMode === "existing" ? (
-              <SelectField
-                error={errors.selectedDeviceId}
-                disabled={!selectedCustomer}
-                id="device-id"
-                label={dictionary.serviceRecords.newForm.fields.deviceSelect}
-                onChange={(value) => updateField("selectedDeviceId", value)}
-                options={[
-                  {
-                    value: "",
-                    label: selectedCustomer
-                      ? dictionary.serviceRecords.newForm.fields.deviceSelectPlaceholder
-                      : dictionary.serviceRecords.newForm.fields.deviceSelectCustomerFirst,
-                  },
-                  ...selectedCustomerDevices.map((device) => ({
-                    value: device.id,
-                    label: `${device.brand} ${device.model}${device.serialOrImei ? ` · ${device.serialOrImei}` : ""}`,
-                  })),
-                ]}
-                required
-                value={formState.selectedDeviceId}
-              />
+              <div className="md:col-span-2 space-y-3">
+                <label className="block text-sm font-medium text-slate-700" htmlFor="device-picker-action">
+                  {dictionary.serviceRecords.newForm.fields.deviceSelect}
+                  <span className="ml-1 text-red-600">*</span>
+                </label>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                  {selectedCustomer ? (
+                    selectedDevice ? (
+                      <>
+                        <p className="font-semibold text-slate-900">{`${selectedDevice.brand} ${selectedDevice.model}`}</p>
+                        <p>{selectedDevice.serialOrImei || dictionary.serviceRecords.newForm.fields.serialNotProvided}</p>
+                        {selectedDevice.registeredAt ? (
+                          <p className="text-xs text-slate-500">
+                            {dictionary.serviceRecords.newForm.devicePicker.registeredAt.replace(
+                              "{date}",
+                              new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(selectedDevice.registeredAt)),
+                            )}
+                          </p>
+                        ) : null}
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-medium text-slate-900">{dictionary.serviceRecords.newForm.devicePicker.emptyTitle}</p>
+                        <p className="mt-1 text-slate-600">{dictionary.serviceRecords.newForm.devicePicker.emptyDescription}</p>
+                      </>
+                    )
+                  ) : (
+                    <>
+                      <p className="font-medium text-slate-900">{dictionary.serviceRecords.newForm.devicePicker.customerRequiredTitle}</p>
+                      <p className="mt-1 text-slate-600">{dictionary.serviceRecords.newForm.devicePicker.customerRequiredDescription}</p>
+                    </>
+                  )}
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100"
+                      disabled={!selectedCustomer}
+                      id="device-picker-action"
+                      onClick={openDevicePicker}
+                      type="button"
+                    >
+                      {selectedDevice
+                        ? dictionary.serviceRecords.newForm.actions.changeDevice
+                        : dictionary.serviceRecords.newForm.actions.selectRegisteredDevice}
+                    </button>
+                    <button
+                      className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                      onClick={() => handleDeviceModeChange("new")}
+                      type="button"
+                    >
+                      {dictionary.serviceRecords.newForm.actions.addNewDevice}
+                    </button>
+                  </div>
+                </div>
+
+                {errors.selectedDeviceId ? <span className="text-xs font-medium text-red-600">{errors.selectedDeviceId}</span> : null}
+
+                {isDevicePickerOpen ? (
+                  <DevicePickerModal
+                    customer={selectedCustomer}
+                    dictionary={dictionary}
+                    locale={locale}
+                    onClose={closeDevicePicker}
+                    onDeviceQueryChange={setDevicePickerQuery}
+                    onSelectDevice={selectDevice}
+                    onSwitchToNewDevice={switchToNewDeviceMode}
+                    searchQuery={devicePickerQuery}
+                    selectedDeviceId={formState.selectedDeviceId}
+                    devices={filteredSelectedCustomerDevices}
+                  />
+                ) : null}
+              </div>
             ) : (
               <>
                 <FormField
@@ -497,7 +557,7 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
               </>
             )}
 
-            {formState.customerMode === "existing" && formState.deviceMode === "existing" && selectedCustomer && selectedCustomerDevices.length === 0 ? (
+            {formState.deviceMode === "existing" && selectedCustomer && selectedCustomerDevices.length === 0 ? (
               <p className="text-sm text-amber-700 md:col-span-2">{dictionary.serviceRecords.newForm.hints.noDeviceForCustomer}</p>
             ) : null}
 
@@ -574,6 +634,15 @@ export function NewServiceRecordForm({ locale, dictionary, options, preselection
           </div>
         </form>
       </Panel>
+
+      {isCreateCustomerModalOpen ? (
+        <CreateCustomerModal
+          closeOnSuccess
+          dictionary={dictionary}
+          onClose={closeCreateCustomerModal}
+          onCreated={handleCustomerCreatedForServiceForm}
+        />
+      ) : null}
     </div>
   );
 }
@@ -585,7 +654,7 @@ function CustomerSearchModal({
   onSearchQueryChange,
   onClose,
   onSelectCustomer,
-  onSwitchToNewCustomer,
+  onCreateCustomer,
 }: {
   dictionary: Dictionary;
   searchQuery: string;
@@ -593,7 +662,7 @@ function CustomerSearchModal({
   onSearchQueryChange: (value: string) => void;
   onClose: () => void;
   onSelectCustomer: (customerId: string) => void;
-  onSwitchToNewCustomer: () => void;
+  onCreateCustomer: () => void;
 }) {
   const shouldPromptForMinLength = searchQuery.trim().length < searchResult.minQueryLength;
 
@@ -670,12 +739,12 @@ function CustomerSearchModal({
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
-          <button
-            className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            onClick={onSwitchToNewCustomer}
-            type="button"
-          >
-            {dictionary.serviceRecords.newForm.actions.newCustomer}
+            <button
+              className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+              onClick={onCreateCustomer}
+              type="button"
+            >
+              {dictionary.serviceRecords.newForm.actions.newCustomer}
           </button>
           <button
             className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
@@ -683,6 +752,120 @@ function CustomerSearchModal({
             type="button"
           >
             {dictionary.serviceRecords.newForm.actions.closeSearch}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DevicePickerModal({
+  dictionary,
+  customer,
+  locale,
+  devices,
+  selectedDeviceId,
+  searchQuery,
+  onDeviceQueryChange,
+  onClose,
+  onSelectDevice,
+  onSwitchToNewDevice,
+}: {
+  dictionary: Dictionary;
+  customer: CreateServiceRecordFormOptions["customers"][number] | null;
+  locale: Locale;
+  devices: CreateServiceRecordFormOptions["devices"];
+  selectedDeviceId: string;
+  searchQuery: string;
+  onDeviceQueryChange: (value: string) => void;
+  onClose: () => void;
+  onSelectDevice: (deviceId: string) => void;
+  onSwitchToNewDevice: () => void;
+}) {
+  return (
+    <div
+      aria-labelledby="device-picker-modal-title"
+      aria-modal="true"
+      className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/50 px-3 py-6"
+      onClick={onClose}
+      role="dialog"
+    >
+      <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl" onClick={(event) => event.stopPropagation()}>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900" id="device-picker-modal-title">
+              {dictionary.serviceRecords.newForm.devicePicker.modalTitle}
+            </h3>
+            <p className="mt-1 text-sm text-slate-600">
+              {dictionary.serviceRecords.newForm.devicePicker.modalDescription.replace("{name}", customer?.name ?? "")}
+            </p>
+          </div>
+          <button
+            aria-label={dictionary.serviceRecords.newForm.devicePicker.closeModalAriaLabel}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-700 transition hover:bg-slate-100"
+            onClick={onClose}
+            type="button"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          <FormField
+            id="device-search"
+            label={dictionary.serviceRecords.newForm.devicePicker.searchLabel}
+            onChange={onDeviceQueryChange}
+            placeholder={dictionary.serviceRecords.newForm.devicePicker.searchPlaceholder}
+            value={searchQuery}
+          />
+
+          {devices.length > 0 ? (
+            <ul className="max-h-[340px] space-y-2 overflow-y-auto pr-1" role="list">
+              {devices.map((device) => (
+                <li key={device.id}>
+                  <button
+                    className={`w-full rounded-xl border px-3 py-2 text-left transition hover:border-blue-300 hover:bg-blue-50 ${
+                      selectedDeviceId === device.id ? "border-blue-400 bg-blue-50" : "border-slate-200"
+                    }`}
+                    onClick={() => onSelectDevice(device.id)}
+                    type="button"
+                  >
+                    <p className="text-sm font-semibold text-slate-900">{`${device.brand} ${device.model}`}</p>
+                    <p className="text-sm text-slate-700">{device.serialOrImei || dictionary.serviceRecords.newForm.fields.serialNotProvided}</p>
+                    <p className="text-xs text-slate-500">
+                      {device.registeredAt
+                        ? dictionary.serviceRecords.newForm.devicePicker.registeredAt.replace(
+                            "{date}",
+                            new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(device.registeredAt)),
+                          )
+                        : dictionary.serviceRecords.newForm.devicePicker.registeredAtUnknown}
+                    </p>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-sm text-slate-700">
+              <p className="font-medium text-slate-900">{dictionary.serviceRecords.newForm.devicePicker.noResultTitle}</p>
+              <p className="mt-1">{dictionary.serviceRecords.newForm.devicePicker.noResultDescription}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
+          <button
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+            onClick={onSwitchToNewDevice}
+            type="button"
+          >
+            {dictionary.serviceRecords.newForm.actions.addNewDevice}
+          </button>
+          <button
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+            onClick={onClose}
+            type="button"
+          >
+            {dictionary.serviceRecords.newForm.actions.closeDevicePicker}
           </button>
         </div>
       </div>
