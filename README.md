@@ -95,6 +95,9 @@ VDS veya Docker tabanlı dağıtım, ters proxy arkasında çalışacak şekilde
 - Auth/session ve RBAC henüz tamamlanmadı; yetkilendirme yalnızca buton gizleme ile değil her zaman server-side zorlanmalıdır.
 - Public tracking kodları tahmin edilemez/token tabanlı olmalı; iç notlar, maliyetler ve personel logları kesinlikle sızdırılmamalıdır.
 - Dosya ve fotoğraflar public bucket/URL ile servis edilmemeli; authorization-aware signed URL yaklaşımı kullanılmalıdır.
+- `/track/[code]` müşteri ekranı locale shell dışında tutulur ve sidebar içermez; yalnızca takip kodu, durum, cihaz marka/modeli, arıza özeti, kabul tarihi, tahmini tamamlanma, müşteri güvenli timeline ve şube iletişimi gösterilmelidir.
+- Public tracking backend'i; non-guessable token doğrulaması, generic invalid/expired response, tenant-aware backend filtering, rate limiting ve signed media URL zorlaması olmadan güvenli kabul edilmemelidir.
+- Public tracking yüzeyinde iç notlar, audit/staff logları, personel kişisel detayları, tahsilat/kasa bilgileri, maliyet fiyatları, tenant metadata'sı veya tahmin edilebilir iç ID'ler asla gösterilmemelidir.
 - UI metinleri `messages/tr.json` ve `messages/en.json` üzerinden gelir.
 - Servis kayıtları araması; takip no, müşteri ve cihaz metinlerinde her zaman çalışır; sorgu yalnızca rakam ve telefon biçim karakterleri içeriyorsa normalize edilmiş telefon numarasında da kısmi eşleşme yapar.
 - Servis kayıt listesi satırları ve “Detay” aksiyonu `/[locale]/service-records/[id]` detay rotasına gider.

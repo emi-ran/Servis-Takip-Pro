@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `/track/[code]` public tracking mock ekranı locale dışı route üzerinde güvenli müşteri görünümü olarak güncellendi; sidebar kullanılmıyor, geçerli kodlarda sadece takip kodu, durum, cihaz marka/model, arıza özeti, kabul tarihi, tahmini tamamlanma, müşteri güvenli timeline ve şube iletişimi gösteriliyor.
+- Public tracking route'una küçük yerel sözlük deseni eklendi; Türkçe varsayılan korunurken `?lang=en` ile İngilizce görünüm desteklendi ve route yapısı değiştirilmedi.
+- Public tracking mock veri katmanı daraltıldı; gereksiz internal note, staff, audit, ödeme ve cost alanları kaldırıldı, token format doğrulaması + generic invalid/expired davranışı eklendi.
+- Public tracking için güvenlik caveat'ları README ve UI üzerinde netleştirildi: non-guessable token, backend response filtering, rate limiting, signed media URL ve iç not/maliyet/personel logu sızıntısının yasak olduğu açıkça belirtildi.
+
 - `/[locale]/reports` placeholder kaldırıldı ve Reports overview ekranı aktif hale getirildi; tarih aralığı mock filtreleri (bugün / bu hafta / bu ay / son 30 gün), operasyon özet kartları, finans özet kartları, servis durum dağılımı ve kategori/cihaz/servis tipi kırılımı eklendi.
 - Reports ekranında finans metrikleri ile personel iş yükü/performance alanları permission-sensitive mock olarak işaretlendi; gerçek görünürlük, tenant scope ve RBAC enforcement olmadığı özellikle belirtildi.
 - Export readiness paneli ve mock “Raporu / export'u hazırla” aksiyonu eklendi; gerçek PDF/Excel üretimi yapılmıyor, yalnızca non-persistent başarı/readiness mesajı gösteriliyor.
