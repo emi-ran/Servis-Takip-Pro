@@ -21,7 +21,9 @@
       "loading": "Giriş yapılıyor...",
       "noAccount": "Hesabınız yok mu?",
       "registerLink": "Hemen yeni bir firma kaydı oluşturun.",
-      "error": "Kullanıcı adı veya şifre hatalı."
+      "error": "Kullanıcı adı veya şifre hatalı.",
+      "demoButton": "Demo Sürümünü Test Et",
+      "or": "veya"
     },
     "register": {
       "title": "Firma Kaydı Oluştur",
@@ -77,14 +79,19 @@
   "header": {
     "openNavigation": "Menüyü aç",
     "notifications": "Bildirimler",
-    "welcome": "Hoşgeldiniz, CetTech Yönetici Paneli"
+    "welcome": "Hoş geldiniz, {companyName} Yönetici Paneli"
   },
   "common": {
     "viewAll": "Tümünü Gör",
     "backToDashboard": "Dashboard'a dön"
   },
   "roles": {
-    "operations_manager": "Operasyon Yöneticisi"
+    "operations_manager": "Operasyon Yöneticisi",
+    "ADMIN": "Firma Sahibi / Admin",
+    "MANAGER": "Yönetici",
+    "TECHNICIAN": "Teknisyen / Usta",
+    "APPRENTICE": "Çırak / Yardımcı",
+    "ACCOUNTANT": "Muhasebe / Kasa"
   },
   "dashboard": {
     "title": "Genel durum paneli",

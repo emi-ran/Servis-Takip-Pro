@@ -110,6 +110,7 @@ export class AuthService {
           name: user.name,
           email: user.email,
           status: user.status,
+          roleKey: "ADMIN",
         },
         company: {
           id: company.id,
@@ -170,6 +171,7 @@ export class AuthService {
         name: user.name,
         email: user.email,
         status: user.status,
+        roleKey: membership.role.key,
       },
       company: {
         id: membership.company.id,
