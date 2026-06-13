@@ -7,10 +7,10 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 ## Teknolojiler
 
 - **Frontend + Backend:** Next.js 16 (App Router, API routes)
-- **UI:** Mantine v7 + Tabler Icons
+- **UI:** Mantine v9.3.1 + Tabler Icons
 - **Database:** PostgreSQL + Prisma ORM
 - **Auth:** JWT (jose) + bcryptjs, httpOnly cookie
-- **Form:** Mantine form + zod
+- **Form:** Mantine form (uncontrolled mode) + zod
 - **Data Fetching:** TanStack Query
 - **i18n:** next-intl (şimdilik sadece `tr`, altyapı `en` için hazır)
 - **Deploy:** Docker (multi-stage build, mevcut PostgreSQL'e bağlanır)
@@ -66,17 +66,19 @@ src/
     api/                       # API route'ları
   components/
     providers/                 # Auth, Query provider'lar
-    layout/                    # AppShell, Sidebar, Header
+    layout/                    # AppShell, Sidebar, Header, ThemeToggle
   lib/                         # Utility, config, helpers
     prisma.ts                  # Prisma client singleton
     auth.ts                    # JWT, bcrypt, cookie helpers
     api.ts                     # Client-side fetch wrapper
-    env.ts                     # .EV validation
+    phone.ts                   # Telefon normalize/validate
+    env.ts                     # .env validation
     i18n.ts                    # next-intl config
     routing.ts                 # Locale routing config
     navigation.ts              # next-intl navigation helpers
   types/
     index.ts
+  theme.ts                     # Mantine theme
 ```
 
 ## Responsive Tasarım
@@ -105,6 +107,12 @@ src/
 - Global state: AuthProvider (kullanıcı bilgisi).
 - URL state: Next.js searchParams (filtre, sayfa, arama).
 
+## CSS / Renk Modu
+
+- `ColorSchemeScript` React 19 uyarısını önlemek için `next/script` ile sarılır (`src/components/layout/color-scheme-script.tsx`).
+- Renk modu toggle'ı hydration mismatch'ını önlemek için `ThemeToggle` component'inde `useState+mounted` pattern'i kullanılır (SSR'da boş placeholder render eder).
+- `MantineProvider`'a `defaultColorScheme="auto"` eklenir.
+
 ## Veritabanı
 
 - PostgreSQL + Prisma 6.
@@ -112,7 +120,7 @@ src/
 - `id` alanları `cuid()` ile oluşturulur.
 - `createdAt` ve `updatedAt` her modelde olur.
 - Soft delete yok, hard delete kullanılır.
-- Migrasyonlar `prisma migrate dev` ile oluşturulur.
+- Şema değişiklikleri `prisma db push` ile uygulanır (geliştirme aşaması).
 - Şema değişiklikleri için `prisma db push` yeterli (geliştirme aşaması).
 
 ## Auth
