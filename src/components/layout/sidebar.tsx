@@ -10,17 +10,10 @@ import {
   IconLogout,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
-import {
-  AppShell,
-  UnstyledButton,
-  Stack,
-  Text,
-  Group,
-  ThemeIcon,
-} from "@mantine/core";
+import { AppShell, NavLink, Stack, Box, Divider } from "@mantine/core";
 import { usePathname } from "@/lib/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
-import Link from "next/link";
+import NextLink from "next/link";
 
 type NavItem = {
   labelKey: string;
@@ -43,67 +36,68 @@ export function Sidebar() {
   const { logout } = useAuth();
 
   return (
-    <AppShell.Navbar p="md">
+    <AppShell.Navbar p="sm" style={{ borderRight: "1px solid var(--mantine-color-default-border)" }}>
       <AppShell.Section grow>
-        <Stack gap={4}>
+        <Stack gap="xs">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname.startsWith(item.href);
+            // Exact or prefix match for active state
+            const isActive = item.href === "/dashboard" 
+              ? pathname === "/dashboard"
+              : pathname.startsWith(item.href);
             return (
-              <UnstyledButton
+              <NavLink
                 key={item.href}
-                component={Link}
+                component={NextLink}
                 href={item.href}
-                p="sm"
-                style={(theme) => ({
-                  borderRadius: theme.radius.sm,
-                  backgroundColor: isActive
-                    ? theme.colors.blue[0]
-                    : "transparent",
-                  color: isActive
-                    ? theme.colors.blue[7]
-                    : theme.colors.gray[7],
-                  "&:hover": {
-                    backgroundColor: isActive
-                      ? theme.colors.blue[0]
-                      : theme.colors.gray[0],
+                label={t(item.labelKey)}
+                leftSection={<Icon size={20} stroke={1.5} />}
+                active={isActive}
+                variant="light"
+                color="blue"
+                styles={{
+                  root: {
+                    fontWeight: isActive ? 600 : 500,
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    borderRadius: "var(--mantine-radius-md)",
+                    transition: "all 0.15s ease",
                   },
-                })}
-              >
-                <Group gap="sm">
-                  <ThemeIcon
-                    variant={isActive ? "filled" : "light"}
-                    color={isActive ? "blue" : "gray"}
-                    size="sm"
-                  >
-                    <Icon size={16} />
-                  </ThemeIcon>
-                  <Text size="sm">{t(item.labelKey)}</Text>
-                </Group>
-              </UnstyledButton>
+                  label: {
+                    fontSize: "14px",
+                  }
+                }}
+              />
             );
           })}
         </Stack>
       </AppShell.Section>
 
       <AppShell.Section>
-        <UnstyledButton
-          onClick={logout}
-          p="sm"
-          style={(theme) => ({
-            borderRadius: theme.radius.sm,
-            color: theme.colors.red[6],
-            "&:hover": { backgroundColor: theme.colors.red[0] },
-          })}
-        >
-          <Group gap="sm">
-            <ThemeIcon variant="light" color="red" size="sm">
-              <IconLogout size={16} />
-            </ThemeIcon>
-            <Text size="sm">{t("auth.logout")}</Text>
-          </Group>
-        </UnstyledButton>
+        <Divider my="sm" variant="dashed" />
+        <Box py="xs">
+          <NavLink
+            label={t("auth.logout")}
+            leftSection={<IconLogout size={20} stroke={1.5} />}
+            color="red"
+            variant="subtle"
+            onClick={logout}
+            styles={{
+              root: {
+                fontWeight: 500,
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                borderRadius: "var(--mantine-radius-md)",
+                transition: "all 0.15s ease",
+              },
+              label: {
+                fontSize: "14px",
+              }
+            }}
+          />
+        </Box>
       </AppShell.Section>
     </AppShell.Navbar>
   );
 }
+

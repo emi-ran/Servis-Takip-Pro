@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useDebouncedValue } from "@mantine/hooks";
 import {
   Title,
   TextInput,
@@ -17,7 +17,11 @@ import {
   ActionIcon,
   Skeleton,
   Alert,
-  TextInput as TextInputField,
+  Card,
+  Badge,
+  Tooltip,
+  SimpleGrid,
+  Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -30,9 +34,14 @@ import {
   IconTrash,
   IconAlertCircle,
   IconUsers,
+  IconDeviceLaptop,
+  IconTool,
+  IconPhone,
+  IconMail,
+  IconMapPin,
+  IconUser,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
-import { useRouter } from "@/lib/navigation";
 
 type Customer = {
   id: string;
@@ -55,23 +64,14 @@ type CustomersResponse = {
   pageSize: number;
 };
 
-const customerSchema = z.object({
-  name: z.string().min(1, "Ad zorunlu"),
-  surname: z.string().min(1, "Soyad zorunlu"),
-  phone: z.string().min(1, "Telefon zorunlu"),
-  email: z.string().email("Geçersiz e-posta").optional().or(z.literal("")),
-  address: z.string().optional().or(z.literal("")),
-});
-
 export default function CustomersPage() {
   const t = useTranslations("customers");
   const ct = useTranslations("common");
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
-  const [search, setSearch] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearch] = useDebouncedValue(searchValue, 300);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
   const [createOpened, createHandlers] = useDisclosure(false);
@@ -80,14 +80,15 @@ export default function CustomersPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const { data, isLoading, isError, error } = useQuery<CustomersResponse>({
-    queryKey: ["customers", page, search],
+    queryKey: ["customers", page, debouncedSearch],
     queryFn: () =>
       apiClient("/api/customers", {
-        params: { page: String(page), pageSize: "20", query: search },
+        params: { page: String(page), pageSize: "20", query: debouncedSearch },
       }),
   });
 
   const createForm = useForm({
+    mode: "uncontrolled" as const,
     initialValues: { name: "", surname: "", phone: "", email: "", address: "" },
     validate: {
       name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
@@ -101,6 +102,7 @@ export default function CustomersPage() {
   });
 
   const editForm = useForm({
+    mode: "uncontrolled" as const,
     initialValues: { name: "", surname: "", phone: "", email: "", address: "" },
     validate: {
       name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
@@ -155,11 +157,6 @@ export default function CustomersPage() {
     },
   });
 
-  const handleSearch = useCallback(() => {
-    setPage(1);
-    setSearch(query);
-  }, [query]);
-
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   const rows = (data?.customers ?? []).map((customer) => (
@@ -168,46 +165,75 @@ export default function CustomersPage() {
         <Text
           component={Link}
           href={`/customers/${customer.id}`}
-          td="underline"
           c="blue"
-          style={{ cursor: "pointer" }}
+          fw={600}
+          size="sm"
+          style={{ textDecoration: "none", cursor: "pointer" }}
         >
           {customer.name} {customer.surname}
         </Text>
       </Table.Td>
-      <Table.Td>{customer.phone}</Table.Td>
-      <Table.Td>{customer.email || "—"}</Table.Td>
-      <Table.Td>{customer._count.devices}</Table.Td>
-      <Table.Td>{customer._count.serviceRecords}</Table.Td>
       <Table.Td>
-        <Group gap="xs">
-          <ActionIcon
-            variant="subtle"
+        <Text size="sm">{customer.phone}</Text>
+      </Table.Td>
+      <Table.Td>
+        <Text size="sm" c={customer.email ? undefined : "dimmed"}>
+          {customer.email || "—"}
+        </Text>
+      </Table.Td>
+      <Table.Td>
+        <Group gap="xs" wrap="nowrap">
+          <Badge
+            size="sm"
+            variant="light"
             color="blue"
-            onClick={() => {
-              setEditingCustomer(customer);
-              editForm.setValues({
-                name: customer.name,
-                surname: customer.surname,
-                phone: customer.phone,
-                email: customer.email || "",
-                address: customer.address || "",
-              });
-              editHandlers.open();
-            }}
+            leftSection={<IconDeviceLaptop size={12} stroke={1.5} />}
           >
-            <IconEdit size={16} />
-          </ActionIcon>
-          <ActionIcon
-            variant="subtle"
-            color="red"
-            onClick={() => {
-              setDeletingId(customer.id);
-              deleteHandlers.open();
-            }}
+            {customer._count.devices}
+          </Badge>
+          <Badge
+            size="sm"
+            variant="light"
+            color="teal"
+            leftSection={<IconTool size={12} stroke={1.5} />}
           >
-            <IconTrash size={16} />
-          </ActionIcon>
+            {customer._count.serviceRecords}
+          </Badge>
+        </Group>
+      </Table.Td>
+      <Table.Td>
+        <Group gap="xs" wrap="nowrap">
+          <Tooltip label={ct("edit")} position="top" withArrow>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              onClick={() => {
+                setEditingCustomer(customer);
+                editForm.setValues({
+                  name: customer.name,
+                  surname: customer.surname,
+                  phone: customer.phone,
+                  email: customer.email || "",
+                  address: customer.address || "",
+                });
+                editHandlers.open();
+              }}
+            >
+              <IconEdit size={16} stroke={1.5} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label={ct("delete")} position="top" withArrow>
+            <ActionIcon
+              variant="subtle"
+              color="red"
+              onClick={() => {
+                setDeletingId(customer.id);
+                deleteHandlers.open();
+              }}
+            >
+              <IconTrash size={16} stroke={1.5} />
+            </ActionIcon>
+          </Tooltip>
         </Group>
       </Table.Td>
     </Table.Tr>
@@ -215,116 +241,184 @@ export default function CustomersPage() {
 
   return (
     <>
-      <Group justify="space-between" mb="md">
-        <Title order={2}>{t("title")}</Title>
-        <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
-          {t("new")}
-        </Button>
-      </Group>
-
-      <Group mb="md">
-        <TextInput
-          placeholder={ct("search") + "..."}
-          leftSection={<IconSearch size={16} />}
-          value={query}
-          onChange={(e) => setQuery(e.currentTarget.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          style={{ flex: 1, maxWidth: 400 }}
-        />
-        <Button variant="light" onClick={handleSearch}>
-          {ct("search")}
-        </Button>
-      </Group>
-
-      {isLoading ? (
-        <Stack>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} height={48} radius="sm" />
-          ))}
-        </Stack>
-      ) : isError ? (
-        <Alert
-          icon={<IconAlertCircle size={16} />}
-          title={ct("error")}
-          color="red"
-        >
-          {(error as Error)?.message || "Bir hata oluştu"}
-        </Alert>
-      ) : data?.customers.length === 0 ? (
-        <Alert
-          icon={<IconUsers size={16} />}
-          title={t("noCustomers")}
-          color="gray"
-        >
-          <Text mb="sm">{t("addFirst")}</Text>
-          <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={createHandlers.open}
-          >
+      <Stack gap="lg">
+        <Group justify="space-between" align="center">
+          <Stack gap={4}>
+            <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
+              {t("title")}
+            </Title>
+            <Text c="dimmed" size="sm">
+              Müşteri kayıtlarını ve bağlı cihazları yönetin.
+            </Text>
+          </Stack>
+          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
             {t("new")}
           </Button>
-        </Alert>
-      ) : (
-        <>
-          <Table striped highlightOnHover withTableBorder>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>{t("name")} {t("surname")}</Table.Th>
-                <Table.Th>{t("phone")}</Table.Th>
-                <Table.Th>{t("email")}</Table.Th>
-                <Table.Th>{t("deviceCount")}</Table.Th>
-                <Table.Th>{t("serviceCount")}</Table.Th>
-                <Table.Th>{ct("actions")}</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
+        </Group>
 
-          {totalPages > 1 && (
-            <Group justify="center" mt="md">
-              <Pagination total={totalPages} value={page} onChange={setPage} />
-            </Group>
-          )}
-        </>
-      )}
+        <TextInput
+          placeholder={ct("search") + "..."}
+          leftSection={<IconSearch size={16} stroke={1.5} />}
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.currentTarget.value);
+            setPage(1);
+          }}
+          maw={400}
+        />
+
+        {isLoading ? (
+          <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }}>
+            <Table.ScrollContainer minWidth={600}>
+              <Table striped highlightOnHover>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th style={{ width: "30%" }}>Ad Soyad</Table.Th>
+                    <Table.Th style={{ width: "20%" }}>{t("phone")}</Table.Th>
+                    <Table.Th style={{ width: "25%" }}>{t("email")}</Table.Th>
+                    <Table.Th style={{ width: "15%" }}>Cihaz / Servis</Table.Th>
+                    <Table.Th style={{ width: "10%" }}>{ct("actions")}</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Table.Tr key={i}>
+                      <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
+                      <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
+                      <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
+                      <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
+                      <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
+          </Card>
+        ) : isError ? (
+          <Alert icon={<IconAlertCircle size={16} />} title={ct("error")} color="red" radius="md">
+            {(error as Error)?.message || "Bir hata oluştu"}
+          </Alert>
+        ) : data?.customers.length === 0 ? (
+          <Card withBorder shadow="sm" p="xl" ta="center" radius="md">
+            <Stack align="center" gap="xs">
+              <IconUsers size={48} stroke={1} opacity={0.3} />
+              <Text fw={600}>{t("noCustomers")}</Text>
+              <Text size="sm" c="dimmed">
+                {t("addFirst")}
+              </Text>
+              <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open} mt="xs">
+                {t("new")}
+              </Button>
+            </Stack>
+          </Card>
+        ) : (
+          <>
+            <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }}>
+              <Table.ScrollContainer minWidth={600}>
+                <Table striped highlightOnHover>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>Ad Soyad</Table.Th>
+                      <Table.Th>{t("phone")}</Table.Th>
+                      <Table.Th>{t("email")}</Table.Th>
+                      <Table.Th>Cihaz / Servis</Table.Th>
+                      <Table.Th>{ct("actions")}</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>{rows}</Table.Tbody>
+                </Table>
+              </Table.ScrollContainer>
+            </Card>
+
+            {totalPages > 1 && (
+              <Group justify="center" mt="md">
+                <Pagination total={totalPages} value={page} onChange={setPage} radius="md" />
+              </Group>
+            )}
+          </>
+        )}
+      </Stack>
 
       <Modal
         opened={createOpened}
-        onClose={() => { createForm.reset(); createHandlers.close(); }}
-        title={t("new")}
+        onClose={() => {
+          createForm.reset();
+          createHandlers.close();
+        }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {t("new")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              Yeni müşteri kaydı ve iletişim bilgilerini oluşturun.
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+        transitionProps={{ transition: "fade", duration: 150 }}
       >
-        <form
-          onSubmit={createForm.onSubmit((values) => createMutation.mutate(values))}
-        >
-          <Stack>
-            <TextInputField
-              label={t("name")}
-              required
-              {...createForm.getInputProps("name")}
-            />
-            <TextInputField
-              label={t("surname")}
-              required
-              {...createForm.getInputProps("surname")}
-            />
-            <TextInputField
-              label={t("phone")}
-              required
-              {...createForm.getInputProps("phone")}
-            />
-            <TextInputField
-              label={t("email")}
-              {...createForm.getInputProps("email")}
-            />
-            <TextInputField
+        <form onSubmit={createForm.onSubmit((values) => createMutation.mutate(values))} style={{ paddingTop: "8px" }}>
+          <Stack gap="md">
+            <SimpleGrid cols={2} spacing="md">
+              <TextInput
+                label={t("name")}
+                placeholder="Örn. Ahmet"
+                required
+                leftSection={<IconUser size={16} stroke={1.5} />}
+                key={createForm.key("name")}
+                {...createForm.getInputProps("name")}
+              />
+              <TextInput
+                label={t("surname")}
+                placeholder="Örn. Yılmaz"
+                required
+                leftSection={<IconUser size={16} stroke={1.5} />}
+                key={createForm.key("surname")}
+                {...createForm.getInputProps("surname")}
+              />
+            </SimpleGrid>
+
+            <SimpleGrid cols={2} spacing="md">
+              <TextInput
+                label={t("phone")}
+                placeholder="0555 555 5555"
+                required
+                leftSection={<IconPhone size={16} stroke={1.5} />}
+                key={createForm.key("phone")}
+                {...createForm.getInputProps("phone")}
+              />
+              <TextInput
+                label={t("email")}
+                placeholder="ahmet@ornek.com"
+                leftSection={<IconMail size={16} stroke={1.5} />}
+                key={createForm.key("email")}
+                {...createForm.getInputProps("email")}
+              />
+            </SimpleGrid>
+
+            <Textarea
               label={t("address")}
+              placeholder="Müşterinin detaylı adresi..."
+              minRows={3}
+              maxRows={5}
+              leftSection={<IconMapPin size={16} stroke={1.5} style={{ alignSelf: "flex-start", marginTop: "10px" }} />}
+              leftSectionPointerEvents="none"
+              key={createForm.key("address")}
               {...createForm.getInputProps("address")}
             />
-            <Group justify="flex-end" mt="md">
+
+            <Group justify="flex-end" mt="lg">
               <Button variant="default" onClick={createHandlers.close}>
                 {ct("cancel")}
               </Button>
-              <Button type="submit" loading={createMutation.isPending}>
+              <Button type="submit" loading={createMutation.isPending} px="xl">
                 {ct("save")}
               </Button>
             </Group>
@@ -334,43 +428,90 @@ export default function CustomersPage() {
 
       <Modal
         opened={editOpened}
-        onClose={() => { setEditingCustomer(null); editHandlers.close(); }}
-        title={t("edit")}
+        onClose={() => {
+          setEditingCustomer(null);
+          editHandlers.close();
+        }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {t("edit")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              Müşteri bilgilerini güncelleyin.
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+        transitionProps={{ transition: "fade", duration: 150 }}
       >
         <form
           onSubmit={editForm.onSubmit((values) =>
             updateMutation.mutate({ ...values, id: editingCustomer!.id })
           )}
+          style={{ paddingTop: "8px" }}
         >
-          <Stack>
-            <TextInputField
-              label={t("name")}
-              required
-              {...editForm.getInputProps("name")}
-            />
-            <TextInputField
-              label={t("surname")}
-              required
-              {...editForm.getInputProps("surname")}
-            />
-            <TextInputField
-              label={t("phone")}
-              required
-              {...editForm.getInputProps("phone")}
-            />
-            <TextInputField
-              label={t("email")}
-              {...editForm.getInputProps("email")}
-            />
-            <TextInputField
+          <Stack gap="md">
+            <SimpleGrid cols={2} spacing="md">
+              <TextInput
+                label={t("name")}
+                required
+                leftSection={<IconUser size={16} stroke={1.5} />}
+                key={editForm.key("name")}
+                {...editForm.getInputProps("name")}
+              />
+              <TextInput
+                label={t("surname")}
+                required
+                leftSection={<IconUser size={16} stroke={1.5} />}
+                key={editForm.key("surname")}
+                {...editForm.getInputProps("surname")}
+              />
+            </SimpleGrid>
+
+            <SimpleGrid cols={2} spacing="md">
+              <TextInput
+                label={t("phone")}
+                required
+                leftSection={<IconPhone size={16} stroke={1.5} />}
+                key={editForm.key("phone")}
+                {...editForm.getInputProps("phone")}
+              />
+              <TextInput
+                label={t("email")}
+                leftSection={<IconMail size={16} stroke={1.5} />}
+                key={editForm.key("email")}
+                {...editForm.getInputProps("email")}
+              />
+            </SimpleGrid>
+
+            <Textarea
               label={t("address")}
+              minRows={3}
+              maxRows={5}
+              leftSection={<IconMapPin size={16} stroke={1.5} style={{ alignSelf: "flex-start", marginTop: "10px" }} />}
+              leftSectionPointerEvents="none"
+              key={editForm.key("address")}
               {...editForm.getInputProps("address")}
             />
-            <Group justify="flex-end" mt="md">
-              <Button variant="default" onClick={() => { setEditingCustomer(null); editHandlers.close(); }}>
+
+            <Group justify="flex-end" mt="lg">
+              <Button
+                variant="default"
+                onClick={() => {
+                  setEditingCustomer(null);
+                  editHandlers.close();
+                }}
+              >
                 {ct("cancel")}
               </Button>
-              <Button type="submit" loading={updateMutation.isPending}>
+              <Button type="submit" loading={updateMutation.isPending} px="xl">
                 {ct("save")}
               </Button>
             </Group>
@@ -380,17 +521,37 @@ export default function CustomersPage() {
 
       <Modal
         opened={deleteOpened}
-        onClose={() => { setDeletingId(null); deleteHandlers.close(); }}
-        title={t("deleteConfirm")}
+        onClose={() => {
+          setDeletingId(null);
+          deleteHandlers.close();
+        }}
+        title={
+          <Text fw={700} size="md">
+            {t("deleteConfirm")}
+          </Text>
+        }
+        radius="md"
+        centered
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
       >
-        <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={() => { setDeletingId(null); deleteHandlers.close(); }}>
+        <Group justify="flex-end" mt="lg">
+          <Button
+            variant="default"
+            onClick={() => {
+              setDeletingId(null);
+              deleteHandlers.close();
+            }}
+          >
             {ct("cancel")}
           </Button>
           <Button
             color="red"
             loading={deleteMutation.isPending}
             onClick={() => deletingId && deleteMutation.mutate(deletingId)}
+            px="xl"
           >
             {ct("delete")}
           </Button>
@@ -399,3 +560,4 @@ export default function CustomersPage() {
     </>
   );
 }
+
