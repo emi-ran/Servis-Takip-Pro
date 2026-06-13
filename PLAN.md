@@ -91,14 +91,18 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ---
 
-## Phase 6: Tahsilat & Borç Yönetimi
+## Phase 6: Tahsilat & Borç Yönetimi ✅
 
-- [ ] Ödeme API: `GET/POST /api/payments`, `GET /api/customers/[id]/balance`
-- [ ] Müşteri detayında güncel bakiye
-- [ ] Tahsilat ekleme (tutar, ödeme tipi, tarih, not)
-- [ ] Borç ekleme (servis kaydına bağlı veya bağımsız)
-- [ ] Müşteri bazında ödeme geçmişi tablosu
-- [ ] Dashboard'da günlük tahsilat özeti
+- [x] Ödeme API: `GET/POST /api/payments`, `DELETE /api/payments/[id]`, `GET /api/customers/[id]/balance`
+- [x] `GET /api/dashboard` — günlük tahsilat, bekleyen borç, servis ve cihaz istatistikleri
+- [x] Müşteri detayında güncel bakiye (borç - tahsilat farkı)
+- [x] Müşteri detayındaki balance card'dan doğrudan borç/tahsilat ekleme
+- [x] Borç ekleme (servis kaydına bağlı veya bağımsız — description + opsiyonel serviceRecordId)
+- [x] Tahsilat ekleme (tutar, ödeme tipi, tarih, not)
+- [x] Müşteri bazında ödeme geçmişi tablosu
+- [x] Dashboard'da günlük tahsilat özeti + toplam tahsil edilmemiş borç
+- [x] Tahsilatlar sayfası (filtreleme, arama, sayfalama, silme)
+- [x] Sidebar'da Tahsilatlar linki
 
 ---
 
@@ -142,8 +146,8 @@ ServiceRecord  (id, companyId, customerId, deviceId, trackingNo, status, priorit
                 faultDescription, assignedUserId?, pricing?, createdAt)
 StatusHistory  (id, serviceRecordId, fromStatus, toStatus, changedById, createdAt)
 ServiceNote    (id, serviceRecordId, content, isCustomerVisible, authorId, createdAt)
-Payment        (id, companyId, customerId, type, amount, paymentMethod, date, description, createdAt)
-ScheduledTask  (id, companyId, customerId, title, description, taskType, date, status, createdAt)
+Payment        (id, companyId, customerId, serviceRecordId?, type, amount, paymentMethod, date, description, createdAt)
+ScheduledTask  (id, companyId, customerId, title, description, taskType, date, status, assignedUserId?, createdAt, updatedAt)
 ```
 
 ---

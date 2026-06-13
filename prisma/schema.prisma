@@ -155,6 +155,7 @@ model ServiceRecord {
   assignedUser  User?                @relation("AssignedUser", fields: [assignedUserId], references: [id])
   statusHistory ServiceStatusHistory[]
   notes         ServiceNote[]
+  payments      Payment[]
 
   @@unique([companyId, trackingNo])
   @@index([companyId])
@@ -192,21 +193,24 @@ model ServiceNote {
 }
 
 model Payment {
-  id            String        @id @default(cuid())
-  companyId     String
-  customerId    String
-  type          PaymentType
-  amount        Decimal       @db.Decimal(10, 2)
-  paymentMethod PaymentMethod
-  date          DateTime
-  description   String?
-  createdAt     DateTime      @default(now())
+  id              String        @id @default(cuid())
+  companyId       String
+  customerId      String
+  serviceRecordId String?
+  type            PaymentType
+  amount          Decimal       @db.Decimal(10, 2)
+  paymentMethod   PaymentMethod
+  date            DateTime
+  description     String?
+  createdAt       DateTime      @default(now())
 
-  company  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  company       Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  serviceRecord ServiceRecord? @relation(fields: [serviceRecordId], references: [id])
 
   @@index([companyId])
   @@index([customerId])
+  @@index([serviceRecordId])
 }
 
 model ScheduledTask {

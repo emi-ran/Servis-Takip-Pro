@@ -8,6 +8,7 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 
 - **Frontend + Backend:** Next.js 16 (App Router, API routes)
 - **UI:** Mantine v9.3.1 + Tabler Icons
+  - **Önemli:** Herhangi bir Mantine bileşeni kullanmadan önce https://mantine.dev/llms.txt adresinden ilgili bileşenin dokümantasyonunu kontrol et. Doğru prop'ları, kullanım şeklini ve versiyon farklılıklarını teyit etmeden kod yazma.
 - **Database:** PostgreSQL + Prisma ORM
 - **Auth:** JWT (jose) + bcryptjs, httpOnly cookie
 - **Form:** Mantine form (uncontrolled mode) + zod
@@ -79,6 +80,11 @@ src/
         logout/route.ts
         users/route.ts
       customers/
+        route.ts
+        [id]/route.ts
+        [id]/balance/route.ts
+      dashboard/
+        route.ts
       devices/
         route.ts
         [id]/route.ts
@@ -145,6 +151,12 @@ src/
 - `ColorSchemeScript` React 19 uyarısını önlemek için `next/script` ile sarılır (`src/components/layout/color-scheme-script.tsx`).
 - Renk modu toggle'ı hydration mismatch'ını önlemek için `ThemeToggle` component'inde `useState+mounted` pattern'i kullanılır (SSR'da boş placeholder render eder).
 - `MantineProvider`'a `defaultColorScheme="auto"` eklenir.
+
+### Tarih Seçici (DatePickerInput)
+
+- `@mantine/dates` bileşenleri root layout'ta `DatesProvider` ile sarılır: `locale="tr"`, `firstDayOfWeek={1}`.
+- `@mantine/dates/styles.css` global olarak import edilir.
+- `dayjs/locale/tr` import edilir.
 
 ## Veritabanı
 

@@ -5,6 +5,7 @@ import {
   IconUsers,
   IconDeviceLaptop,
   IconTool,
+  IconCurrencyDollar,
   IconCalendar,
   IconSettings,
   IconLogout,
@@ -26,6 +27,7 @@ const navItems: NavItem[] = [
   { labelKey: "nav.customers", href: "/customers", icon: IconUsers },
   { labelKey: "nav.devices", href: "/devices", icon: IconDeviceLaptop },
   { labelKey: "nav.serviceRecords", href: "/service-records", icon: IconTool },
+  { labelKey: "nav.payments", href: "/payments", icon: IconCurrencyDollar },
   { labelKey: "nav.scheduledTasks", href: "/scheduled-tasks", icon: IconCalendar },
   { labelKey: "nav.settings", href: "/settings", icon: IconSettings },
 ];
