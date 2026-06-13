@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { loginRequest } from "@/lib/api/auth";
-import { setSessionData, setTokens } from "@/lib/auth";
+import { setDemoMode, setSessionData, setTokens } from "@/lib/auth";
 import type { Locale } from "@/lib/i18n/settings";
 
 type Dictionary = Awaited<ReturnType<typeof import("@/lib/i18n/get-dictionary").getDictionary>>;
@@ -22,12 +22,33 @@ export function LoginView({ locale, dictionary }: LoginViewProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const handleDemoMode = () => {
+    setDemoMode(true);
+    setTokens("demo-token", "demo-refresh-token");
+    setSessionData(
+      {
+        id: "demo-user",
+        name: "Elif Kaya",
+        email: "demo@servistakip.com",
+        status: "ACTIVE",
+        roleKey: "operations_manager",
+      },
+      {
+        id: "demo-company",
+        name: "CetTech Servis",
+        slug: "demo-servis",
+      }
+    );
+    router.replace(`/${locale}/dashboard`);
+  };
+
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
     setLoading(true);
 
     try {
+      setDemoMode(false);
       const response = await loginRequest(email, password);
       setTokens(response.accessToken, response.refreshToken);
       setSessionData(response.user, response.company);
@@ -120,6 +141,20 @@ export function LoginView({ locale, dictionary }: LoginViewProps) {
             >
               {loading ? dictionary.auth.login.loading : dictionary.auth.login.button}{" "}
               <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-slate-200"></div>
+              <span className="flex-shrink mx-4 text-slate-400 text-xs uppercase">{dictionary.auth.login.or}</span>
+              <div className="flex-grow border-t border-slate-200"></div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleDemoMode}
+              className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-lg transition-all transform active:scale-95"
+            >
+              {dictionary.auth.login.demoButton}
             </button>
           </form>
         </div>

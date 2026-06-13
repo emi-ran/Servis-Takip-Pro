@@ -3,6 +3,7 @@ export type AuthUser = {
   name: string;
   email: string;
   status: string;
+  roleKey?: string;
 };
 
 export type AuthCompany = {
