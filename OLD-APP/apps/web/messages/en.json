@@ -1,0 +1,1221 @@
+{
+  "metadata": {
+    "title": "Servis Takip",
+    "description": "Multi-tenant operations panel for technical service teams"
+  },
+  "brand": {
+    "name": "Servis Takip",
+    "pro": "PRO",
+    "compactName": "CetTech PRO",
+    "tagline": "Operations panel"
+  },
+  "auth": {
+    "login": {
+      "title": "Log In",
+      "subtitle": "Please enter your credentials to access your account.",
+      "email": "Email",
+      "emailPlaceholder": "example@service.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "button": "Log In",
+      "loading": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create a new company registration now.",
+      "error": "Invalid email or password.",
+      "demoButton": "Test Demo Version",
+      "or": "or"
+    },
+    "register": {
+      "title": "Create Company Profile",
+      "subtitle": "Open a new account to start tracking technical service.",
+      "companyName": "Company Name",
+      "companyNamePlaceholder": "e.g., CetTech Service",
+      "slug": "Company URL Slug",
+      "slugPlaceholder": "cettech-service",
+      "name": "Your Full Name",
+      "namePlaceholder": "e.g., John Doe",
+      "email": "Admin Email",
+      "emailPlaceholder": "admin@company.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "button": "Register and Log In",
+      "loading": "Registering...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in"
+    }
+  },
+  "navigation": {
+    "sections": {
+      "management": "Management",
+      "modules": "Modules"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "today": "Today's Work",
+      "serviceRecords": "Service Records",
+      "customers": "Customers",
+      "devices": "Devices",
+      "parts": "Stock & Parts",
+      "cash": "Cash & Accounts",
+      "reports": "Reports",
+      "staff": "Staff",
+      "track": "Device Tracking",
+      "quickScan": "Quick Barcode Scan",
+      "settings": "General Settings",
+      "logout": "Sign Out"
+    },
+    "dashboard": "Dashboard",
+    "today": "Today's Work",
+    "serviceRecords": "Service Records",
+    "customers": "Customers",
+    "devices": "Devices",
+    "parts": "Stock & Parts",
+    "cash": "Cash & Accounts",
+    "reports": "Reports",
+    "staff": "Staff",
+    "track": "Device Tracking",
+    "settings": "General Settings"
+  },
+  "header": {
+    "openNavigation": "Open menu",
+    "notifications": "Notifications",
+    "welcome": "Welcome, {companyName} Management Panel"
+  },
+  "common": {
+    "viewAll": "View all",
+    "backToDashboard": "Back to dashboard"
+  },
+  "roles": {
+    "operations_manager": "Operations Manager",
+    "ADMIN": "Company Owner / Admin",
+    "MANAGER": "Manager",
+    "TECHNICIAN": "Technician / Specialist",
+    "APPRENTICE": "Apprentice / Assistant",
+    "ACCOUNTANT": "Accountant / Cashier"
+  },
+  "dashboard": {
+    "title": "Operations dashboard",
+    "description": "Track service workload, ready deliveries, and the daily finance summary from one screen.",
+    "lastUpdatedLabel": "Last update",
+    "metrics": {
+      "waiting_devices": {
+        "title": "Waiting Devices",
+        "notes": {}
+      },
+      "waiting_parts": {
+        "title": "Waiting for Parts",
+        "notes": {}
+      },
+      "ready_delivery": {
+        "title": "Ready for Delivery",
+        "notes": {}
+      },
+      "overdue": {
+        "title": "3-Day Overdue (Urgent)",
+        "notes": {
+          "legal_deadline": "Approaching the legal deadline"
+        }
+      }
+    },
+    "recentRecords": {
+      "title": "Recent Devices",
+      "description": "Most recent records received by the operations desk"
+    },
+    "table": {
+      "trackingCode": "Tracking Code",
+      "customer": "Customer",
+      "device": "Device",
+      "status": "Status"
+    },
+    "summary": {
+      "title": "Today's Summary",
+      "revenue": "Today's revenue",
+      "expense": "Today's expense",
+      "pendingApproval": "Records pending approval"
+    },
+    "quickActions": {
+      "primary": "New Record",
+      "secondary": "Search Device"
+    }
+  },
+  "today": {
+    "title": "Today's work",
+    "description": "Manage today's appointments, urgent records, and action-required service items for the operations team on one screen.",
+    "lastUpdatedLabel": "Last update",
+    "summary": {
+      "dueToday": "Needs action today",
+      "openRecords": "Open service records",
+      "urgent": "Urgent / high priority",
+      "completed": "Completed today"
+    },
+    "filters": {
+      "all": "All",
+      "appointments": "Appointments",
+      "urgent": "Urgent",
+      "completed": "Completed"
+    },
+    "sections": {
+      "appointments": {
+        "title": "Today's appointments",
+        "customerLabel": "Customer",
+        "deviceLabel": "Device",
+        "addressLabel": "Address",
+        "addressUnavailable": "No address available",
+        "assigneeLabel": "Assigned staff",
+        "unassigned": "Awaiting assignment",
+        "relatedRecordAction": "Open service record"
+      },
+      "attention": {
+        "title": "Service records needing attention",
+        "customerLabel": "Customer",
+        "deviceLabel": "Device",
+        "detailAction": "Go to details"
+      }
+    },
+    "appointmentStatuses": {
+      "SCHEDULED": "Scheduled",
+      "IN_PROGRESS": "On-site in progress",
+      "COMPLETED": "Completed"
+    },
+    "empty": {
+      "title": "No work for today",
+      "description": "No appointments or attention-required records match the selected filter."
+    }
+  },
+  "cash": {
+    "title": "Cash & accounts",
+    "description": "Monitor daily collections, expenses, and pending receivables from a single list.",
+    "lastUpdatedLabel": "Last update",
+    "summary": {
+      "todayIncome": "Today's collection",
+      "todayExpense": "Today's expense",
+      "netCash": "Net cash",
+      "pendingReceivables": "Pending receivables"
+    },
+    "filters": {
+      "all": "All",
+      "income": "Income",
+      "expense": "Expense",
+      "pending": "Pending"
+    },
+    "transactionTypes": {
+      "PAYMENT": "Payment",
+      "EXPENSE": "Expense",
+      "PENDING": "Pending receivable"
+    },
+    "notes": {
+      "service_collection": "Service collection",
+      "fuel_expense": "Service vehicle fuel expense",
+      "parts_and_labor_collection": "Parts and labor collection",
+      "awaiting_customer_approval": "Collection pending after customer approval",
+      "supplier_parts_payment": "Spare parts supplier payment",
+      "collect_at_delivery": "To be collected at delivery",
+      "corporate_bulk_collection": "Corporate bulk collection"
+    },
+    "methods": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "BANK_TRANSFER": "Bank transfer",
+      "OTHER": "Other",
+      "notAvailable": "—"
+    },
+    "table": {
+      "title": "Transaction list",
+      "description": "Items linked to service records or customers provide direct navigation to detail pages.",
+      "method": "Method",
+      "customer": "Customer",
+      "serviceRecord": "Service record",
+      "notLinked": "Not linked"
+    },
+    "empty": {
+      "defaultTitle": "No cash transactions yet",
+      "filteredTitle": "No transactions in this filter",
+      "description": "There are no income, expense, or pending receivable items to display for the selected view."
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "description": "Review operational visibility, sensitive finance summaries, and team workload from a mock reporting planning surface.",
+    "lastUpdatedLabel": "Last update",
+    "units": {
+      "hours": "hr",
+      "minutes": "min"
+    },
+    "mockBanner": {
+      "title": "Mock reporting surface",
+      "description": "This screen is frontend planning/mock only. Real reports require backend aggregation, tenant filtering, RBAC, and audit/export logging; this surface does not implement them."
+    },
+    "filters": {
+      "title": "Date range",
+      "description": "When the selection changes, the displayed mock data updates client-side."
+    },
+    "ranges": {
+      "today": "Today",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "last30Days": "Last 30 days"
+    },
+    "operationalSummary": {
+      "openedRecords": "Opened records",
+      "completedRecords": "Completed records",
+      "averageTurnaround": "Average turnaround",
+      "urgentQueue": "Urgent queue"
+    },
+    "financialSummary": {
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "netCash": "Net cash",
+      "permissionSensitive": "Mock · sensitive",
+      "mockNote": "Finance values are demo-only. Real visibility must be protected by backend permissions and tenant scope."
+    },
+    "statusDistribution": {
+      "title": "Service status distribution",
+      "description": "Status intensity for the selected range is shown as a mock distribution."
+    },
+    "staff": {
+      "title": "Staff workload and performance",
+      "description": "Team comparison is shown as mock, permission-sensitive planning data.",
+      "permissionSensitive": "Permission-sensitive · mock",
+      "mockOnly": "Mock only",
+      "table": {
+        "staff": "Staff",
+        "activeWorkload": "Active workload",
+        "completed": "Completed",
+        "averageTurnaround": "Avg. turnaround",
+        "urgentAssignments": "Urgent assignments"
+      }
+    },
+    "breakdowns": {
+      "title": "Category / device / service-type breakdown",
+      "description": "Category, device type, and service type intensity are summarized with planning-only mock distribution.",
+      "categoriesTitle": "Category breakdown",
+      "deviceTypesTitle": "Device-type breakdown",
+      "serviceTypesTitle": "Service-type breakdown",
+      "categoryLabels": {
+        "mobile": "Mobile devices",
+        "whiteGoods": "White goods",
+        "smallAppliance": "Small appliances",
+        "network": "Network / peripherals"
+      },
+      "deviceTypeLabels": {
+        "smartphone": "Smartphone",
+        "washingMachine": "Washing machine",
+        "combiBoiler": "Combi boiler",
+        "tablet": "Tablet"
+      },
+      "serviceTypeLabels": {
+        "workshop": "Workshop",
+        "onSite": "On-site",
+        "pickup": "Pickup",
+        "maintenance": "Maintenance"
+      }
+    },
+    "export": {
+      "title": "Report preparation and export readiness",
+      "description": "PDF, Excel, and export flows do not generate real files in this phase; they only show readiness expectations.",
+      "action": "Prepare report / export",
+      "preparing": "Preparing...",
+      "pdfTitle": "PDF not ready",
+      "excelTitle": "Excel not ready",
+      "auditTitle": "Permissions and logging requirement",
+      "notImplemented": "Real export is not implemented yet.",
+      "caveatTitle": "Backend requirements",
+      "backendRequirements": "Real reports require backend aggregation, tenant filtering, server-side RBAC, and export/audit logging.",
+      "success": {
+        "title": "Mock preparation complete",
+        "description": "Prepared a demo report for {range}: {reference} · {time}",
+        "nonPersistent": "No file was generated. This message is non-persistent and does not perform a real export."
+      }
+    }
+  },
+  "parts": {
+    "title": "Stock & parts",
+    "description": "Track spare-part visibility, low-stock risks, and recent movements from a mock planning surface.",
+    "lastUpdatedLabel": "Last update",
+    "resultsLabel": "Showing {count} parts",
+    "actions": {
+      "reserve": "Reserve for service",
+      "cancel": "Cancel",
+      "closeModal": "Close part reservation modal"
+    },
+    "mockBanner": {
+      "title": "Mock inventory surface",
+      "description": "This module is frontend planning/mock only. Prices, costs, and stock movements do not provide real security; persistence, tenant enforcement, audit logging, and RBAC are not implemented yet."
+    },
+    "summary": {
+      "totalParts": "Total parts",
+      "lowStock": "Low stock",
+      "reservedUnits": "Reserved units",
+      "estimatedRevenueValue": "Estimated sales value",
+      "permissionSensitive": "Mock · sensitive",
+      "mockValueNote": "This is a planning-only mock total. Real price/cost visibility must be constrained by backend permissions."
+    },
+    "filters": {
+      "searchPlaceholder": "Search by SKU, part name, brand, or device type",
+      "statusLabel": "Inventory status filter",
+      "categoryLabel": "Category filter",
+      "allCategories": "All categories",
+      "reset": "Clear filters",
+      "statusOptions": {
+        "all": "All statuses",
+        "low_stock": "Low stock",
+        "out_of_stock": "Out of stock",
+        "reserved": "Reserved",
+        "available": "Available"
+      }
+    },
+    "inventoryStates": {
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "reserved": "Reserved",
+      "available": "Available"
+    },
+    "categories": {
+      "SCREEN": "Screen",
+      "BATTERY": "Battery",
+      "PUMP": "Pump",
+      "BOARD": "Board",
+      "ACCESSORY": "Accessory",
+      "THERMAL": "Thermal kit"
+    },
+    "list": {
+      "title": "Parts list",
+      "description": "Sale price is visible while cost remains hidden behind a mock permission caveat.",
+      "sku": "SKU / code",
+      "compatibility": "Compatible device",
+      "stock": "Stock",
+      "reorderThreshold": "Reorder threshold",
+      "reserved": "Reserved",
+      "availableToUse": "Available to use",
+      "salePrice": "Sale price",
+      "costVisibilityTitle": "Cost visibility restricted",
+      "costVisibilityDescription": "Cost price is hidden in this phase. Real cost visibility must be protected by permission/RBAC and tenant scope."
+    },
+    "alerts": {
+      "title": "Low-stock alerts",
+      "description": "Track critical parts before service work gets blocked.",
+      "critical": "Critical",
+      "warning": "Monitor",
+      "itemDescription": "Current stock: {stock} · threshold: {threshold}",
+      "empty": "No low-stock alerts are currently visible."
+    },
+    "movements": {
+      "title": "Recent stock movements",
+      "description": "Purchase, reservation, usage, and adjustment movements are listed in a mock timeline.",
+      "serviceRecordLink": "Service record: {code}",
+      "types": {
+        "PURCHASE": "Purchase",
+        "RESERVATION": "Reserved for service",
+        "USAGE": "Usage",
+        "ADJUSTMENT": "Adjustment"
+      },
+      "notes": {
+        "supplier_restock": "Stock was refreshed through supplier purchasing.",
+        "reserved_for_waiting_part": "Part was reserved for a waiting service record.",
+        "used_in_repair": "Part was used in an active repair.",
+        "manual_cycle_adjustment": "Manual post-count adjustment was recorded.",
+        "buffer_stock_added": "Additional stock was entered as safety buffer."
+      }
+    },
+    "reserve": {
+      "title": "Reserve part for service record",
+      "description": "Link the selected part to a service record in mock mode and preview the reservation impact.",
+      "selectedPart": "Selected part",
+      "serviceRecordLabel": "Service record",
+      "serviceRecordPlaceholder": "Select a service record",
+      "quantityLabel": "Reservation quantity",
+      "quantityHint": "Maximum reservable quantity in this session: {count}",
+      "availableUnits": "Available units: {count}",
+      "mockPriceNote": "Sale price visibility is mock-only.",
+      "bannerTitle": "Not a real stock movement",
+      "bannerDescription": "This reservation updates only the client-side demo view. Real stock deduction requires a backend flow with audit logging, tenant scope, and RBAC controls.",
+      "actions": {
+        "submit": "Create mock reservation",
+        "submitting": "Creating reservation..."
+      },
+      "validation": {
+        "serviceRecordRequired": "Select a service record.",
+        "quantityRequired": "Enter a valid quantity.",
+        "quantityExceeds": "Available quantity can be at most {count}.",
+        "generic": "Mock reservation could not be completed. Check the form fields."
+      },
+      "success": {
+        "title": "Mock reservation created",
+        "description": "Reserved {count} unit(s) of {part} for {serviceRecord}.",
+        "nonPersistent": "This result is not persistent; a real stock movement must not be treated as valid until backend audit logging, tenant enforcement, and server-side RBAC exist."
+      }
+    },
+    "empty": {
+      "title": "No parts found",
+      "description": "No parts match your current search or filter criteria. Clear the filters and try again."
+    }
+  },
+  "staff": {
+    "title": "Staff",
+    "description": "Monitor team availability, assigned workload, and recent service assignments.",
+    "lastUpdatedLabel": "Last update",
+    "securityNote": "Role/permission (RBAC) and user management are not implemented yet. This screen is an MVP demo overview; real access restrictions must be enforced by backend auth + tenant guards.",
+    "readOnlyNote": "Staff create and edit flows in this phase are mock/planning surfaces only. Role changes and permission matrices do not provide real security; server-side RBAC guards are still required.",
+    "resultsLabel": "Showing {count} staff members",
+    "actions": {
+      "create": "Add staff",
+      "detail": "Details / edit",
+      "edit": "Edit profile",
+      "cancelEdit": "Close edit mode",
+      "cancel": "Cancel",
+      "closeModal": "Close staff modal"
+    },
+    "summary": {
+      "totalStaff": "Total staff",
+      "activeTechnicians": "Active technicians",
+      "assignedJobsToday": "Assigned today",
+      "unavailable": "Unavailable / on leave"
+    },
+    "filters": {
+      "searchLabel": "Search staff",
+      "searchPlaceholder": "Search by name, phone, or email",
+      "roleLabel": "Role filter",
+      "statusLabel": "Status filter",
+      "allRoles": "All roles",
+      "allStatuses": "All statuses"
+    },
+    "roles": {
+      "ADMIN": "Admin",
+      "TECHNICIAN": "Technician",
+      "RECEPTION": "Reception / Call Desk",
+      "ACCOUNTING": "Accounting"
+    },
+    "statuses": {
+      "ACTIVE": "Active",
+      "ON_LEAVE": "On leave",
+      "INACTIVE": "Inactive"
+    },
+    "card": {
+      "notAvailable": "—",
+      "openAssigned": "Open assigned records",
+      "assignedToday": "Assigned today",
+      "recentAssignments": "Recent assignments",
+      "noRecentAssignments": "No recent assignments"
+    },
+    "form": {
+      "optional": "optional",
+      "roleMockHint": "The role field is planning-only here; real permission assignment must be enforced by backend RBAC.",
+      "fields": {
+        "name": "Full name",
+        "role": "Role",
+        "phone": "Phone",
+        "email": "Email",
+        "status": "Status"
+      }
+    },
+    "validation": {
+      "summary": "Please fix the required fields.",
+      "nameRequired": "Full name is required.",
+      "roleRequired": "Role selection is required."
+    },
+    "create": {
+      "title": "Create staff member",
+      "description": "This modal generates a mock record. The returned staff ID is for demo use only and disappears after refresh.",
+      "actions": {
+        "submit": "Create mock staff",
+        "submitting": "Creating..."
+      },
+      "success": {
+        "title": "Mock staff created",
+        "description": "Generated a demo staff ID for {name}: {id}",
+        "nonPersistent": "This result is not persistent; the backend create endpoint and audit log flow are not connected yet."
+      }
+    },
+    "detail": {
+      "title": "Staff detail",
+      "description": "View profile summary, recent assignments, and the role/permission planning surface together.",
+      "loading": "Loading staff detail...",
+      "notFound": "Staff detail could not be found.",
+      "securityTitle": "Mock editing warning",
+      "securityDescription": "This editing surface is for UI planning only. Changing role or status here does not grant real access; security does not exist until backend RBAC guards are implemented.",
+      "recentAssignmentsTitle": "Recent assignments",
+      "assignmentLinkLabel": "Open service record",
+      "contact": {
+        "phone": "Phone",
+        "email": "Email"
+      },
+      "metrics": {
+        "openAssignments": "Open assignments",
+        "assignedToday": "Assigned today"
+      },
+      "actions": {
+        "save": "Save mock change",
+        "submitting": "Saving..."
+      },
+      "success": {
+        "title": "Mock staff updated",
+        "description": "Changes for {name} were updated in this session view only.",
+        "nonPersistent": "This edit was not written to the backend, did not produce an audit log, and did not create a real permission model."
+      }
+    },
+    "permissions": {
+      "title": "Role / permission draft",
+      "description": "The matrix below is for planning only; there is no backend enforcement yet.",
+      "readinessDraft": "Draft",
+      "roleTemplateLabel": "Planned access view for the {role} role",
+      "mockTitle": "RBAC caveat",
+      "mockDescription": "This table is not real security. Module access must be enforced by backend auth, tenant scope, and server-side permission guards.",
+      "columns": {
+        "module": "Module",
+        "state": "Access",
+        "note": "Planning note"
+      },
+      "modules": {
+        "SERVICE_RECORDS": "Service records",
+        "CUSTOMERS": "Customers",
+        "DEVICES": "Devices",
+        "CASH": "Cash / ledger",
+        "STAFF_SETTINGS": "Staff / settings"
+      },
+      "states": {
+        "FULL": "Full",
+        "LIMITED": "Limited",
+        "NONE": "None"
+      },
+      "notes": {
+        "ADMIN_SERVICE_RECORDS": "Planned ability to open, assign, and update every service record.",
+        "ADMIN_CUSTOMERS": "Planned full management for customers and linked device records.",
+        "ADMIN_DEVICES": "Planned visibility into device inventory and full service history.",
+        "ADMIN_CASH": "Planned full access to collections, expenses, and cash reconciliation.",
+        "ADMIN_STAFF_SETTINGS": "Staff/settings management should only be enabled after backend RBAC guards exist.",
+        "TECHNICIAN_SERVICE_RECORDS": "Planned operational work on assigned service records and status progression.",
+        "TECHNICIAN_CUSTOMERS": "Planned limited visibility into customer contact details required for service execution.",
+        "TECHNICIAN_DEVICES": "Planned access to device details and technical history.",
+        "TECHNICIAN_CASH": "Cash access should not be granted without an explicit backend policy.",
+        "TECHNICIAN_STAFF_SETTINGS": "Staff/settings management should not be planned for technicians.",
+        "RECEPTION_SERVICE_RECORDS": "Intake creation and status follow-up can be planned, while sensitive actions stay protected.",
+        "RECEPTION_CUSTOMERS": "Planned full capture of customer contact and intake information.",
+        "RECEPTION_DEVICES": "Planned limited intake-level device registration access.",
+        "RECEPTION_CASH": "Candidate limited access for collection-ready financial flows.",
+        "RECEPTION_STAFF_SETTINGS": "Reception should not receive staff/settings access.",
+        "ACCOUNTING_SERVICE_RECORDS": "Planned reference access to service status for billing context.",
+        "ACCOUNTING_CUSTOMERS": "Planned limited access to customer data needed for billing and collections.",
+        "ACCOUNTING_DEVICES": "Technical device detail access should stay off by default for accounting.",
+        "ACCOUNTING_CASH": "Planned ownership of collections, expenses, and reconciliation workflows.",
+        "ACCOUNTING_STAFF_SETTINGS": "Accounting should not receive staff/settings management access."
+      }
+    },
+    "empty": {
+      "defaultTitle": "No staff records yet",
+      "filteredTitle": "No staff found for selected filters",
+      "description": "No staff members match your current search or filter criteria."
+    }
+  },
+  "settings": {
+    "title": "General settings",
+    "description": "Review company identity, operations summary, and security readiness from one screen.",
+    "lastUpdatedLabel": "Last update",
+    "actions": {
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Mock save",
+      "saving": "Saving..."
+    },
+    "mockBanner": {
+      "title": "Mock settings surface",
+      "description": "This screen is a frontend planning/mock phase. The save action only updates the client-side view; backend persistence, tenant config writes, notification delivery, and audit logging are not wired yet."
+    },
+    "validation": {
+      "summary": "Please fix the required fields.",
+      "companyNameRequired": "Company name is required.",
+      "taxNumberRequired": "Tax number is required.",
+      "phoneRequired": "Phone is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Enter a valid email address."
+    },
+    "companyProfile": {
+      "title": "Company profile",
+      "description": "Mock-edit the identity and default display fields.",
+      "mockNote": "Editing here updates only the current client-side view for this session. Real company settings persistence requires a backend endpoint, tenant checks, and audit logging.",
+      "fields": {
+        "companyName": "Company name",
+        "taxNumber": "Tax number",
+        "phone": "Phone",
+        "email": "Email",
+        "defaultLocale": "Default locale",
+        "defaultCurrency": "Default currency",
+        "timezone": "Timezone"
+      },
+      "localeOptions": {
+        "tr": "Turkish",
+        "en": "English"
+      },
+      "currencyOptions": {
+        "TRY": "Turkish lira (TRY)",
+        "USD": "US dollar (USD)",
+        "EUR": "Euro (EUR)"
+      },
+      "timezoneOptions": {
+        "Europe/Istanbul": "Istanbul (UTC+03:00)",
+        "Europe/Berlin": "Berlin (UTC+01:00 / daylight saving)",
+        "UTC": "UTC (coordinated universal time)"
+      },
+      "success": {
+        "title": "Mock settings updated",
+        "description": "The displayed company profile for {name} was updated in this session.",
+        "nonPersistent": "This success state does not mean persistent storage; the mock data resets after refresh."
+      }
+    },
+    "branchOperation": {
+      "title": "Branch and service operations",
+      "description": "Summarize branch coverage, working hours, and service record numbering.",
+      "backendNote": "Branch, working-hours, and public tracking flows are summary-only in this phase. Real configuration writes and the public customer-facing flow must be implemented on the backend.",
+      "workingHourTemplates": {
+        "MON_SAT": "Mon-Sat"
+      },
+      "sundayCoverage": {
+        "ON_CALL_INTAKE": "Sun on-call intake"
+      },
+      "publicTrackingModes": {
+        "PLANNED": "Tracking-link planning is visible, while customer-facing view and token validation still await backend integration."
+      },
+      "fields": {
+        "branchCount": "Branch count",
+        "workingHours": "Working hours",
+        "serviceRecordPrefix": "Service record prefix",
+        "nextSequence": "Next sequence",
+        "sequencePreview": "Sequence preview",
+        "publicTracking": "Public tracking summary"
+      }
+    },
+    "notifications": {
+      "title": "Notification readiness",
+      "description": "Shows the planned state of customer communication channels.",
+      "mockOnlyNote": "SMS, email, and WhatsApp are readiness toggles only in this phase; real delivery, provider integrations, and preference storage still require backend work.",
+      "channels": {
+        "sms": "Customer SMS",
+        "email": "Customer email",
+        "whatsapp": "Customer WhatsApp"
+      },
+      "channelDescriptions": {
+        "sms": "Planned channel for appointment, status-change, and ready-for-delivery notifications.",
+        "email": "Planned channel for quotes, summaries, and post-delivery communication.",
+        "whatsapp": "Channel being evaluated for tracking links and quick status responses."
+      },
+      "states": {
+        "enabled": "Readiness on",
+        "disabled": "Readiness off"
+      }
+    },
+    "security": {
+      "title": "Security and readiness",
+      "description": "Track backend-required security concerns as a read-only checklist.",
+      "readOnlyBadge": "Read only",
+      "backendRequiredTitle": "Backend implementation required",
+      "backendRequiredDescription": "The items below provide visibility only on the frontend. Auth, RBAC, tenant guards, audit logging, and signed file URL flows must be enforced on the backend for real security.",
+      "statuses": {
+        "BACKEND_REQUIRED": "Backend required",
+        "PLANNING_ONLY": "Planning only"
+      },
+      "items": {
+        "auth": {
+          "title": "Authentication",
+          "description": "Sessions, access/refresh token lifecycles, and route enforcement must be wired into the backend auth layer."
+        },
+        "rbac": {
+          "title": "RBAC guards",
+          "description": "Role and permission decisions must be validated by server-side guards/policies, not by hiding buttons."
+        },
+        "tenant_guard": {
+          "title": "Tenant guard",
+          "description": "Multi-tenant data access must be constrained by company scope across all queries."
+        },
+        "audit_log": {
+          "title": "Audit log",
+          "description": "Settings writes and critical updates must log actor, entity, and changed fields."
+        },
+        "signed_file_urls": {
+          "title": "Signed file URLs",
+          "description": "Files and photos must be served through authorization-aware signed URLs instead of public links."
+        }
+      }
+    },
+    "footerCards": {
+      "contact": {
+        "title": "Contact summary"
+      },
+      "display": {
+        "title": "Display defaults"
+      },
+      "timezone": {
+        "title": "Timezone",
+        "description": "Frontend date/time formatting is planned around this default."
+      }
+    }
+  },
+  "serviceRecords": {
+    "title": "Service records",
+    "description": "Track every service record on the operations desk, filter the list, and continue to the new-record flow from here.",
+    "lastUpdatedLabel": "Last update",
+    "resultsLabel": "Showing {count} records",
+    "actions": {
+      "new": "New Record"
+    },
+    "summary": {
+      "total": "Open record pool",
+      "urgent": "Urgent priority record",
+      "ready": "Ready for delivery"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by tracking code, customer, or device...",
+      "statusLabel": "Status filter",
+      "priorityLabel": "Priority filter",
+      "allStatuses": "All statuses",
+      "allPriorities": "All priorities",
+      "reset": "Clear filters"
+    },
+    "table": {
+      "trackingCode": "Tracking Code",
+      "customer": "Customer",
+      "device": "Device",
+      "priority": "Priority",
+      "status": "Status",
+      "assignee": "Assigned Staff",
+      "unassigned": "Awaiting assignment",
+      "actions": "Actions",
+      "detailAction": "Details"
+    },
+    "empty": {
+      "title": "No records found",
+      "description": "There are no service records matching the current search and filters. Clear the filters and try again."
+    },
+    "newPage": {
+      "eyebrow": "Planned flow",
+      "title": "The new service record form will open in the next phase",
+      "description": "This route is reserved to lock the information architecture for the new record form. Customer, device, and fault details will be collected here in the next frontend phase.",
+      "backToList": "Back to record list"
+    },
+    "newForm": {
+      "eyebrow": "New record flow",
+      "title": "Create a new service record",
+      "description": "Create the service record linked to an existing customer; add a new customer and device inline when needed.",
+      "sections": {
+        "customer": "Customer selection",
+        "device": "Device selection",
+        "service": "Service details"
+      },
+      "fields": {
+        "customerMode": "Customer source",
+        "customerModeExisting": "Select existing customer",
+        "customerModeNew": "Add new customer",
+        "customerSearch": "Search customer",
+        "customerSearchPlaceholder": "Search by name, phone, or email",
+        "customerSelect": "Customer",
+        "customerSelectPlaceholder": "Select a customer",
+        "customerName": "Customer name",
+        "customerPhone": "Customer phone",
+        "customerEmail": "Customer email (optional)",
+        "emailNotProvided": "No email provided",
+        "deviceMode": "Device source",
+        "deviceModeExisting": "Select saved customer device",
+        "deviceModeNew": "Add new device",
+        "deviceSelect": "Device",
+        "deviceSelectPlaceholder": "Select a device",
+        "deviceSelectCustomerFirst": "Select a customer first",
+        "deviceBrand": "Device brand",
+        "deviceModel": "Device model",
+        "serialOrImei": "Serial number / IMEI (optional)",
+        "serialNotProvided": "No serial / IMEI provided",
+        "issueSummary": "Issue summary",
+        "issueDescription": "Issue description",
+        "priority": "Priority",
+        "status": "Initial status",
+        "assignee": "Assignee",
+        "assigneePlaceholder": "Awaiting assignment",
+        "internalNote": "Internal note (optional)"
+      },
+      "validation": {
+        "customerRequired": "Select an existing customer or complete the new customer fields.",
+        "customerName": "Customer name is required.",
+        "customerPhone": "Customer phone is required.",
+        "deviceRequired": "Select an existing device or complete the new device fields.",
+        "deviceBrand": "Device brand is required.",
+        "deviceModel": "Device model is required.",
+        "issueSummary": "Issue summary is required.",
+        "issueDescription": "Issue description is required.",
+        "priority": "Priority is required.",
+        "status": "Status is required."
+      },
+      "hints": {
+        "noDeviceForCustomer": "No saved device found for this customer. Please add a new device."
+      },
+      "devicePicker": {
+        "emptyTitle": "No device selected yet",
+        "emptyDescription": "Select a registered customer device or continue with a new device.",
+        "customerRequiredTitle": "Customer required for device selection",
+        "customerRequiredDescription": "Select a customer first to list registered devices.",
+        "modalTitle": "Select registered device",
+        "modalDescription": "Showing registered devices for {name}.",
+        "closeModalAriaLabel": "Close registered device picker modal",
+        "searchLabel": "Search in registered devices",
+        "searchPlaceholder": "Filter by brand, model, or serial/IMEI",
+        "registeredAt": "Registered at: {date}",
+        "registeredAtUnknown": "Registered date is unavailable",
+        "noResultTitle": "No devices found",
+        "noResultDescription": "No devices matched this filter. You can continue by adding a new device."
+      },
+      "preselectWarnings": {
+        "customerNotFound": "Preselection was not applied because the customer in the link was not found.",
+        "deviceNotFound": "Device preselection was not applied because the device in the link was not found.",
+        "deviceCustomerMismatch": "Device preselection was not applied because the selected device does not belong to this customer."
+      },
+      "customerSelector": {
+        "emptyTitle": "No customer selected yet",
+        "emptyDescription": "Open customer search to continue with an existing customer, or add a new one.",
+        "modalTitle": "Search and select customer",
+        "modalDescription": "Search by name, phone, or email to select a customer.",
+        "closeModalAriaLabel": "Close customer search modal",
+        "minCharactersHint": "Type at least 2 characters to see results.",
+        "noResultTitle": "No customer found",
+        "noResultDescription": "No customer matched this search. You can continue by adding a new customer.",
+        "refineSearchHint": "More matches exist. Refine your search to narrow down results."
+      },
+      "actions": {
+        "cancel": "Back to list",
+        "searchCustomer": "Search / select customer",
+        "changeCustomer": "Change customer",
+        "newCustomer": "Add new customer",
+        "closeSearch": "Close search",
+        "selectRegisteredDevice": "Select registered device",
+        "changeDevice": "Change device",
+        "addNewDevice": "Add new device",
+        "closeDevicePicker": "Close device picker",
+        "submit": "Create service record",
+        "submitting": "Creating..."
+      },
+      "success": {
+        "title": "Service record created",
+        "description": "Service record created successfully. Tracking code: {code}"
+      },
+      "error": {
+        "title": "Could not create service record",
+        "dismiss": "Dismiss"
+      }
+    },
+    "detail": {
+      "backToList": "Back to list",
+      "receivedAtLabel": "Received at: {date}",
+      "mockBanner": {
+        "title": "Operational actions are frontend mock only",
+        "description": "This panel simulates status changes, staff assignment, collection notes, and parts context only on the client. Real implementation requires backend RBAC, tenant guard, and audit logging."
+      },
+      "summary": {
+        "issue": "Issue summary",
+        "customer": "Customer",
+        "device": "Device",
+        "assignee": "Assigned staff",
+        "serialNumber": "Serial No"
+      },
+      "timeline": {
+        "title": "Operation history",
+        "subtitle": "Timeline",
+        "actorLabel": "Handled by: {name}",
+        "emptyTitle": "No timeline event yet",
+        "emptyDescription": "Operation history for this service record will appear here.",
+        "mockBadge": "Mock",
+        "customerSafeBadge": "Customer-safe",
+        "eventTypes": {
+          "STATUS_CHANGED": "Status change",
+          "NOTE_ADDED": "Note",
+          "ASSIGNED": "Assignment",
+          "PART_ORDERED": "Part"
+        }
+      },
+      "operations": {
+        "title": "Mock operational actions",
+        "description": "Status, assignment, and collection-note flows update the current session view only; no persistence, authorization, or tenant enforcement is applied.",
+        "mockOnlyBadge": "Mock only",
+        "mockActor": "Operations mock panel",
+        "feedback": {
+          "title": "Mock action applied",
+          "nonPersistent": "This change is temporary in the card and timeline view; persistence, audit logging, and security enforcement do not exist yet.",
+          "statusChanged": "Service status was moved to mock {status}.",
+          "assigneeChanged": "Assigned staff was mock-updated to {name}.",
+          "paymentNoteAdded": "A mock collection note was added to the timeline."
+        },
+        "status": {
+          "title": "Status flow",
+          "description": "Select the next mock operational step available from the current status.",
+          "nextStatusLabel": "Next status",
+          "defaultSubmitLabel": "Update status",
+          "noTransitionDescription": "No new mock transition is defined for this status. Real delivery/cancellation closure should be enforced by backend rules.",
+          "submitLabels": {
+            "NEW": "Update status",
+            "APPOINTMENT_SCHEDULED": "Mark as appointment scheduled",
+            "ASSIGNED": "Mark as staff assigned",
+            "IN_PROGRESS": "Move into diagnosis / work",
+            "WAITING_PART": "Mark as waiting for part",
+            "WAITING_CUSTOMER_APPROVAL": "Mark as waiting for customer approval",
+            "REPAIRING": "Mark as repairing",
+            "READY_FOR_DELIVERY": "Mark as ready for delivery",
+            "DELIVERED": "Mark as delivered",
+            "CANCELLED": "Mark as cancelled",
+            "UNREACHABLE": "Mark as unreachable",
+            "UNPAID": "Mark as unpaid"
+          },
+          "eventTitles": {
+            "NEW": "Status was mock-updated",
+            "APPOINTMENT_SCHEDULED": "Record was mock-moved to appointment scheduled",
+            "ASSIGNED": "Record was mock-moved to staff assigned",
+            "IN_PROGRESS": "Record was mock-moved into diagnosis / work",
+            "WAITING_PART": "Record was mock-moved to waiting for part",
+            "WAITING_CUSTOMER_APPROVAL": "Record was mock-moved to waiting for customer approval",
+            "REPAIRING": "Record was mock-moved to repairing",
+            "READY_FOR_DELIVERY": "Record was mock-marked ready for delivery",
+            "DELIVERED": "Record was mock-marked delivered",
+            "CANCELLED": "Record was mock-marked cancelled",
+            "UNREACHABLE": "Record was mock-marked unreachable",
+            "UNPAID": "Record was mock-marked unpaid"
+          },
+          "eventDescriptions": {
+            "NEW": "The status flow was re-planned from the mock panel.",
+            "APPOINTMENT_SCHEDULED": "Appointment scheduling was appended as a customer-safe mock event.",
+            "ASSIGNED": "Staff assignment was appended as a customer-safe mock event.",
+            "IN_PROGRESS": "A customer-safe description was added for the diagnosis / technical work step.",
+            "WAITING_PART": "Waiting for part was appended as a customer-safe mock event.",
+            "WAITING_CUSTOMER_APPROVAL": "Waiting for customer approval was appended as a customer-safe mock event.",
+            "REPAIRING": "Repairing was appended as a customer-safe mock event.",
+            "READY_FOR_DELIVERY": "Ready-for-delivery was appended as a customer-safe mock event.",
+            "DELIVERED": "Delivery completion was appended as a customer-safe mock event.",
+            "CANCELLED": "Cancellation was appended as a customer-safe mock event.",
+            "UNREACHABLE": "Customer unreachable was appended as a customer-safe mock event.",
+            "UNPAID": "Unpaid status was appended as a customer-safe mock event."
+          }
+        },
+        "assignment": {
+          "title": "Staff assignment",
+          "description": "Select from the mock staff list; this assignment updates only the current detail surface.",
+          "assigneeLabel": "Staff to assign",
+          "submitLabel": "Apply mock assignment",
+          "eventTitle": "Record was mock-assigned to {name}",
+          "eventDescription": "The assignment change was added to the timeline as a customer-safe operational event. New assignee: {name}."
+        },
+        "payment": {
+          "title": "Collection note and cash context",
+          "description": "The collection surface is a permission-sensitive, non-persistent mock planning area; no real payment record is created.",
+          "permissionSensitiveBadge": "Permission-sensitive",
+          "outstandingLabel": "Outstanding collection",
+          "collectedLabel": "Mock collected",
+          "notePreviewLabel": "Collection note draft",
+          "submitLabel": "Add mock collection note",
+          "openCashAction": "Open cash context",
+          "eventTitle": "Mock collection note added",
+          "eventDescription": "A customer-safe mock collection note was logged for {amount}: {note}"
+        },
+        "parts": {
+          "title": "Parts / reservation context",
+          "description": "Used or reserved mock parts are shown here; real stock movement and reservation are not implemented without backend support.",
+          "openPartsAction": "Open parts module",
+          "emptyDescription": "No mock part usage or reservation is visible for this record. Real usage requires stock movement and service-part write flows.",
+          "quantityLabel": "Quantity: {count}",
+          "statuses": {
+            "USED": "Used",
+            "RESERVED": "Reserved"
+          }
+        }
+      },
+      "workItems": {
+        "title": "Notes and work items",
+        "description": "This section will be populated with technical notes, to-dos, and work items in the next phase.",
+        "mockSafetyNote": "Internal notes and private explanations must not be mirrored into customer-safe timeline events; this phase intentionally creates only safe/general mock text."
+      },
+      "notFound": {
+        "eyebrow": "Record not found",
+        "title": "Service record could not be displayed",
+        "description": "Service record with id {id} was not found or is out of view scope."
+      }
+    }
+  },
+  "customers": {
+    "list": {
+      "title": "Customer list",
+      "description": "Search customers and track device counts with open service workload on a single screen.",
+      "actions": {
+        "create": "Create new customer"
+      },
+      "searchLabel": "Customer search",
+      "searchPlaceholder": "Search by name, phone, or email...",
+      "resultsLabel": "Showing {count} customers",
+      "summary": {
+        "totalCustomers": "Total customers",
+        "totalDevices": "Registered devices",
+        "openServices": "Open service records"
+      },
+      "row": {
+        "devicesLabel": "Devices",
+        "openServicesLabel": "Open records",
+        "detailAction": "Customer details"
+      },
+      "empty": {
+        "defaultTitle": "No customers yet",
+        "searchTitle": "No customer matched this search",
+        "description": "The customer list does not match this criteria. Try a different search value."
+      }
+    },
+    "detail": {
+      "backToList": "Back to customer list",
+      "actions": {
+        "newServiceRecord": "Create service record for this customer"
+      },
+      "contactCard": {
+        "title": "Contact summary",
+        "phone": "Phone",
+        "email": "Email",
+        "city": "City",
+        "district": "District",
+        "address": "Open address"
+      },
+      "devices": {
+        "title": "Linked devices",
+        "countLabel": "Total {count} devices",
+        "serialLabel": "Serial No: {serial}",
+        "detailAction": "View device details",
+        "modalTitle": "Device details",
+        "closeModalAriaLabel": "Close device detail modal",
+        "loading": "Loading device details...",
+        "ownerLabel": "Device owner: {name}",
+        "serviceHistoryTitle": "Service history for this device",
+        "noDeviceHistory": "No service history for this device.",
+        "mismatchError": "This device is not linked to this customer or is out of view scope.",
+        "emptyTitle": "No device linked to this customer",
+        "emptyDescription": "This section will list devices when a new one is added."
+      },
+      "serviceHistory": {
+        "title": "Service history",
+        "description": "Recent customer service records are listed with tracking code and status.",
+        "deviceLabel": "Device",
+        "dateLabel": "Received date: {date}",
+        "unknownDevice": "Unknown device",
+        "emptyTitle": "No service history",
+        "emptyDescription": "Service records for this customer will appear here."
+      },
+      "notFound": {
+        "eyebrow": "Customer not found",
+        "title": "Customer details could not be displayed",
+        "description": "Customer with id {id} was not found or is out of view scope."
+      }
+    },
+    "create": {
+      "title": "Create new customer",
+      "description": "Create the customer first, then attach customer-linked devices in the service flow.",
+      "fields": {
+        "name": "Full name",
+        "phone": "Phone",
+        "email": "Email",
+        "city": "City",
+        "district": "District",
+        "address": "Open address",
+        "note": "Note",
+        "optional": "optional"
+      },
+      "validation": {
+        "name": "Customer name is required.",
+        "phone": "Phone is required.",
+        "address": "Open address is required.",
+        "summary": "Complete the required fields to create the customer."
+      },
+      "actions": {
+        "submit": "Create customer",
+        "submitting": "Creating...",
+        "cancel": "Cancel",
+        "close": "Close create customer modal"
+      },
+      "success": {
+        "title": "Customer creation completed",
+        "description": "Mock customer created for {name}. Temporary customer id: {id}",
+        "nonPersistent": "In this phase the record is not persisted; refreshing the page will not update the list."
+      }
+    }
+  },
+  "devices": {
+    "deviceTypes": {
+      "PHONE": "Phone",
+      "COMPUTER": "Computer",
+      "WHITE_GOOD": "Home appliance",
+      "TV": "Television"
+    },
+    "list": {
+      "title": "Device list",
+      "description": "Search devices by brand/model or customer information and track ownership context through customer cards.",
+      "searchLabel": "Device search",
+      "searchPlaceholder": "Search by brand, model, serial, IMEI, customer name, or phone...",
+      "resultsLabel": "Showing {count} devices",
+      "summary": {
+        "totalDevices": "Total devices",
+        "totalOwners": "Total customer owners",
+        "openServices": "Open service records"
+      },
+      "row": {
+        "serialLabel": "Serial No: {serial}",
+        "imeiLabel": "IMEI: {imei}",
+        "openServicesLabel": "Open records",
+        "detailAction": "Device details"
+      },
+      "empty": {
+        "defaultTitle": "No devices yet",
+        "searchTitle": "No device matched this search",
+        "description": "The device list does not match this criteria. Try a different search value."
+      }
+    },
+    "detail": {
+      "backToList": "Back to device list",
+      "actions": {
+        "newServiceRecord": "Create service record for this device"
+      },
+      "summary": {
+        "title": "Device summary",
+        "brandModel": "Brand / model",
+        "type": "Device type",
+        "serialNumber": "Serial number",
+        "imei": "IMEI",
+        "notAvailable": "Not provided"
+      },
+      "owner": {
+        "title": "Device owner"
+      },
+      "serviceHistory": {
+        "title": "Service history for this device",
+        "description": "Service records linked to this device are listed with tracking code and status.",
+        "dateLabel": "Received date: {date}",
+        "emptyTitle": "No service history for this device",
+        "emptyDescription": "It will appear here when a new service record is created."
+      },
+      "createServiceRecordHint": "The new service record action currently navigates to /service-records/new. Device/customer preselection is not yet passed in this phase.",
+      "notFound": {
+        "eyebrow": "Device not found",
+        "title": "Device details could not be displayed",
+        "description": "Device with id {id} was not found or is out of view scope."
+      }
+    }
+  },
+  "serviceStatuses": {
+    "NEW": "New record",
+    "APPOINTMENT_SCHEDULED": "Appointment scheduled",
+    "ASSIGNED": "Staff assigned",
+    "IN_PROGRESS": "In progress",
+    "WAITING_PART": "Waiting for part",
+    "WAITING_CUSTOMER_APPROVAL": "Waiting for customer approval",
+    "REPAIRING": "Repairing",
+    "READY_FOR_DELIVERY": "Ready for delivery",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled",
+    "UNREACHABLE": "Unreachable",
+    "UNPAID": "Unpaid"
+  },
+  "servicePriorities": {
+    "LOW": "Low",
+    "NORMAL": "Normal",
+    "HIGH": "High",
+    "URGENT": "Urgent"
+  },
+  "placeholder": {
+    "eyebrow": "Coming soon",
+    "title": "This module will open in the next phase",
+    "description": "Only the app shell and dashboard were productionized in the first frontend phase. This route is already reserved to lock the information architecture."
+  }
+}

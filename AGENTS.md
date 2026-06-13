@@ -1,351 +1,141 @@
-# AGENTS.md — Kod Ajanları İçin Geliştirme Talimatları
+# AGENTS.md — Servis Takip Proje Kuralları
 
-## 1. Proje Amacı
+## Proje Hakkında
 
-Bu repository teknik servis işletmeleri için modern, web tabanlı, çok firmalı bir Servis Takip SaaS uygulamasıdır.
+Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis kaydı, tahsilat ve planlı iş takibi yapmasını sağlar.
 
-MVP; müşteri, cihaz, servis kaydı, randevu, personel, fotoğraf, QR/takip linki, basit kasa ve audit log süreçlerini kapsar.
+## Teknolojiler
 
-Ajanların görevi küçük, güvenli, sürdürülebilir ve mevcut demo tasarımını bozmayan değişiklikler yapmaktır.
+- **Frontend + Backend:** Next.js 15 (App Router, API routes)
+- **UI:** Mantine v7 (CSS Modules, responsive)
+- **Database:** PostgreSQL + Prisma ORM
+- **Auth:** JWT (access token, httpOnly cookie) + bcrypt
+- **Form:** react-hook-form + zod
+- **Data Fetching:** TanStack Query
+- **i18n:** next-intl (şimdilik sadece `tr`, altyapı `en` için hazır)
+- **Deploy:** Docker (multi-stage build, mevcut PostgreSQL'e bağlanır)
 
-## 2. Mutlaka Okunacak Dosyalar
+## Dil
 
-Her ajan işe başlamadan önce ilgili kapsam kadar şu dosyaları okumalıdır:
+- Tüm UI metinleri `messages/tr.json` dosyasından çekilir.
+- `next-intl` kullanılır. `useTranslations()` hook'u ile erişilir.
+- Hardcoded kullanıcıya gösterilen metin **kesinlikle yasak**.
 
-```text
-PLAN.md
-DATABASE_DESIGN.md
-AGENTS.md
+## Kod Stili
+
+- TypeScript strict mode.
+- `any` kullanımı yasak. Bilinmeyen tipler için `unknown` kullanılır.
+- React Server Components (RSC) mümkün olan her yerde tercih edilir.
+- "use client" direktifi sadece interactivity gerektiğinde kullanılır.
+- Fonksiyon componentleri, arrow function değil `function` keyword ile yazılır.
+- Props tipleri inline değil, ayrı `interface` veya `type` olarak tanımlanır.
+- `interface` tercih edilir, `type` sadece union/intersection gerektiğinde kullanılır.
+- CSS Modules kullanılır (`.module.css`). Inline style yasak.
+- Yorum eklenmez (çok zorunlu değilse).
+- Export default kullanılmaz, named export kullanılır.
+- Mutasyonlu fonksiyonlarda `void` operatörü kullanılır (`void deleteUser(id)`).
+
+## Mimarî Kurallar
+
+- API route'ları doğrudan Prisma çağırır. Ayrı bir service katmanı yok.
+- Her API route dosyası en fazla 200 satır olur. Aşarsa ayrı `lib/` dosyasına taşınır.
+- Server Components veriyi doğrudan Prisma ile çeker, Client Componentlere prop geçer.
+- Client Componentler TanStack Query ile veri çeker.
+- Form validation şeması (`zod`) API route'una yakın tanımlanır (örn. aynı dosyada).
+- `.env`'den okunan değerler `src/lib/env.ts`'de tek merkezden validate edilir.
+- `prisma/schema.prisma` tüm modelleri içerir, Phase'ler ekledikçe büyür.
+
+## Dizin Yapısı
+
 ```
-
-UI ile ilgili bir iş yapılacaksa ayrıca `DEMO-APP/` klasörü incelenmelidir.
-
-`UI_SCREENS.md` artık kullanılmayacaktır. Varsa bile kaynak kabul edilmemelidir.
-
-## 3. DEMO-APP Kullanım Kuralı
-
-`DEMO-APP/` klasörü görsel referans ve başlangıç prototipidir.
-
-Ajanlar:
-
-- mevcut sade dashboard hissini korumalı,
-- sidebar/header yapısını koruyarak geliştirmeli,
-- gereksiz yeniden tasarım yapmamalı,
-- demo içindeki kodu doğrudan üretim kodu sanmamalı,
-- gerekirse parçalayarak `apps/web/features/*` ve `components/*` altına taşımalı,
-- UI metinlerini i18n'e dönüştürmeli,
-- demo verilerini gerçek API client veya mock katmanına ayırmalıdır.
-
-Demo uygulama tek dosyaya yığılmışsa bu yapı kabul edilmez. Üretim tarafına taşınırken dosyalar modüler hale getirilmelidir.
-
-## 4. Genel Davranış Kuralları
-
-1. Gereksiz dosya okuma yapma.
-2. Değişiklikleri küçük ve odaklı tut.
-3. Bir işi bitirmeden başka işe geçme.
-4. Tek dosyaya yüzlerce satır logic yığma.
-5. Her modül kendi klasöründe olmalı.
-6. Ortak kodları `packages/shared`, `apps/web/lib` veya `apps/api/src/common` altına taşı.
-7. UI metinlerini hardcode etme. i18n kullan.
-8. Backend'de yetki ve tenant kontrolünü asla atlama.
-9. Demo verisi ile production logic'i karıştırma.
-10. Build, lint ve typecheck hatası bırakma.
-11. Deprecated paketleri özellikle seçme.
-12. Canary, alpha, beta sürüm kullanma.
-13. Her write işleminde audit log gerekliliğini kontrol et.
-14. Kullanılmayan kod, import ve component bırakma.
-15. Route, tablo, enum ve DTO adlarını dokümanlarla tutarlı tut.
-
-## 5. Teknoloji Stack
-
-### Frontend
-
-- Next.js App Router
-- React
-- TypeScript
-- Tailwind CSS
-- shadcn/ui
-- lucide-react
-- React Hook Form
-- Zod
-- TanStack Table
-- TanStack Query veya Next.js data fetching
-- next-intl veya eşdeğer i18n çözümü
-
-### Backend
-
-- NestJS
-- TypeScript
-- PostgreSQL
-- Prisma
-- JWT auth
-- Refresh token
-- Role/permission guard
-- Tenant guard
-- Audit log interceptor
-
-### Tooling
-
-- pnpm tercih edilir.
-- ESLint kullanılmalı.
-- Prettier kullanılmalı.
-- Docker Compose local development için kullanılmalı.
-- `.env.example` güncel tutulmalı.
-
-## 6. Monorepo Yapısı
-
-```text
-servis-takip/
-  DEMO-APP/
-  apps/
-    web/
-    api/
-  packages/
-    shared/
-    config/
-  PLAN.md
-  DATABASE_DESIGN.md
-  AGENTS.md
-  docker-compose.yml
-  .env.example
-  README.md
-```
-
-## 7. Frontend Organizasyonu
-
-```text
-apps/web/
+src/
   app/
-    [locale]/
-      dashboard/
-      today/
-      service-records/
+    [locale]/         # next-intl locale segment
+      page.tsx         # Dashboard (Server Component)
+      login/page.tsx
+      register/page.tsx
       customers/
       devices/
-      calendar/
-      parts/
-      cash/
-      reports/
-      staff/
-      audit-logs/
+      service-records/
+      scheduled-tasks/
       settings/
-    track/[code]/
+    api/               # API route'ları
   components/
-    ui/
-    layout/
-    forms/
-    tables/
-    status/
-  features/
-    dashboard/
-    service-records/
+    ui/                # Küçük, tekrar kullanılabilir UI bileşenleri
+    layout/            # AppShell, Sidebar, Header
+  features/            # View bileşenleri (sayfa mantığı)
     customers/
     devices/
-    calendar/
-    parts/
-    cash/
-    staff/
+    service-records/
+    scheduled-tasks/
+    dashboard/
     settings/
-  lib/
-    api/
-    auth/
-    i18n/
-    utils/
-  messages/
-    tr.json
-    en.json
-```
-
-## 8. Frontend Kuralları
-
-- Sayfa dosyaları ince kalmalıdır.
-- Business logic `features/*` altına taşınmalıdır.
-- API istekleri `lib/api` veya feature-specific client içinde olmalıdır.
-- Form validasyonu Zod ile yapılmalıdır.
-- React Hook Form kullanılmalıdır.
-- Tablo için TanStack Table kullanılabilir.
-- Loading, error, empty state her liste ekranında olmalıdır.
-- Mobil görünüm desteklenmelidir.
-- Sidebar masaüstünde açık, mobilde drawer olarak çalışmalıdır.
-- Renkler ve spacing mevcut demo ile uyumlu olmalıdır.
-- UI textleri i18n dosyasından gelmelidir.
-
-Yanlış:
-
-```tsx
-<button>Yeni Kayıt</button>
-```
-
-Doğru:
-
-```tsx
-<Button>{t("serviceRecords.actions.new")}</Button>
-```
-
-Yanlış:
-
-```tsx
-fetch("http://localhost:3001/service-records")
-```
-
-Doğru:
-
-```tsx
-api.serviceRecords.list(params)
-```
-
-Yanlış:
-
-```tsx
-const statusLabel = status === "NEW" ? "Yeni Kayıt" : "Diğer";
-```
-
-Doğru:
-
-```tsx
-t(`serviceStatuses.${status}`)
-```
-
-## 9. Backend Organizasyonu
-
-```text
-apps/api/src/
-  auth/
-  companies/
-  users/
-  roles/
-  customers/
-  devices/
-  service-records/
-  appointments/
-  payments/
-  expenses/
-  parts/
-  files/
-  public-tracking/
-  dashboard/
-  audit-logs/
-  notifications/
-  common/
-    guards/
-    decorators/
-    interceptors/
-    filters/
-    pipes/
-    utils/
-  prisma/
-```
-
-Her modülde ideal yapı:
-
-```text
-module-name/
-  module-name.module.ts
-  module-name.controller.ts
-  module-name.service.ts
-  dto/
+  lib/                 # Utility, config, helpers
+    prisma.ts          # Prisma client singleton
+    auth.ts            # JWT, bcrypt, cookie helpers
+    api.ts             # Client-side fetch wrapper
   types/
-  policies/
+    index.ts
 ```
 
-## 10. Backend Kuralları
+## Responsive Tasarım
 
-1. Controller ince olmalıdır.
-2. Business logic service içinde olmalıdır.
-3. Prisma query'lerinde tenant tablolarında `company_id` filtresi zorunludur.
-4. DTO validation zorunludur.
-5. Role/permission kontrolü guard veya policy ile yapılmalıdır.
-6. Public tracking endpointleri özel guard ve sınırlı veri döndürmelidir.
-7. Password hash dışında şifre tutulmamalıdır.
-8. Soft delete gereken tablolarda `deleted_at` kullanılmalıdır.
-9. Audit log gerektiren write işlemleri loglanmalıdır.
-10. Hata mesajları kullanıcıya veri sızdırmamalıdır.
+- Mantine responsive props kullanılır (`visibleFrom`, `hiddenFrom`, `maw`, vb.).
+- Mobil first yaklaşımı.
+- Sidebar mobilde drawer'a dönüşür.
+- Tablolar mobilde kart görünümüne dönüşebilir (Mantine `Table` scrollable).
+- Touch target minimum 44x44px.
 
-## 11. i18n Kuralları
+## UI / Tasarım
 
-- Varsayılan dil Türkçe.
-- İngilizce destek altyapısı kurulacak.
-- UI metinleri `messages/tr.json` ve `messages/en.json` üzerinden gelir.
-- Backend enumları İngilizce kalır.
-- Frontend enum label'larını i18n'den gösterir.
-- Para, tarih ve saat locale'e göre formatlanır.
+- AI-slop estetiği yasak (glowing gradient, neon, glassmorphism, blob, sparkle).
+- Sade, düzenli, profesyonel görünüm.
+- Renk paleti Mantine varsayılanı kullanılır, özel tema gerekiyorsa `mantine-theme.ts`.
+- Yükleme durumları için `Skeleton` kullanılır.
+- Boş liste durumları için açıklayıcı mesaj + aksiyon butonu.
+- Hata durumları için `Alert` bileşeni.
+- Toast/notification için `@mantine/notifications`.
+- Form hataları inline gösterilir.
 
-Örnek:
+## State Management
 
-```json
-{
-  "navigation": {
-    "dashboard": "Özet Durum",
-    "today": "Bugünün İşleri",
-    "serviceRecords": "Servis Kayıtları"
-  }
-}
-```
+- Server state: TanStack Query (client-side fetching).
+- UI state: React `useState` / `useReducer`.
+- Global state: React Context (auth gibi).
+- URL state: Next.js searchParams (filtre, sayfa, arama).
 
-## 12. Audit Log Kuralları
+## Veritabanı
 
-Aşağıdaki işlemler audit log üretmelidir:
+- PostgreSQL + Prisma.
+- Tüm tenant entity'lerinde `companyId` alanı (single-tenant olsa da ileriye dönük).
+- `id` alanları `cuid()` ile oluşturulur.
+- `createdAt` ve `updatedAt` her modelde olur.
+- Soft delete yok, hard delete kullanılır (kullanıcı sayısı az).
+- Migrasyonlar `prisma migrate dev` ile oluşturulur.
+- `prisma/seed.ts` ile demo data eklenebilir.
 
-- müşteri oluşturma/güncelleme/silme
-- cihaz oluşturma/güncelleme/silme
-- servis kaydı oluşturma/güncelleme/silme
-- servis durum değişimi
-- personel atama
-- ödeme/tahsilat ekleme
-- gider ekleme
-- dosya/fotoğraf yükleme
-- firma ayarı güncelleme
-- yetki/rol değişimi
+## Auth
 
-Log minimum alanları:
+- JWT access token (15dk) httpOnly cookie'de saklanır.
+- Refresh token yok. Süre dolunca tekrar login.
+- `middleware.ts` korumasız rotalar: `/login`, `/register`, `/api/auth/*`.
+- Admin ve Technician rolleri arasında sadece `role` enum farkı.
+- Admin her şeyi yapabilir. Technician müşteri/servis görebilir, düzenleyebilir ama kullanıcı yönetemez.
 
-```text
-company_id (tenant loglarında zorunlu; sadece sistem loglarında null olabilir)
-actor_user_id
-action
-entity_type
-entity_id
-old_values
-new_values
-ip_address
-user_agent
-created_at
-```
+## Test
 
-## 13. UI Öncelikleri
+- Kritik API route'ları için manuel test yeterli (şimdilik).
+- Test framework kurulumu Phase 8'de değerlendirilir.
 
-Mevcut demo tasarımından hareketle öncelik sırası:
+## Commit
 
-1. Sidebar ve header iskeleti
-2. Dashboard kartları ve son kayıtlar
-3. Servis kayıtları listesi
-4. Servis kayıt detayı ve timeline
-5. Yeni servis kaydı formu
-6. Müşteri listesi ve detayı
-7. Cihaz detayı
-8. Bugünün işleri
-9. Kasa ekranı
-10. Personel ve ayarlar
+- Türkçe commit mesajları.
+- Format: `{phase}: {eylem} — {kısa açıklama}`
+- Örnek: `phase-1: kurulum — Next.js + Mantine + Prisma iskeleti`
+- `main` branch'ine direkt commit yapılır (tek geliştirici).
 
-## 14. Yapılmaması Gerekenler
+## PLAN.md
 
-- Tüm uygulamayı tek `page.tsx` içine yazma.
-- Demo verilerini componentlerin içine gömme.
-- Yetki kontrolünü sadece buton gizleyerek yapma.
-- Tenant filtresi olmadan sorgu yazma.
-- Fotoğraf URL'lerini public ve tahmin edilebilir yapma.
-- UI'da Türkçe metinleri doğrudan yazma.
-- Kullanıcının yetkisi olmayan kasa, maliyet, log verisini döndürme.
-- Müşteri takip sayfasında iç notları, parça alış fiyatını veya personel loglarını gösterme.
-
-## 15. Commit / İş Tamamlama Kriteri
-
-Bir görev tamamlandığında:
-
-- TypeScript hatası olmamalı.
-- Lint hatası olmamalı.
-- Build alınabilmeli.
-- İlgili sayfa mobilde bozulmamalı.
-- Yeni UI metinleri i18n dosyasına eklenmiş olmalı.
-- Gerekirse `.env.example` güncellenmiş olmalı.
-- Değişiklik gerektiriyorsa docs güncellenmiş olmalı.
+- `PLAN.md` dosyası mevcut phase durumunu gösterir.
+- Tamamlanan maddeler `[x]` ile işaretlenir.
+- Yeni feature'lar plana eklenmeden implemente edilmez.

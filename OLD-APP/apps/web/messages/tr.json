@@ -1,0 +1,1221 @@
+{
+  "metadata": {
+    "title": "Servis Takip",
+    "description": "Teknik servis ekipleri için çok firmalı operasyon paneli"
+  },
+  "brand": {
+    "name": "Servis Takip",
+    "pro": "PRO",
+    "compactName": "CetTech PRO",
+    "tagline": "Operasyon paneli"
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş Yap",
+      "subtitle": "Hesabınıza erişmek için bilgilerinizi giriniz.",
+      "email": "E-posta",
+      "emailPlaceholder": "ornek@servis.com",
+      "password": "Şifre",
+      "passwordPlaceholder": "••••••••",
+      "button": "Giriş Yap",
+      "loading": "Giriş yapılıyor...",
+      "noAccount": "Hesabınız yok mu?",
+      "registerLink": "Hemen yeni bir firma kaydı oluşturun.",
+      "error": "Kullanıcı adı veya şifre hatalı.",
+      "demoButton": "Demo Sürümünü Test Et",
+      "or": "veya"
+    },
+    "register": {
+      "title": "Firma Kaydı Oluştur",
+      "subtitle": "Teknik servis takibine başlamak için yeni bir hesap açın.",
+      "companyName": "Firma Adı",
+      "companyNamePlaceholder": "Örn: CetTech Servis",
+      "slug": "Firma Kısa Kodu (URL slug)",
+      "slugPlaceholder": "cettech-servis",
+      "name": "Adınız Soyadınız",
+      "namePlaceholder": "Örn: Ahmet Yılmaz",
+      "email": "Yönetici E-postası",
+      "emailPlaceholder": "admin@firma.com",
+      "password": "Parola",
+      "passwordPlaceholder": "••••••••",
+      "button": "Kayıt Ol ve Giriş Yap",
+      "loading": "Kayıt yapılıyor...",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "loginLink": "Giriş yapın"
+    }
+  },
+  "navigation": {
+    "sections": {
+      "management": "Yönetim",
+      "modules": "Modüller"
+    },
+    "items": {
+      "dashboard": "Özet Durum",
+      "today": "Bugünün İşleri",
+      "serviceRecords": "Servis Kayıtları",
+      "customers": "Müşteriler",
+      "devices": "Cihazlar",
+      "parts": "Stok & Parça",
+      "cash": "Kasa & Cari",
+      "reports": "Raporlar",
+      "staff": "Personel",
+      "track": "Cihaz Sorgulama",
+      "quickScan": "Hızlı Barkod Oku",
+      "settings": "Genel Ayarlar",
+      "logout": "Çıkış Yap"
+    },
+    "dashboard": "Özet Durum",
+    "today": "Bugünün İşleri",
+    "serviceRecords": "Servis Kayıtları",
+    "customers": "Müşteriler",
+    "devices": "Cihazlar",
+    "parts": "Stok & Parça",
+    "cash": "Kasa & Cari",
+    "reports": "Raporlar",
+    "staff": "Personel",
+    "track": "Cihaz Sorgulama",
+    "settings": "Genel Ayarlar"
+  },
+  "header": {
+    "openNavigation": "Menüyü aç",
+    "notifications": "Bildirimler",
+    "welcome": "Hoş geldiniz, {companyName} Yönetici Paneli"
+  },
+  "common": {
+    "viewAll": "Tümünü Gör",
+    "backToDashboard": "Dashboard'a dön"
+  },
+  "roles": {
+    "operations_manager": "Operasyon Yöneticisi",
+    "ADMIN": "Firma Sahibi / Admin",
+    "MANAGER": "Yönetici",
+    "TECHNICIAN": "Teknisyen / Usta",
+    "APPRENTICE": "Çırak / Yardımcı",
+    "ACCOUNTANT": "Muhasebe / Kasa"
+  },
+  "dashboard": {
+    "title": "Genel durum paneli",
+    "description": "Servis yoğunluğunu, teslim bekleyen işleri ve gün içi finans özetini tek ekranda takip edin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "metrics": {
+      "waiting_devices": {
+        "title": "Bekleyen Cihazlar",
+        "notes": {}
+      },
+      "waiting_parts": {
+        "title": "Parça Bekleyen",
+        "notes": {}
+      },
+      "ready_delivery": {
+        "title": "Teslime Hazır",
+        "notes": {}
+      },
+      "overdue": {
+        "title": "3 Gün Aşımı (Acil)",
+        "notes": {
+          "legal_deadline": "Yasal süresi yaklaşıyor"
+        }
+      }
+    },
+    "recentRecords": {
+      "title": "Son Gelen Cihazlar",
+      "description": "Operasyon masasının en son aldığı kayıtlar"
+    },
+    "table": {
+      "trackingCode": "Takip No",
+      "customer": "Müşteri",
+      "device": "Cihaz",
+      "status": "Durum"
+    },
+    "summary": {
+      "title": "Günün Özeti",
+      "revenue": "Bugünkü tahsilat",
+      "expense": "Bugünkü gider",
+      "pendingApproval": "Onay bekleyen kayıt"
+    },
+    "quickActions": {
+      "primary": "Yeni Kayıt",
+      "secondary": "Cihaz Sorgula"
+    }
+  },
+  "today": {
+    "title": "Bugünün işleri",
+    "description": "Günün randevularını, acil kayıtlarını ve operasyon ekibinin aksiyon bekleyen işlerini tek ekranda yönetin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "summary": {
+      "dueToday": "Bugün aksiyon bekleyen",
+      "openRecords": "Açık servis kaydı",
+      "urgent": "Acil / yüksek öncelik",
+      "completed": "Bugün tamamlanan"
+    },
+    "filters": {
+      "all": "Tümü",
+      "appointments": "Randevular",
+      "urgent": "Acil",
+      "completed": "Tamamlanan"
+    },
+    "sections": {
+      "appointments": {
+        "title": "Bugünkü randevular",
+        "customerLabel": "Müşteri",
+        "deviceLabel": "Cihaz",
+        "addressLabel": "Adres",
+        "addressUnavailable": "Adres bilgisi yok",
+        "assigneeLabel": "Atanan personel",
+        "unassigned": "Atama bekliyor",
+        "relatedRecordAction": "Servis kaydını aç"
+      },
+      "attention": {
+        "title": "Aksiyon bekleyen servis kayıtları",
+        "customerLabel": "Müşteri",
+        "deviceLabel": "Cihaz",
+        "detailAction": "Detaya git"
+      }
+    },
+    "appointmentStatuses": {
+      "SCHEDULED": "Planlandı",
+      "IN_PROGRESS": "Sahada işlemde",
+      "COMPLETED": "Tamamlandı"
+    },
+    "empty": {
+      "title": "Bugün için iş bulunmuyor",
+      "description": "Seçili filtreye göre listelenecek randevu veya aksiyon bekleyen kayıt bulunmuyor."
+    }
+  },
+  "cash": {
+    "title": "Kasa & cari",
+    "description": "Gün içi tahsilat, gider ve bekleyen alacak hareketlerini tek listede izleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "summary": {
+      "todayIncome": "Bugünkü tahsilat",
+      "todayExpense": "Bugünkü gider",
+      "netCash": "Net kasa",
+      "pendingReceivables": "Bekleyen alacak"
+    },
+    "filters": {
+      "all": "Tümü",
+      "income": "Tahsilat",
+      "expense": "Gider",
+      "pending": "Bekleyen"
+    },
+    "transactionTypes": {
+      "PAYMENT": "Tahsilat",
+      "EXPENSE": "Gider",
+      "PENDING": "Bekleyen alacak"
+    },
+    "notes": {
+      "service_collection": "Servis tahsilatı",
+      "fuel_expense": "Servis aracı yakıt gideri",
+      "parts_and_labor_collection": "Parça ve işçilik tahsilatı",
+      "awaiting_customer_approval": "Müşteri onayı sonrası tahsilat bekleniyor",
+      "supplier_parts_payment": "Yedek parça tedarik ödemesi",
+      "collect_at_delivery": "Teslimatta tahsil edilecek",
+      "corporate_bulk_collection": "Kurumsal müşteri toplu tahsilatı"
+    },
+    "methods": {
+      "CASH": "Nakit",
+      "CARD": "Kart",
+      "BANK_TRANSFER": "Banka transferi",
+      "OTHER": "Diğer",
+      "notAvailable": "—"
+    },
+    "table": {
+      "title": "Hareket listesi",
+      "description": "Servis kaydı veya müşteri bağlantısı olan kalemlerde detay ekranlarına geçiş yapılabilir.",
+      "method": "Yöntem",
+      "customer": "Müşteri",
+      "serviceRecord": "Servis kaydı",
+      "notLinked": "Bağlantı yok"
+    },
+    "empty": {
+      "defaultTitle": "Henüz kasa hareketi yok",
+      "filteredTitle": "Bu filtrede hareket bulunamadı",
+      "description": "Seçili görünüm için listelenecek tahsilat, gider veya bekleyen alacak kaydı bulunmuyor."
+    }
+  },
+  "reports": {
+    "title": "Raporlar",
+    "description": "Operasyon görünümünü, hassas finans özetlerini ve ekip yükünü mock rapor planlama yüzeyinde inceleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "units": {
+      "hours": "sa",
+      "minutes": "dk"
+    },
+    "mockBanner": {
+      "title": "Mock rapor görünümü",
+      "description": "Bu ekran yalnızca frontend planlama/maket fazıdır. Gerçek raporlar backend aggregation, tenant filtering, RBAC ve audit/export logging gerektirir; bu yüzey bunları uygulamış sayılmaz."
+    },
+    "filters": {
+      "title": "Tarih aralığı",
+      "description": "Seçim değiştiğinde ekrandaki mock veri istemci tarafında güncellenir."
+    },
+    "ranges": {
+      "today": "Bugün",
+      "thisWeek": "Bu hafta",
+      "thisMonth": "Bu ay",
+      "last30Days": "Son 30 gün"
+    },
+    "operationalSummary": {
+      "openedRecords": "Açılan kayıtlar",
+      "completedRecords": "Tamamlanan kayıtlar",
+      "averageTurnaround": "Ortalama çevrim süresi",
+      "urgentQueue": "Acil kuyruk"
+    },
+    "financialSummary": {
+      "revenue": "Gelir",
+      "expenses": "Gider",
+      "netCash": "Net nakit",
+      "permissionSensitive": "Mock · hassas",
+      "mockNote": "Finans değerleri yalnızca demo görünümüdür. Gerçek görünürlük backend izinleri ve tenant scope ile korunmalıdır."
+    },
+    "statusDistribution": {
+      "title": "Servis durum dağılımı",
+      "description": "Seçili aralıktaki kayıtların durum yoğunluğu mock dağılım olarak gösterilir."
+    },
+    "staff": {
+      "title": "Personel iş yükü ve performans",
+      "description": "Ekip karşılaştırması mock ve permission-sensitive planlama verisi olarak gösterilir.",
+      "permissionSensitive": "Permission-sensitive · mock",
+      "mockOnly": "Sadece mock",
+      "table": {
+        "staff": "Personel",
+        "activeWorkload": "Aktif iş yükü",
+        "completed": "Tamamlanan",
+        "averageTurnaround": "Ort. çevrim",
+        "urgentAssignments": "Acil atama"
+      }
+    },
+    "breakdowns": {
+      "title": "Kategori / cihaz / servis tipi kırılımı",
+      "description": "Kategori, cihaz tipi ve servis tipi yoğunluğu planlama amaçlı mock dağılımla özetlenir.",
+      "categoriesTitle": "Kategori kırılımı",
+      "deviceTypesTitle": "Cihaz tipi kırılımı",
+      "serviceTypesTitle": "Servis tipi kırılımı",
+      "categoryLabels": {
+        "mobile": "Mobil cihazlar",
+        "whiteGoods": "Beyaz eşya",
+        "smallAppliance": "Küçük ev aletleri",
+        "network": "Ağ / çevre birimi"
+      },
+      "deviceTypeLabels": {
+        "smartphone": "Akıllı telefon",
+        "washingMachine": "Çamaşır makinesi",
+        "combiBoiler": "Kombi",
+        "tablet": "Tablet"
+      },
+      "serviceTypeLabels": {
+        "workshop": "Atölye",
+        "onSite": "Yerinde servis",
+        "pickup": "Adresten alım",
+        "maintenance": "Bakım"
+      }
+    },
+    "export": {
+      "title": "Rapor hazırlık ve export readiness",
+      "description": "PDF, Excel ve dışa aktarma akışları bu fazda gerçek dosya üretmez; yalnızca readiness beklentilerini gösterir.",
+      "action": "Raporu / export'u hazırla",
+      "preparing": "Hazırlanıyor...",
+      "pdfTitle": "PDF hazır değil",
+      "excelTitle": "Excel hazır değil",
+      "auditTitle": "İzin ve log gereksinimi",
+      "notImplemented": "Gerçek export henüz uygulanmadı.",
+      "caveatTitle": "Backend gereksinimleri",
+      "backendRequirements": "Gerçek raporlar için backend aggregation, tenant filtering, server-side RBAC ve export/audit logging zorunludur.",
+      "success": {
+        "title": "Mock hazırlık tamamlandı",
+        "description": "{range} için demo rapor hazırlandı: {reference} · {time}",
+        "nonPersistent": "Dosya üretilmedi. Bu mesaj kalıcı değildir ve gerçek export işlemi yapmaz."
+      }
+    }
+  },
+  "parts": {
+    "title": "Stok & parça",
+    "description": "Yedek parça görünürlüğünü, düşük stok risklerini ve son hareketleri mock planlama yüzeyinde takip edin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "resultsLabel": "Toplam {count} parça gösteriliyor",
+    "actions": {
+      "reserve": "Servis için ayır",
+      "cancel": "İptal",
+      "closeModal": "Parça ayırma penceresini kapat"
+    },
+    "mockBanner": {
+      "title": "Mock stok görünümü",
+      "description": "Bu modül yalnızca frontend planlama/maket fazıdır. Fiyat, maliyet ve stok hareketleri gerçek güvenlik sağlamaz; kalıcılık, tenant enforcement, audit log ve RBAC henüz uygulanmadı."
+    },
+    "summary": {
+      "totalParts": "Toplam parça",
+      "lowStock": "Düşük stok",
+      "reservedUnits": "Ayrılmış adet",
+      "estimatedRevenueValue": "Tahmini satış değeri",
+      "permissionSensitive": "Mock · hassas",
+      "mockValueNote": "Bu değer planlama amaçlı mock toplamdır. Gerçek fiyat/maliyet görünürlüğü backend izinleriyle sınırlandırılmalıdır."
+    },
+    "filters": {
+      "searchPlaceholder": "SKU, parça adı, marka veya cihaz tipi ile ara",
+      "statusLabel": "Stok durumu filtresi",
+      "categoryLabel": "Kategori filtresi",
+      "allCategories": "Tüm kategoriler",
+      "reset": "Filtreleri temizle",
+      "statusOptions": {
+        "all": "Tüm durumlar",
+        "low_stock": "Düşük stok",
+        "out_of_stock": "Stokta yok",
+        "reserved": "Ayrılmış",
+        "available": "Müsait"
+      }
+    },
+    "inventoryStates": {
+      "low_stock": "Düşük stok",
+      "out_of_stock": "Stokta yok",
+      "reserved": "Ayrılmış",
+      "available": "Müsait"
+    },
+    "categories": {
+      "SCREEN": "Ekran",
+      "BATTERY": "Batarya",
+      "PUMP": "Pompa",
+      "BOARD": "Kart / board",
+      "ACCESSORY": "Aksesuar",
+      "THERMAL": "Termal kit"
+    },
+    "list": {
+      "title": "Parça listesi",
+      "description": "Satış fiyatı görünür, maliyet alanı ise mock izin uyarısı ile gizlidir.",
+      "sku": "SKU / kod",
+      "compatibility": "Uyumlu cihaz",
+      "stock": "Stok",
+      "reorderThreshold": "Yeniden sipariş eşiği",
+      "reserved": "Ayrılmış",
+      "availableToUse": "Kullanılabilir",
+      "salePrice": "Satış fiyatı",
+      "costVisibilityTitle": "Maliyet görünürlüğü kısıtlı",
+      "costVisibilityDescription": "Maliyet fiyatı bu fazda gösterilmiyor. Gerçek maliyet görünürlüğü permission/RBAC ve tenant scope ile korunmalıdır."
+    },
+    "alerts": {
+      "title": "Düşük stok uyarıları",
+      "description": "Servis beklememesi için kritik parçaları takip edin.",
+      "critical": "Kritik",
+      "warning": "Takip et",
+      "itemDescription": "Mevcut stok: {stock} · eşik: {threshold}",
+      "empty": "Düşük stok uyarısı görünmüyor."
+    },
+    "movements": {
+      "title": "Son stok hareketleri",
+      "description": "Satın alma, ayırma, kullanım ve düzeltme hareketleri mock zaman çizelgesinde listelenir.",
+      "serviceRecordLink": "Servis kaydı: {code}",
+      "types": {
+        "PURCHASE": "Satın alma",
+        "RESERVATION": "Servis için ayırma",
+        "USAGE": "Kullanım",
+        "ADJUSTMENT": "Düzeltme"
+      },
+      "notes": {
+        "supplier_restock": "Tedarikçi alımı ile stok yenilendi.",
+        "reserved_for_waiting_part": "Bekleyen servis kaydı için parça ayrıldı.",
+        "used_in_repair": "Aktif onarımda parça kullanıldı.",
+        "manual_cycle_adjustment": "Sayım sonrası manuel düzeltme işlendi.",
+        "buffer_stock_added": "Tampon stok için ek alım girildi."
+      }
+    },
+    "reserve": {
+      "title": "Servis kaydı için parça ayır",
+      "description": "Seçili parçayı bir servis kaydına mock olarak bağlayın ve rezerv etkisini görün.",
+      "selectedPart": "Seçili parça",
+      "serviceRecordLabel": "Servis kaydı",
+      "serviceRecordPlaceholder": "Servis kaydı seçin",
+      "quantityLabel": "Ayırma adedi",
+      "quantityHint": "Bu oturumda ayrılabilecek en yüksek adet: {count}",
+      "availableUnits": "Kullanılabilir adet: {count}",
+      "mockPriceNote": "Satış fiyatı görünümü mock amaçlıdır.",
+      "bannerTitle": "Gerçek stok hareketi değildir",
+      "bannerDescription": "Bu rezervasyon yalnızca istemci tarafı demo görünümünü günceller. Gerçek stok düşümü, audit log, tenant scope ve RBAC kontrollü backend akışı gerektirir.",
+      "actions": {
+        "submit": "Mock rezervasyon oluştur",
+        "submitting": "Rezervasyon oluşturuluyor..."
+      },
+      "validation": {
+        "serviceRecordRequired": "Bir servis kaydı seçin.",
+        "quantityRequired": "Geçerli bir adet girin.",
+        "quantityExceeds": "Kullanılabilir adet en fazla {count} olabilir.",
+        "generic": "Mock rezervasyon tamamlanamadı. Lütfen form alanlarını kontrol edin."
+      },
+      "success": {
+        "title": "Mock rezervasyon oluşturuldu",
+        "description": "{part} için {count} adet, {serviceRecord} kaydına ayrıldı.",
+        "nonPersistent": "Bu sonuç kalıcı değildir; gerçek stok hareketi backend audit log, tenant enforcement ve server-side RBAC olmadan geçerli sayılmamalıdır."
+      }
+    },
+    "empty": {
+      "title": "Parça bulunamadı",
+      "description": "Arama veya filtre kriterlerinize uyan parça görünmüyor. Filtreleri temizleyip tekrar deneyin."
+    }
+  },
+  "staff": {
+    "title": "Personel",
+    "description": "Ekip üyelerinin operasyon durumunu, atanan iş yükünü ve son servis atamalarını izleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "securityNote": "Rol/yetki (RBAC) ve kullanıcı yönetimi henüz uygulanmadı. Bu ekran yalnızca MVP demo görünümüdür; gerçek erişim kısıtları backend auth + tenant guard ile zorlanacaktır.",
+    "readOnlyNote": "Personel oluşturma ve düzenleme akışları bu fazda yalnızca mock/planning yüzeyidir. Rol değişiklikleri ve izin matrisi gerçek güvenlik sağlamaz; server-side RBAC guard'ları zorunludur.",
+    "resultsLabel": "Toplam {count} personel gösteriliyor",
+    "actions": {
+      "create": "Personel ekle",
+      "detail": "Detay / düzenle",
+      "edit": "Profili düzenle",
+      "cancelEdit": "Düzenlemeyi kapat",
+      "cancel": "İptal",
+      "closeModal": "Personel penceresini kapat"
+    },
+    "summary": {
+      "totalStaff": "Toplam personel",
+      "activeTechnicians": "Aktif teknisyen",
+      "assignedJobsToday": "Bugün atanan iş",
+      "unavailable": "Müsait değil / izinli"
+    },
+    "filters": {
+      "searchLabel": "Personel ara",
+      "searchPlaceholder": "Ad, telefon veya e-posta ile ara",
+      "roleLabel": "Rol filtresi",
+      "statusLabel": "Durum filtresi",
+      "allRoles": "Tüm roller",
+      "allStatuses": "Tüm durumlar"
+    },
+    "roles": {
+      "ADMIN": "Yönetici",
+      "TECHNICIAN": "Teknisyen",
+      "RECEPTION": "Karşılama / Çağrı",
+      "ACCOUNTING": "Muhasebe"
+    },
+    "statuses": {
+      "ACTIVE": "Aktif",
+      "ON_LEAVE": "İzinli",
+      "INACTIVE": "Pasif"
+    },
+    "card": {
+      "notAvailable": "—",
+      "openAssigned": "Açık atanan kayıt",
+      "assignedToday": "Bugün atanan",
+      "recentAssignments": "Son atamalar",
+      "noRecentAssignments": "Son atama bulunmuyor"
+    },
+    "form": {
+      "optional": "opsiyonel",
+      "roleMockHint": "Rol alanı yalnızca mock planlama yüzeyidir; gerçek yetki ataması backend RBAC ile yapılmalıdır.",
+      "fields": {
+        "name": "Ad soyad",
+        "role": "Rol",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "status": "Durum"
+      }
+    },
+    "validation": {
+      "summary": "Lütfen zorunlu alanları düzeltin.",
+      "nameRequired": "Ad soyad zorunludur.",
+      "roleRequired": "Rol seçimi zorunludur."
+    },
+    "create": {
+      "title": "Yeni personel oluştur",
+      "description": "Bu modal mock kayıt üretir. Dönen personel kimliği demo amaçlıdır ve sayfa yenilendiğinde kaybolur.",
+      "actions": {
+        "submit": "Mock personel oluştur",
+        "submitting": "Oluşturuluyor..."
+      },
+      "success": {
+        "title": "Mock personel oluşturuldu",
+        "description": "{name} için demo personel kimliği üretildi: {id}",
+        "nonPersistent": "Bu sonuç kalıcı değildir; backend create endpoint'i ve audit log akışı henüz bağlı değildir."
+      }
+    },
+    "detail": {
+      "title": "Personel detayı",
+      "description": "Profil özeti, son atamalar ve rol/izin planlama yüzeyi birlikte görüntülenir.",
+      "loading": "Personel detayı yükleniyor...",
+      "notFound": "Personel detayı bulunamadı.",
+      "securityTitle": "Mock düzenleme uyarısı",
+      "securityDescription": "Bu düzenleme yüzeyi yalnızca UI planlaması içindir. Rol veya durum değişikliği gerçek erişim yetkisi vermez; backend RBAC guard'ları uygulanmadan güvenlik oluşmaz.",
+      "recentAssignmentsTitle": "Son atamalar",
+      "assignmentLinkLabel": "Servis kaydını aç",
+      "contact": {
+        "phone": "Telefon",
+        "email": "E-posta"
+      },
+      "metrics": {
+        "openAssignments": "Açık atama",
+        "assignedToday": "Bugün atanan"
+      },
+      "actions": {
+        "save": "Mock değişikliği kaydet",
+        "submitting": "Kaydediliyor..."
+      },
+      "success": {
+        "title": "Mock personel güncellendi",
+        "description": "{name} için yapılan değişiklikler sadece bu oturum görünümünde güncellendi.",
+        "nonPersistent": "Bu düzenleme backend'e yazılmadı, audit log üretmedi ve gerçek yetki modeli oluşturmadı."
+      }
+    },
+    "permissions": {
+      "title": "Rol / izin taslağı",
+      "description": "Aşağıdaki matris yalnızca planlama amaçlıdır; henüz backend enforcement yoktur.",
+      "readinessDraft": "Taslak",
+      "roleTemplateLabel": "{role} rolü için planlanan erişim görünümü",
+      "mockTitle": "RBAC uyarısı",
+      "mockDescription": "Bu tablo gerçek güvenlik değildir. Modül erişimleri backend auth, tenant scope ve server-side permission guard'larıyla zorlanmalıdır.",
+      "columns": {
+        "module": "Modül",
+        "state": "Erişim",
+        "note": "Plan notu"
+      },
+      "modules": {
+        "SERVICE_RECORDS": "Servis kayıtları",
+        "CUSTOMERS": "Müşteriler",
+        "DEVICES": "Cihazlar",
+        "CASH": "Kasa / cari",
+        "STAFF_SETTINGS": "Personel / ayarlar"
+      },
+      "states": {
+        "FULL": "Tam",
+        "LIMITED": "Sınırlı",
+        "NONE": "Yok"
+      },
+      "notes": {
+        "ADMIN_SERVICE_RECORDS": "Tüm servis kayıtlarını açma, atama ve durum güncelleme planı.",
+        "ADMIN_CUSTOMERS": "Müşteri ve bağlı cihaz kayıtlarını tam yönetme planı.",
+        "ADMIN_DEVICES": "Cihaz envanteri ve tüm servis geçmişini görüntüleme planı.",
+        "ADMIN_CASH": "Tahsilat, gider ve kasa mutabakatına tam erişim planı.",
+        "ADMIN_STAFF_SETTINGS": "Personel ve ayar yönetimi yalnızca backend RBAC guard'ları geldikten sonra etkinleştirilmelidir.",
+        "TECHNICIAN_SERVICE_RECORDS": "Atanmış servis kayıtlarında operasyonel çalışma ve durum ilerletme planı.",
+        "TECHNICIAN_CUSTOMERS": "Servis icrası için gereken müşteri iletişim verisine sınırlı görünürlük planı.",
+        "TECHNICIAN_DEVICES": "Cihaz detayları ve teknik geçmişi görüntüleme planı.",
+        "TECHNICIAN_CASH": "Backend politika tanımı olmadan kasa erişimi verilmemelidir.",
+        "TECHNICIAN_STAFF_SETTINGS": "Teknisyen için personel/ayar yönetimi planlanmamalıdır.",
+        "RECEPTION_SERVICE_RECORDS": "Kayıt açma ve durum takibi mümkün; hassas aksiyonlar ayrıca korunmalıdır.",
+        "RECEPTION_CUSTOMERS": "Müşteri iletişim ve kabul bilgilerini tam toplama planı.",
+        "RECEPTION_DEVICES": "Cihaz kabul bilgilerini sınırlı kapsamda kaydetme planı.",
+        "RECEPTION_CASH": "Tahsilat hazırlığı gibi kısıtlı finans akışları için aday erişim planı.",
+        "RECEPTION_STAFF_SETTINGS": "Karşılama rolüne personel/ayar erişimi verilmemelidir.",
+        "ACCOUNTING_SERVICE_RECORDS": "Faturalama bağlamı için servis durumunu referans alma planı.",
+        "ACCOUNTING_CUSTOMERS": "Tahsilat ve fatura için gerekli müşteri verisine sınırlı erişim planı.",
+        "ACCOUNTING_DEVICES": "Muhasebe rolü için cihaz teknik detay erişimi varsayılan olarak kapalı kalmalıdır.",
+        "ACCOUNTING_CASH": "Tahsilat, gider ve mutabakat akışlarını sahiplenme planı.",
+        "ACCOUNTING_STAFF_SETTINGS": "Muhasebe rolüne personel/ayar yönetimi verilmemelidir."
+      }
+    },
+    "empty": {
+      "defaultTitle": "Henüz personel kaydı yok",
+      "filteredTitle": "Seçili filtrelerde personel bulunamadı",
+      "description": "Arama veya filtre kriterlerinize göre listelenecek personel görünmüyor."
+    }
+  },
+  "settings": {
+    "title": "Genel ayarlar",
+    "description": "Firma kimliği, operasyon özeti ve güvenlik hazırlık başlıklarını tek ekranda gözden geçirin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "actions": {
+      "edit": "Düzenle",
+      "cancel": "İptal",
+      "save": "Mock kaydet",
+      "saving": "Kaydediliyor..."
+    },
+    "mockBanner": {
+      "title": "Mock ayar yüzeyi",
+      "description": "Bu ekran frontend planlama/maket fazıdır. Kaydet aksiyonu yalnızca istemci görünümünü günceller; backend kalıcılığı, tenant yapılandırma yazımı, bildirim gönderimi ve audit log henüz bağlı değildir."
+    },
+    "validation": {
+      "summary": "Lütfen zorunlu alanları düzeltin.",
+      "companyNameRequired": "Firma adı zorunludur.",
+      "taxNumberRequired": "Vergi numarası zorunludur.",
+      "phoneRequired": "Telefon zorunludur.",
+      "emailRequired": "E-posta zorunludur.",
+      "emailInvalid": "Geçerli bir e-posta adresi girin."
+    },
+    "companyProfile": {
+      "title": "Firma profili",
+      "description": "Kimlik ve varsayılan görüntüleme alanlarını mock olarak düzenleyin.",
+      "mockNote": "Buradaki düzenleme bu oturumdaki istemci görünümünü günceller. Gerçek firma ayarı kaydı için backend endpoint, tenant kontrolü ve audit log gereklidir.",
+      "fields": {
+        "companyName": "Firma adı",
+        "taxNumber": "Vergi numarası",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "defaultLocale": "Varsayılan dil",
+        "defaultCurrency": "Varsayılan para birimi",
+        "timezone": "Saat dilimi"
+      },
+      "localeOptions": {
+        "tr": "Türkçe",
+        "en": "İngilizce"
+      },
+      "currencyOptions": {
+        "TRY": "Türk lirası (TRY)",
+        "USD": "Amerikan doları (USD)",
+        "EUR": "Euro (EUR)"
+      },
+      "timezoneOptions": {
+        "Europe/Istanbul": "İstanbul (UTC+03:00)",
+        "Europe/Berlin": "Berlin (UTC+01:00 / yaz saati)",
+        "UTC": "UTC (koordineli evrensel saat)"
+      },
+      "success": {
+        "title": "Mock ayarlar güncellendi",
+        "description": "{name} için görüntülenen firma profili bu oturumda güncellendi.",
+        "nonPersistent": "Bu başarı mesajı kalıcı kayıt anlamına gelmez; sayfa yenilendiğinde mock veri geri döner."
+      }
+    },
+    "branchOperation": {
+      "title": "Şube ve servis operasyonu",
+      "description": "Şube kapsaması, çalışma saatleri ve kayıt numarası planını özetleyin.",
+      "backendNote": "Şube, mesai ve public tracking akışları bu fazda yalnızca özet görünür. Gerçek konfigürasyon yazımı ve public müşteri görünümü backend tarafında uygulanmalıdır.",
+      "workingHourTemplates": {
+        "MON_SAT": "Pzt-Cts"
+      },
+      "sundayCoverage": {
+        "ON_CALL_INTAKE": "Paz nöbetçi kabul"
+      },
+      "publicTrackingModes": {
+        "PLANNED": "Takip linki planlaması aktif, müşteri görünümü ve token doğrulaması backend entegrasyonu bekliyor."
+      },
+      "fields": {
+        "branchCount": "Şube sayısı",
+        "workingHours": "Çalışma saatleri",
+        "serviceRecordPrefix": "Servis kayıt öneki",
+        "nextSequence": "Sıradaki numara",
+        "sequencePreview": "Sıra önizlemesi",
+        "publicTracking": "Public takip özeti"
+      }
+    },
+    "notifications": {
+      "title": "Bildirim hazırlığı",
+      "description": "Müşteri iletişim kanallarının planlanan durumunu gösterir.",
+      "mockOnlyNote": "SMS, e-posta ve WhatsApp kanalları bu fazda sadece hazırlık toggle özetidir; gerçek teslimat, sağlayıcı entegrasyonu ve tercih kaydı backend gerektirir.",
+      "channels": {
+        "sms": "Müşteri SMS",
+        "email": "Müşteri e-postası",
+        "whatsapp": "Müşteri WhatsApp"
+      },
+      "channelDescriptions": {
+        "sms": "Randevu, durum değişimi ve teslim hazır bildirimleri için planlanan kanal.",
+        "email": "Teklif, özet ve teslim sonrası bilgilendirme için planlanan kanal.",
+        "whatsapp": "Takip linki ve hızlı durum yanıtları için değerlendirilen kanal."
+      },
+      "states": {
+        "enabled": "Hazırlık açık",
+        "disabled": "Hazırlık kapalı"
+      }
+    },
+    "security": {
+      "title": "Güvenlik ve readiness",
+      "description": "Gerçek güvenlik enforcement gerektiren backend başlıklarını yalnızca checklist olarak izleyin.",
+      "readOnlyBadge": "Salt okunur",
+      "backendRequiredTitle": "Backend implementasyonu zorunlu",
+      "backendRequiredDescription": "Aşağıdaki maddeler frontend'de sadece görünürlük sağlar. Auth, RBAC, tenant guard, audit log ve signed file URL akışları gerçek güvenlik için backend'de zorlanmalıdır.",
+      "statuses": {
+        "BACKEND_REQUIRED": "Backend gerekli",
+        "PLANNING_ONLY": "Sadece plan"
+      },
+      "items": {
+        "auth": {
+          "title": "Kimlik doğrulama",
+          "description": "Oturum, access/refresh token yaşam döngüsü ve route enforcement backend auth katmanına bağlanmalıdır."
+        },
+        "rbac": {
+          "title": "RBAC guard'ları",
+          "description": "Rol ve izin kararları buton gizleme ile değil server-side guard/policy ile doğrulanmalıdır."
+        },
+        "tenant_guard": {
+          "title": "Tenant guard",
+          "description": "Çok firmalı veri erişimi tüm sorgularda company scope ile sınırlandırılmalıdır."
+        },
+        "audit_log": {
+          "title": "Audit log",
+          "description": "Ayar yazımları ve kritik güncellemeler actor, entity ve değişen alanlarla loglanmalıdır."
+        },
+        "signed_file_urls": {
+          "title": "Signed file URL'leri",
+          "description": "Dosya ve fotoğraflar public URL yerine yetki kontrollü signed URL akışıyla servis edilmelidir."
+        }
+      }
+    },
+    "footerCards": {
+      "contact": {
+        "title": "İletişim özeti"
+      },
+      "display": {
+        "title": "Görüntüleme varsayılanları"
+      },
+      "timezone": {
+        "title": "Saat dilimi",
+        "description": "Frontend tarih/saat formatları bu varsayım üzerinden planlanır."
+      }
+    }
+  },
+  "serviceRecords": {
+    "title": "Servis kayıtları",
+    "description": "Operasyon masasındaki tüm servis kayıtlarını takip edin, filtreleyin ve yeni kayıt akışına buradan ilerleyin.",
+    "lastUpdatedLabel": "Son Güncelleme",
+    "resultsLabel": "Toplam {count} kayıt gösteriliyor",
+    "actions": {
+      "new": "Yeni Kayıt"
+    },
+    "summary": {
+      "total": "Açık kayıt havuzu",
+      "urgent": "Acil öncelikli kayıt",
+      "ready": "Teslime hazır"
+    },
+    "filters": {
+      "searchPlaceholder": "Takip no, müşteri veya cihaz ile ara...",
+      "statusLabel": "Durum filtresi",
+      "priorityLabel": "Öncelik filtresi",
+      "allStatuses": "Tüm durumlar",
+      "allPriorities": "Tüm öncelikler",
+      "reset": "Filtreleri temizle"
+    },
+    "table": {
+      "trackingCode": "Takip No",
+      "customer": "Müşteri",
+      "device": "Cihaz",
+      "priority": "Öncelik",
+      "status": "Durum",
+      "assignee": "Atanan Personel",
+      "unassigned": "Atama bekliyor",
+      "actions": "İşlemler",
+      "detailAction": "Detay"
+    },
+    "empty": {
+      "title": "Kayıt bulunamadı",
+      "description": "Seçili arama ve filtrelere uyan servis kaydı yok. Filtreleri temizleyip tekrar deneyin."
+    },
+    "newPage": {
+      "eyebrow": "Planlanan akış",
+      "title": "Yeni servis kaydı formu sıradaki fazda açılacak",
+      "description": "Bu rota, yeni kayıt formunun bilgi mimarisini sabitlemek için ayrıldı. Sonraki frontend fazında müşteri, cihaz ve arıza bilgileri burada toplanacak.",
+      "backToList": "Kayıt listesine dön"
+    },
+    "newForm": {
+      "eyebrow": "Yeni kayıt akışı",
+      "title": "Yeni servis kaydı oluştur",
+      "description": "Servis kaydını mevcut bir müşteriyle ilişkilendirerek açın; gerekirse yeni müşteri ve cihazı form içinde ekleyin.",
+      "sections": {
+        "customer": "Müşteri seçimi",
+        "device": "Cihaz seçimi",
+        "service": "Servis detayları"
+      },
+      "fields": {
+        "customerMode": "Müşteri kaynağı",
+        "customerModeExisting": "Mevcut müşteri seç",
+        "customerModeNew": "Yeni müşteri ekle",
+        "customerSearch": "Müşteri ara",
+        "customerSearchPlaceholder": "Ad, telefon veya e-posta ile ara",
+        "customerSelect": "Müşteri",
+        "customerSelectPlaceholder": "Müşteri seçin",
+        "customerName": "Müşteri adı",
+        "customerPhone": "Müşteri telefonu",
+        "customerEmail": "Müşteri e-posta (opsiyonel)",
+        "emailNotProvided": "E-posta bilgisi yok",
+        "deviceMode": "Cihaz kaynağı",
+        "deviceModeExisting": "Müşterinin kayıtlı cihazını seç",
+        "deviceModeNew": "Yeni cihaz ekle",
+        "deviceSelect": "Cihaz",
+        "deviceSelectPlaceholder": "Cihaz seçin",
+        "deviceSelectCustomerFirst": "Önce müşteri seçin",
+        "deviceBrand": "Cihaz markası",
+        "deviceModel": "Cihaz modeli",
+        "serialOrImei": "Seri no / IMEI (opsiyonel)",
+        "serialNotProvided": "Seri / IMEI bilgisi yok",
+        "issueSummary": "Arıza özeti",
+        "issueDescription": "Arıza açıklaması",
+        "priority": "Öncelik",
+        "status": "İlk durum",
+        "assignee": "Atanan personel",
+        "assigneePlaceholder": "Atama bekliyor",
+        "internalNote": "İç not (opsiyonel)"
+      },
+      "validation": {
+        "customerRequired": "Mevcut bir müşteri seçin veya yeni müşteri bilgilerini doldurun.",
+        "customerName": "Müşteri adı zorunludur.",
+        "customerPhone": "Müşteri telefonu zorunludur.",
+        "deviceRequired": "Mevcut bir cihaz seçin veya yeni cihaz bilgilerini doldurun.",
+        "deviceBrand": "Cihaz markası zorunludur.",
+        "deviceModel": "Cihaz modeli zorunludur.",
+        "issueSummary": "Arıza özeti zorunludur.",
+        "issueDescription": "Arıza açıklaması zorunludur.",
+        "priority": "Öncelik seçimi zorunludur.",
+        "status": "Durum seçimi zorunludur."
+      },
+      "hints": {
+        "noDeviceForCustomer": "Bu müşteriye kayıtlı cihaz bulunamadı. Lütfen yeni cihaz ekleyin."
+      },
+      "devicePicker": {
+        "emptyTitle": "Henüz cihaz seçilmedi",
+        "emptyDescription": "Müşteriye kayıtlı bir cihaz seçin veya yeni cihazla devam edin.",
+        "customerRequiredTitle": "Cihaz seçimi için müşteri gerekli",
+        "customerRequiredDescription": "Kayıtlı cihazları görmek için önce müşteri seçin.",
+        "modalTitle": "Kayıtlı cihaz seç",
+        "modalDescription": "{name} müşterisine kayıtlı cihazlar listeleniyor.",
+        "closeModalAriaLabel": "Kayıtlı cihaz seçimi penceresini kapat",
+        "searchLabel": "Kayıtlı cihazlarda ara",
+        "searchPlaceholder": "Marka, model veya seri/IMEI ile filtrele",
+        "registeredAt": "Kayıt tarihi: {date}",
+        "registeredAtUnknown": "Kayıt tarihi bilgisi yok",
+        "noResultTitle": "Cihaz bulunamadı",
+        "noResultDescription": "Bu filtre ile eşleşen cihaz yok. Yeni cihaz ekleyerek devam edebilirsiniz."
+      },
+      "preselectWarnings": {
+        "customerNotFound": "Bağlantıdaki müşteri kaydı bulunamadığı için ön seçim uygulanamadı.",
+        "deviceNotFound": "Bağlantıdaki cihaz kaydı bulunamadığı için cihaz ön seçimi uygulanamadı.",
+        "deviceCustomerMismatch": "Seçilen cihaz bu müşteriye ait olmadığı için cihaz ön seçimi uygulanamadı."
+      },
+      "customerSelector": {
+        "emptyTitle": "Henüz müşteri seçilmedi",
+        "emptyDescription": "Mevcut müşteri ile devam etmek için arama ekranını açın veya yeni müşteri ekleyin.",
+        "modalTitle": "Müşteri ara ve seç",
+        "modalDescription": "Ad, telefon veya e-posta ile arama yaparak müşteri seçin.",
+        "closeModalAriaLabel": "Müşteri arama penceresini kapat",
+        "minCharactersHint": "Sonuçları görmek için en az 2 karakter yazın.",
+        "noResultTitle": "Müşteri bulunamadı",
+        "noResultDescription": "Aramaya uygun müşteri yok. İsterseniz yeni müşteri ekleyerek devam edin.",
+        "refineSearchHint": "Daha fazla eşleşme var. Sonuçları daraltmak için aramayı netleştirin."
+      },
+      "actions": {
+        "cancel": "Listeye geri dön",
+        "searchCustomer": "Müşteri ara / seç",
+        "changeCustomer": "Müşteriyi değiştir",
+        "newCustomer": "Yeni müşteri ekle",
+        "closeSearch": "Aramayı kapat",
+        "selectRegisteredDevice": "Kayıtlı cihaz seç",
+        "changeDevice": "Cihazı değiştir",
+        "addNewDevice": "Yeni cihaz ekle",
+        "closeDevicePicker": "Cihaz seçimini kapat",
+        "submit": "Servis kaydını oluştur",
+        "submitting": "Oluşturuluyor..."
+      },
+      "success": {
+        "title": "Servis kaydı oluşturuldu",
+        "description": "Servis kaydı başarıyla oluşturuldu. Takip kodu: {code}"
+      },
+      "error": {
+        "title": "Servis kaydı oluşturulamadı",
+        "dismiss": "Kapat"
+      }
+    },
+    "detail": {
+      "backToList": "Listeye dön",
+      "receivedAtLabel": "Kabul zamanı: {date}",
+      "mockBanner": {
+        "title": "Operasyon aksiyonları yalnızca frontend mock",
+        "description": "Bu panel durum değişikliği, personel ataması, tahsilat notu ve parça bağlamını sadece istemci tarafında simüle eder. Gerçek uygulama için backend RBAC, tenant guard ve audit log zorunludur."
+      },
+      "summary": {
+        "issue": "Arıza özeti",
+        "customer": "Müşteri",
+        "device": "Cihaz",
+        "assignee": "Atanan personel",
+        "serialNumber": "Seri No"
+      },
+      "timeline": {
+        "title": "Operasyon geçmişi",
+        "subtitle": "Timeline",
+        "actorLabel": "İşlemi yapan: {name}",
+        "emptyTitle": "Henüz timeline kaydı yok",
+        "emptyDescription": "Bu servis kaydı için operasyon geçmişi oluştuğunda burada görünecek.",
+        "mockBadge": "Mock",
+        "customerSafeBadge": "Müşteri güvenli",
+        "eventTypes": {
+          "STATUS_CHANGED": "Durum değişimi",
+          "NOTE_ADDED": "Not",
+          "ASSIGNED": "Atama",
+          "PART_ORDERED": "Parça"
+        }
+      },
+      "operations": {
+        "title": "Mock operasyon aksiyonları",
+        "description": "Durum, atama ve tahsilat notu akışları bu oturumda görünümü günceller; kayıt, yetki ve tenant enforcement yapılmaz.",
+        "mockOnlyBadge": "Sadece mock",
+        "mockActor": "Operasyon mock paneli",
+        "feedback": {
+          "title": "Mock aksiyon uygulandı",
+          "nonPersistent": "Bu değişiklik timeline ve kart görünümünde geçicidir; kalıcılık, audit log ve güvenlik enforcement henüz yoktur.",
+          "statusChanged": "Servis durumu mock olarak {status} aşamasına geçirildi.",
+          "assigneeChanged": "Atanan personel mock olarak {name} olarak güncellendi.",
+          "paymentNoteAdded": "Mock tahsilat notu timeline'a eklendi."
+        },
+        "status": {
+          "title": "Durum akışı",
+          "description": "Mevcut durumdan ilerleyebilecek sonraki mock adımı seçin.",
+          "nextStatusLabel": "Sonraki durum",
+          "defaultSubmitLabel": "Durumu güncelle",
+          "noTransitionDescription": "Bu durum için yeni mock geçiş tanımlı değil. Gerçek teslim/iptal sonrası akış backend kurallarıyla kapanmalıdır.",
+          "submitLabels": {
+            "NEW": "Durumu güncelle",
+            "APPOINTMENT_SCHEDULED": "Randevu planlandı olarak işaretle",
+            "ASSIGNED": "Personel atandı olarak işaretle",
+            "IN_PROGRESS": "Teşhis / işlem sürecine al",
+            "WAITING_PART": "Parça bekliyor olarak işaretle",
+            "WAITING_CUSTOMER_APPROVAL": "Müşteri onayı bekliyor olarak işaretle",
+            "REPAIRING": "Onarım aşamasında olarak işaretle",
+            "READY_FOR_DELIVERY": "Teslime hazır olarak işaretle",
+            "DELIVERED": "Teslim edildi olarak işaretle",
+            "CANCELLED": "İptal edildi olarak işaretle",
+            "UNREACHABLE": "Ulaşılamıyor olarak işaretle",
+            "UNPAID": "Ödeme bekliyor olarak işaretle"
+          },
+          "eventTitles": {
+            "NEW": "Durum mock olarak güncellendi",
+            "APPOINTMENT_SCHEDULED": "Kayıt mock olarak randevu planlandı durumuna alındı",
+            "ASSIGNED": "Kayıt mock olarak personel atandı durumuna alındı",
+            "IN_PROGRESS": "Kayıt mock olarak teşhis / işlem sürecine alındı",
+            "WAITING_PART": "Kayıt mock olarak parça bekliyor durumuna alındı",
+            "WAITING_CUSTOMER_APPROVAL": "Kayıt mock olarak müşteri onayı bekliyor durumuna alındı",
+            "REPAIRING": "Kayıt mock olarak onarım aşamasına alındı",
+            "READY_FOR_DELIVERY": "Kayıt mock olarak teslime hazır işaretlendi",
+            "DELIVERED": "Kayıt mock olarak teslim edildi işaretlendi",
+            "CANCELLED": "Kayıt mock olarak iptal edildi işaretlendi",
+            "UNREACHABLE": "Kayıt mock olarak ulaşılamıyor işaretlendi",
+            "UNPAID": "Kayıt mock olarak ödeme bekliyor işaretlendi"
+          },
+          "eventDescriptions": {
+            "NEW": "Durum akışı mock panel üzerinden yeniden planlandı.",
+            "APPOINTMENT_SCHEDULED": "Randevu planlaması müşteri güvenli mock olay olarak eklendi.",
+            "ASSIGNED": "Personel ataması müşteri güvenli mock olay olarak eklendi.",
+            "IN_PROGRESS": "Müşteri güvenli açıklama ile teşhis / teknik işlem adımı mock olarak başlatıldı.",
+            "WAITING_PART": "Parça temini bekleniyor bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "WAITING_CUSTOMER_APPROVAL": "Onay bekleme bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "REPAIRING": "Onarım aşaması müşteri güvenli mock olay olarak eklendi.",
+            "READY_FOR_DELIVERY": "Teslime hazır bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "DELIVERED": "Teslim tamamlandı bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "CANCELLED": "İptal bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "UNREACHABLE": "Müşteriye ulaşılamadı bilgisi müşteri güvenli mock olay olarak eklendi.",
+            "UNPAID": "Ödeme bekleniyor bilgisi müşteri güvenli mock olay olarak eklendi."
+          }
+        },
+        "assignment": {
+          "title": "Personel ataması",
+          "description": "Mock personel listesinden seçim yapın; bu atama yalnızca mevcut detay görünümünde güncellenir.",
+          "assigneeLabel": "Atanacak personel",
+          "submitLabel": "Mock atamayı uygula",
+          "eventTitle": "Kayıt mock olarak {name} personeline atandı",
+          "eventDescription": "Atama değişikliği müşteri güvenli operasyon olayı olarak timeline'a eklendi. Yeni atanan: {name}."
+        },
+        "payment": {
+          "title": "Tahsilat notu ve kasa bağlamı",
+          "description": "Tahsilat alanı permission-sensitive ve non-persistent mock planlama yüzeyidir; gerçek ödeme kaydı oluşturulmaz.",
+          "permissionSensitiveBadge": "Permission-sensitive",
+          "outstandingLabel": "Kalan tahsilat",
+          "collectedLabel": "Mock tahsil edilen",
+          "notePreviewLabel": "Tahsilat notu taslağı",
+          "submitLabel": "Mock tahsilat notunu ekle",
+          "openCashAction": "Kasa bağlamını aç",
+          "eventTitle": "Mock tahsilat notu eklendi",
+          "eventDescription": "Tahsilat planı {amount} için müşteri güvenli mock not olarak işlendi: {note}"
+        },
+        "parts": {
+          "title": "Parça / rezervasyon bağlamı",
+          "description": "Kullanılan veya ayrılmış mock parçalar görüntülenir; gerçek stok hareketi ve rezervasyon backend olmadan uygulanmış sayılmaz.",
+          "openPartsAction": "Parça modülünü aç",
+          "emptyDescription": "Bu kayda bağlı mock parça veya rezervasyon görünmüyor. Gerçek kullanım için stok hareketi ve servis-parça write akışı gerekir.",
+          "quantityLabel": "Adet: {count}",
+          "statuses": {
+            "USED": "Kullanıldı",
+            "RESERVED": "Ayrıldı"
+          }
+        }
+      },
+      "workItems": {
+        "title": "Notlar ve iş kalemleri",
+        "description": "Bu bölüm sonraki fazda teknik notlar, yapılacaklar ve iş kalemleri ile doldurulacaktır.",
+        "mockSafetyNote": "İç notlar ve private açıklamalar müşteri güvenli timeline olaylarına taşınmamalıdır; bu fazdaki mock aksiyonlar bilerek güvenli/genel açıklama üretir."
+      },
+      "notFound": {
+        "eyebrow": "Kayıt bulunamadı",
+        "title": "Servis kaydı görüntülenemedi",
+        "description": "{id} kimliğine sahip servis kaydı bulunamadı veya görüntüleme kapsamı dışında."
+      }
+    }
+  },
+  "customers": {
+    "list": {
+      "title": "Müşteri listesi",
+      "description": "Müşterileri arayın, cihaz sayılarını ve açık servis yoğunluğunu tek ekranda takip edin.",
+      "actions": {
+        "create": "Yeni müşteri oluştur"
+      },
+      "searchLabel": "Müşteri araması",
+      "searchPlaceholder": "Ad, telefon veya e-posta ile ara...",
+      "resultsLabel": "Toplam {count} müşteri gösteriliyor",
+      "summary": {
+        "totalCustomers": "Toplam müşteri",
+        "totalDevices": "Kayıtlı cihaz",
+        "openServices": "Açık servis kaydı"
+      },
+      "row": {
+        "devicesLabel": "Cihaz",
+        "openServicesLabel": "Açık kayıt",
+        "detailAction": "Müşteri detayı"
+      },
+      "empty": {
+        "defaultTitle": "Henüz müşteri bulunmuyor",
+        "searchTitle": "Aramaya uygun müşteri bulunamadı",
+        "description": "Müşteri listesi bu kriterlerle eşleşmiyor. Farklı bir arama değeri deneyin."
+      }
+    },
+    "detail": {
+      "backToList": "Müşteri listesine dön",
+      "actions": {
+        "newServiceRecord": "Bu müşteri için servis kaydı aç"
+      },
+      "contactCard": {
+        "title": "İletişim özeti",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "city": "Şehir",
+        "district": "İlçe",
+        "address": "Açık adres"
+      },
+      "devices": {
+        "title": "Bağlı cihazlar",
+        "countLabel": "Toplam {count} cihaz",
+        "serialLabel": "Seri No: {serial}",
+        "detailAction": "Cihaz detayını görüntüle",
+        "modalTitle": "Cihaz detayları",
+        "closeModalAriaLabel": "Cihaz detay penceresini kapat",
+        "loading": "Cihaz detayları yükleniyor...",
+        "ownerLabel": "Cihaz sahibi: {name}",
+        "serviceHistoryTitle": "Bu cihaza ait servis geçmişi",
+        "noDeviceHistory": "Bu cihaza ait servis geçmişi bulunmuyor.",
+        "mismatchError": "Bu cihaz bu müşteriye bağlı değil veya görüntüleme kapsamı dışında.",
+        "emptyTitle": "Bu müşteriye bağlı cihaz yok",
+        "emptyDescription": "Yeni cihaz eklendiğinde bu bölümde listelenecek."
+      },
+      "serviceHistory": {
+        "title": "Servis geçmişi",
+        "description": "Müşteriye ait son servis kayıtları takip kodu ve durum bilgisiyle listelenir.",
+        "deviceLabel": "Cihaz",
+        "dateLabel": "Kabul tarihi: {date}",
+        "unknownDevice": "Bilinmeyen cihaz",
+        "emptyTitle": "Servis geçmişi bulunmuyor",
+        "emptyDescription": "Bu müşteri için servis kaydı oluştuğunda burada görünecek."
+      },
+      "notFound": {
+        "eyebrow": "Müşteri bulunamadı",
+        "title": "Müşteri detayı görüntülenemedi",
+        "description": "{id} kimliğine sahip müşteri bulunamadı veya görüntüleme kapsamı dışında."
+      }
+    },
+    "create": {
+      "title": "Yeni müşteri oluştur",
+      "description": "Önce müşteriyi ekleyin, ardından müşteriye bağlı cihazları servis akışına bağlayın.",
+      "fields": {
+        "name": "Ad soyad",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "city": "Şehir",
+        "district": "İlçe",
+        "address": "Açık adres",
+        "note": "Not",
+        "optional": "opsiyonel"
+      },
+      "validation": {
+        "name": "Müşteri adı zorunludur.",
+        "phone": "Telefon zorunludur.",
+        "address": "Açık adres zorunludur.",
+        "summary": "Müşteriyi oluşturmak için zorunlu alanları tamamlayın."
+      },
+      "actions": {
+        "submit": "Müşteriyi oluştur",
+        "submitting": "Oluşturuluyor...",
+        "cancel": "Vazgeç",
+        "close": "Yeni müşteri penceresini kapat"
+      },
+      "success": {
+        "title": "Müşteri oluşturma tamamlandı",
+        "description": "{name} için mock müşteri kaydı hazırlandı. Geçici müşteri kimliği: {id}",
+        "nonPersistent": "Bu fazda kayıtlar kalıcı değildir; sayfa yenilendiğinde liste güncellenmez."
+      }
+    }
+  },
+  "devices": {
+    "deviceTypes": {
+      "PHONE": "Telefon",
+      "COMPUTER": "Bilgisayar",
+      "WHITE_GOOD": "Beyaz eşya",
+      "TV": "Televizyon"
+    },
+    "list": {
+      "title": "Cihaz listesi",
+      "description": "Cihazları marka/model veya müşteri bilgisine göre arayın ve sahiplik bağını müşteri kartı üzerinden takip edin.",
+      "searchLabel": "Cihaz araması",
+      "searchPlaceholder": "Marka, model, seri no, IMEI, müşteri adı veya telefon ile ara...",
+      "resultsLabel": "Toplam {count} cihaz gösteriliyor",
+      "summary": {
+        "totalDevices": "Toplam cihaz",
+        "totalOwners": "Toplam müşteri sahibi",
+        "openServices": "Açık servis kaydı"
+      },
+      "row": {
+        "serialLabel": "Seri No: {serial}",
+        "imeiLabel": "IMEI: {imei}",
+        "openServicesLabel": "Açık kayıt",
+        "detailAction": "Cihaz detayı"
+      },
+      "empty": {
+        "defaultTitle": "Henüz cihaz bulunmuyor",
+        "searchTitle": "Aramaya uygun cihaz bulunamadı",
+        "description": "Cihaz listesi bu kriterlerle eşleşmiyor. Farklı bir arama değeri deneyin."
+      }
+    },
+    "detail": {
+      "backToList": "Cihaz listesine dön",
+      "actions": {
+        "newServiceRecord": "Bu cihaz için servis kaydı aç"
+      },
+      "summary": {
+        "title": "Cihaz özeti",
+        "brandModel": "Marka / model",
+        "type": "Cihaz tipi",
+        "serialNumber": "Seri numarası",
+        "imei": "IMEI",
+        "notAvailable": "Belirtilmedi"
+      },
+      "owner": {
+        "title": "Cihaz sahibi"
+      },
+      "serviceHistory": {
+        "title": "Cihaza ait servis geçmişi",
+        "description": "Bu cihaza bağlı servis kayıtları takip kodu ve durum bilgisiyle listelenir.",
+        "dateLabel": "Kabul tarihi: {date}",
+        "emptyTitle": "Bu cihaza ait servis geçmişi bulunmuyor",
+        "emptyDescription": "Yeni servis kaydı oluştuğunda burada görünecek."
+      },
+      "createServiceRecordHint": "Yeni servis kaydı aksiyonu şu an /service-records/new sayfasına yönlendirir. Bu fazda cihaz/müşteri ön-seçimi otomatik aktarılmaz.",
+      "notFound": {
+        "eyebrow": "Cihaz bulunamadı",
+        "title": "Cihaz detayı görüntülenemedi",
+        "description": "{id} kimliğine sahip cihaz bulunamadı veya görüntüleme kapsamı dışında."
+      }
+    }
+  },
+  "serviceStatuses": {
+    "NEW": "Yeni kayıt",
+    "APPOINTMENT_SCHEDULED": "Randevu planlandı",
+    "ASSIGNED": "Personel atandı",
+    "IN_PROGRESS": "İşlemde",
+    "WAITING_PART": "Parça bekliyor",
+    "WAITING_CUSTOMER_APPROVAL": "Müşteri onayı bekliyor",
+    "REPAIRING": "Onarım aşamasında",
+    "READY_FOR_DELIVERY": "Teslime hazır",
+    "DELIVERED": "Teslim edildi",
+    "CANCELLED": "İptal edildi",
+    "UNREACHABLE": "Ulaşılamıyor",
+    "UNPAID": "Ödeme bekliyor"
+  },
+  "servicePriorities": {
+    "LOW": "Düşük",
+    "NORMAL": "Normal",
+    "HIGH": "Yüksek",
+    "URGENT": "Acil"
+  },
+  "placeholder": {
+    "eyebrow": "Yakında",
+    "title": "Bu modül sonraki fazda açılacak",
+    "description": "İlk frontend fazında sadece app shell ve dashboard üretime hazırlandı. Bu rota, bilgi mimarisini sabitlemek için şimdiden ayrıldı."
+  }
+}

@@ -1,439 +1,213 @@
-# PLAN.md — Servis Takip SaaS MVP Planı
+# Servis Takip — Uygulama Planı
 
-## 1. Ürün Kararı
+Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
-Bu proje, teknik servis işletmeleri için geliştirilecek modern, web tabanlı ve çok firmalı bir servis takip SaaS uygulamasıdır.
+---
 
-MVP amacı büyük bir ERP yapmak değildir. İlk hedef; küçük/orta ölçekli teknik servislerin günlük işlerini kaybetmeden, müşteriyi unutmadan, cihaz geçmişini takip ederek ve tahsilatlarını karıştırmadan çalışmasını sağlamaktır.
+## Teknik Kararlar
 
-Ana hedef:
+| Karar | Seçim |
+|---|---|
+| **Stack** | Next.js 15 (App Router) — API routes + Frontend tek uygulama |
+| **Database** | PostgreSQL + Prisma ORM |
+| **UI** | Mantine v7 |
+| **Auth** | JWT (access token) + bcrypt, cookies ile |
+| **Form** | react-hook-form + zod |
+| **Data Fetching** | TanStack Query |
+| **i18n** | next-intl (şimdilik sadece tr, İngilizce altyapısı hazır) |
+| **Deploy** | Docker (multi-stage build, mevcut PostgreSQL'e bağlanır) |
+| **Kullanıcı** | Çok kullanıcılı (ADMIN / TECHNICIAN rolleri) |
 
-> Firma hiçbir müşteriyi, cihazı, randevuyu, teslimatı, ödemeyi ve personel hareketini unutmasın.
+---
 
-## 2. Görsel ve UI Kararı
+## Phase 1: Proje İskeleti
 
-Yeni demo uygulamadaki sade panel mantığı korunacaktır. `DEMO-APP/` klasörü görsel başlangıç noktasıdır.
+- [ ] Next.js 15 kurulumu (TypeScript, App Router)
+- [ ] Mantine v7 kurulumu (`@mantine/core`, `@mantine/hooks`, `@mantine/notifications`, `@mantine/form`)
+- [ ] Prisma kurulumu + PostgreSQL bağlantısı (`DATABASE_URL`)
+- [ ] Tüm DB modellerinin `schema.prisma`'ya yazılması
+- [ ] `next-intl` kurulumu + `/messages/tr.json`
+- [ ] Proje klasör yapısının oluşturulması
+- [ ] `Dockerfile` (Next.js standalone output, multi-stage build)
+- [ ] `.env.example` (DATABASE_URL, admin bilgileri, şirket adı, port, JWT_SECRET)
+- [ ] ESLint + TypeScript strict config
+- [ ] AGENTS.md oluşturma
 
-Ancak mevcut demo birebir ürün değildir. Demo uygulama sadece:
+---
 
-- genel yerleşim,
-- sol sidebar,
-- üst header,
-- kartlı dashboard,
-- tablo tasarımı,
-- sade beyaz/gri/mavi SaaS görünümü,
-- buton ve badge hissi
+## Phase 2: Kimlik Doğrulama & Ana İskelet
 
-için referans alınacaktır.
+- [ ] Auth API: `POST /api/auth/login`, `POST /api/auth/register`, `GET /api/auth/me`, `POST /api/auth/logout`
+- [ ] JWT middleware: API route'larda auth kontrolü
+- [ ] Login sayfası (Mantine ile responsive form)
+- [ ] AppShell layout: sidebar + header + main content
+- [ ] Sidebar navigasyonu (responsive — mobilde drawer)
+- [ ] `middleware.ts` ile route koruması
+- [ ] İlk kurulum akışı (DB boşsa register'a yönlendir)
+- [ ] Loading / error / empty state'ler layout seviyesinde
 
-Kod ajanları `DEMO-APP/` içindeki UI'ı tamamen çöpe atmamalıdır. Mevcut tasarımı koruyarak gerçek MVP modüllerine bağlamalıdır.
+---
 
-`UI_SCREENS.md` artık kullanılmayacaktır. UI detayları bu dosya, mevcut demo uygulama ve ürün modülleri üzerinden ilerletilecektir.
+## Phase 3: Müşteri Yönetimi
 
-## 3. MVP Kapsamı
+- [ ] Müşteri API: `GET/POST /api/customers`, `GET/PUT/DELETE /api/customers/[id]`
+- [ ] Müşteri listesi sayfası (arama, sıralama, sayfalama)
+- [ ] Müşteri detay sayfası (bilgiler, adres, bağlı cihazlar)
+- [ ] Müşteri ekleme/düzenleme modalı (ad, soyad, telefon, email, adres)
+- [ ] Servis geçmişi özeti müşteri detayında
+- [ ] Boş / hata / yükleniyor durumları
 
-MVP'de yapılacak ana modüller:
+---
 
-1. Kimlik doğrulama ve oturum yönetimi
-2. Firma bazlı SaaS yapısı
-3. Personel ve rol/yetki sistemi
-4. Müşteri yönetimi
-5. Müşteri adresleri
-6. Cihaz yönetimi
-7. Servis kaydı / iş emri yönetimi
-8. Randevu ve günlük iş takibi
-9. Servis durum geçmişi / timeline
-10. Servis notları
-11. Fotoğraf / dosya ekleme
-12. QR kod / barkod ile kayıt erişimi
-13. Müşteri takip linki
-14. Parça ve servis maliyeti girişi
-15. Basit tahsilat / gider / kasa takibi
-16. Audit log sistemi
-17. Dashboard / özet durum paneli
-18. i18n altyapısı
-19. Responsive web tasarım
-20. PWA'ya uygun yapı
+## Phase 4: Cihaz Yönetimi
 
-## 4. MVP Dışı Bırakılacaklar
+- [ ] Cihaz API: `GET/POST /api/devices`, `GET/PUT/DELETE /api/devices/[id]`
+- [ ] Cihaz listesi sayfası (marka/model/seri no/müşteri arama)
+- [ ] Cihaz detay sayfası (bilgiler, müşteri kartı, servis geçmişi)
+- [ ] Cihaz ekleme/düzenleme formu (müşteri seçimli)
+- [ ] Müşteri detayında bağlı cihazlar listesi
+- [ ] Boş / hata / yükleniyor durumları
 
-Aşağıdakiler ilk sürümde yapılmayacaktır:
+---
 
-- E-fatura / e-arşiv entegrasyonu
-- WhatsApp Business API entegrasyonu
-- SMS entegrasyonu
-- Gelişmiş muhasebe
-- Tam kapsamlı stok/depo/raf yönetimi
-- Gelişmiş rapor motoru
-- Yapay zeka otomasyonları
-- Native Android/iOS uygulama
-- Gelişmiş form builder
-- Online ödeme alma
-- Müşteri hesabı / müşteri portalı
-- Çoklu şube arası stok transferi
-- Muhasebe programı entegrasyonları
+## Phase 5: Servis Kayıtları
 
-## 5. Önerilen Teknoloji Stack
+- [ ] Servis API: CRUD + durum güncelleme + notlar + timeline
+- [ ] Servis kaydı oluşturma (müşteri seç → cihaz seç → arıza → öncelik)
+- [ ] Durum makinası ve geçişleri:
+      ```
+      KAYIT_ACILDI → TAMIRATTA → FIYAT_TEKLIFI_VERILDI → HAZIR → TESLIM_EDILDI
+                          ↘            ↘                    ↘
+                       IPTAL_EDILDI   MUSTERI_REDDETTI    ODEME_BEKLIYOR
+      ```
+- [ ] Status timeline (kronolojik durum değişimleri)
+- [ ] Not sistemi (ekleme, listeleme, müşteriye görünür opsiyonu)
+- [ ] Cihaz detayında geçmiş servis kayıtları
+- [ ] Müşteri detayında servis kayıtları
+- [ ] Listeleme + filtreleme (durum, tarih, müşteri, cihaz)
+- [ ] Tracking numarası ile hızlı arama
 
-### 5.1 Monorepo
+---
 
-- pnpm workspace
-- Turborepo kullanılabilir ama zorunlu değildir
-- TypeScript her yerde zorunlu
+## Phase 6: Tahsilat & Borç Yönetimi
 
-### 5.2 Frontend
+- [ ] Ödeme API: `GET/POST /api/payments`, `GET /api/customers/[id]/balance`
+- [ ] Müşteri detayında güncel bakiye
+- [ ] Tahsilat ekleme (tutar, ödeme tipi, tarih, not)
+- [ ] Borç ekleme (servis kaydına bağlı veya bağımsız)
+- [ ] Müşteri bazında ödeme geçmişi tablosu
+- [ ] Dashboard'da günlük tahsilat özeti
 
-- Next.js, App Router
-- React
-- TypeScript
-- Tailwind CSS
-- shadcn/ui
-- lucide-react
-- React Hook Form
-- Zod
-- TanStack Table
-- TanStack Query veya Next.js server data fetching
-- next-intl veya benzeri i18n çözümü
-- Recharts, yalnızca basit grafik gerekirse
+---
 
-### 5.3 Backend
+## Phase 7: Planlanmış İşler / Takvim
 
-- NestJS
-- TypeScript
-- REST API
-- JWT access token
-- Refresh token
-- Role Based Access Control
-- Tenant guard / middleware
-- Audit log interceptor
-- DTO validation için class-validator veya Zod tabanlı yapı
+- [ ] Planlı iş API: `GET/POST /api/scheduled-tasks`, `PUT/DELETE /api/scheduled-tasks/[id]`
+- [ ] İş tipleri: Cihaz Alınacak, Cihaz Bırakılacak, Bakım, Kurulum, Diğer
+- [ ] Takvim/günlük liste görünümü
+- [ ] Müşteri seçme zorunlu (adres ve konum bilgisi için)
+- [ ] İş durumları: PLANLANDI, DEVAM_EDIYOR, TAMAMLANDI, IPTAL
+- [ ] Müşteri detayında planlı işler listesi
 
-### 5.4 Database
+---
 
-- PostgreSQL
-- Prisma ORM
-- UUID primary key
-- Her tenant verisinde `company_id`
-- Soft delete için `deleted_at`
-- Para alanlarında Decimal
-- Tarihler UTC saklanır
+## Phase 8: Dashboard & Ayarlar
 
-### 5.5 File Storage
+- [ ] Dashboard sayfası:
+  - Bekleyen servis sayısı
+  - Bugünkü planlı işler
+  - Tahsil edilmemiş borç toplamı
+  - Hazır olup teslim edilmeyen cihazlar
+  - Son 10 servis kaydı
+- [ ] Settings sayfası:
+  - Şirket adı düzenleme
+  - Profil düzenleme (ad, email, şifre)
+  - Kullanıcı yönetimi (admin teknisyen ekleyip silebilir)
+- [ ] Responsive son kontroller (mobil + tablet + masaüstü)
+- [ ] Production build testi
+- [ ] README.md (kurulum talimatları)
 
-MVP için seçeneklerden biri kullanılabilir:
+---
 
-- Cloudflare R2
-- AWS S3
-- Supabase Storage
-- MinIO, self-hosted gerekirse
+## Veritabanı Şeması
 
-Servis fotoğrafları public bucket'ta tutulmamalıdır. Kullanıcı yetkisine göre signed URL üretilmelidir.
-
-### 5.6 Deployment
-
-Önerilen ilk deployment:
-
-- Frontend: Vercel veya Docker ile VPS
-- Backend: Docker ile VPS / Railway / Render / Fly.io
-- Database: Managed PostgreSQL veya VPS PostgreSQL
-- Storage: Cloudflare R2 veya Supabase Storage
-- Reverse proxy: Caddy veya Nginx
-- Local development: Docker Compose
-
-## 6. Sürüm Politikası
-
-Eski sabit sürümlerle proje başlatılmamalıdır. Kurulum sırasında güncel stable sürümler tercih edilmeli, sonrasında lockfile ile sürümler kilitlenmelidir.
-
-Kurulum prensibi:
-
-```bash
-node --version
-pnpm --version
-pnpm create next-app@latest apps/web
-pnpm dlx shadcn@latest init
-npm i -g @nestjs/cli@latest
-nest new apps/api
-pnpm add @prisma/client
-pnpm add -D prisma
+```
+Company        (id, name, slug, createdAt)
+User           (id, email, passwordHash, name, surname, role, companyId, createdAt)
+Customer       (id, companyId, name, surname, phone, email?, address?, createdAt)
+Device         (id, customerId, companyId, category, brand, model, serialNo, notes?, createdAt)
+ServiceRecord  (id, companyId, customerId, deviceId, trackingNo, status, priority,
+                faultDescription, assignedUserId?, pricing?, createdAt)
+StatusHistory  (id, serviceRecordId, fromStatus, toStatus, changedById, createdAt)
+ServiceNote    (id, serviceRecordId, content, isCustomerVisible, authorId, createdAt)
+Payment        (id, companyId, customerId, type, amount, paymentMethod, date, description, createdAt)
+ScheduledTask  (id, companyId, customerId, title, description, taskType, date, status, createdAt)
 ```
 
-Kurallar:
+---
 
-- Node.js güncel LTS kullanılmalı.
-- Canary, alpha, beta sürümler kullanılmamalı.
-- Deprecated paketler özellikle seçilmemeli.
-- Lockfile repoya eklenmeli.
-- `.env.example` güncel tutulmalı.
+## Klasör Yapısı
 
-## 7. Repo Yapısı
-
-```text
+```
 servis-takip/
-  DEMO-APP/
-  apps/
-    web/
-    api/
-  packages/
-    shared/
-    config/
-  PLAN.md
-  DATABASE_DESIGN.md
-  AGENTS.md
-  docker-compose.yml
-  .env.example
-  README.md
-```
-
-`DEMO-APP/` mevcut görsel prototip veya Stitch çıktısı için ayrılmıştır. Üretim kodu zamanla `apps/web` içine düzenli şekilde taşınmalıdır.
-
-## 8. Frontend Yapısı
-
-```text
-apps/web/
-  app/
-    [locale]/
-      dashboard/
-      today/
-      service-records/
-      customers/
-      devices/
-      calendar/
-      parts/
-      cash/
-      reports/
-      staff/
-      audit-logs/
-      settings/
-    track/[code]/
-  components/
-    ui/
-    layout/
-    forms/
-    tables/
-    status/
-  features/
-    dashboard/
-    service-records/
-    customers/
-    devices/
-    calendar/
-    parts/
-    cash/
-    staff/
-    settings/
-  lib/
-    api/
-    auth/
-    i18n/
-    utils/
+  prisma/
+    schema.prisma
   messages/
     tr.json
-    en.json
+  src/
+    app/
+      [locale]/
+        page.tsx               # Dashboard
+        login/page.tsx
+        register/page.tsx      # İlk kurulum
+        customers/
+          page.tsx
+          [id]/page.tsx
+        devices/
+          page.tsx
+          [id]/page.tsx
+        service-records/
+          page.tsx
+          new/page.tsx
+          [id]/page.tsx
+        scheduled-tasks/
+          page.tsx
+        settings/
+          page.tsx
+      api/
+        auth/login/route.ts
+        auth/register/route.ts
+        auth/me/route.ts
+        customers/route.ts
+        customers/[id]/route.ts
+        devices/route.ts
+        devices/[id]/route.ts
+        service-records/route.ts
+        service-records/[id]/route.ts
+        service-records/[id]/status/route.ts
+        service-records/[id]/notes/route.ts
+        payments/route.ts
+        payments/[id]/route.ts
+        scheduled-tasks/route.ts
+        scheduled-tasks/[id]/route.ts
+    components/
+      ui/
+      layout/ (app-shell, sidebar, header)
+    features/
+      customers/
+      devices/
+      service-records/
+      scheduled-tasks/
+      dashboard/
+      settings/
+    lib/
+      prisma.ts
+      auth.ts
+      api.ts
+      i18n.ts
+    types/
+      index.ts
+  Dockerfile
+  .env.example
+  next.config.ts
 ```
-
-## 9. Backend Yapısı
-
-```text
-apps/api/src/
-  auth/
-  companies/
-  users/
-  roles/
-  customers/
-  devices/
-  service-records/
-  appointments/
-  parts/
-  payments/
-  expenses/
-  files/
-  public-tracking/
-  dashboard/
-  audit-logs/
-  notifications/
-  common/
-    decorators/
-    guards/
-    interceptors/
-    filters/
-    pipes/
-    utils/
-  prisma/
-```
-
-## 10. Ana Kullanıcı Rolleri
-
-MVP'de varsayılan roller:
-
-### Firma Sahibi / Admin
-
-- Her modülü görür.
-- Personel ve yetki yönetir.
-- Kasa, rapor, log ve ayarları görür.
-- Servis kayıtlarını oluşturur, günceller, siler.
-
-### Yönetici
-
-- Operasyonel kayıtları yönetir.
-- Personel ataması yapar.
-- Teklif, ödeme ve servis durumlarını yönetir.
-- Firma genel ayarlarını değiştiremez veya sınırlı değiştirir.
-
-### Tekniker / Usta
-
-- Kendisine atanmış işleri görür.
-- Servis durumunu günceller.
-- Fotoğraf, not ve işlem ekler.
-- Kasa ve yönetici loglarını göremez.
-
-### Çırak / Yardımcı
-
-- Sadece atanmış işleri görür.
-- Fotoğraf ve basit not ekleyebilir.
-- Fiyat, maliyet, kasa ve raporları göremez.
-
-### Muhasebe / Kasa
-
-- Tahsilat, gider ve cari bilgileri yönetir.
-- Teknik detaylara sınırlı erişebilir.
-
-## 11. Ana İş Akışı
-
-```text
-Müşteri arar
-  ↓
-Müşteri kaydı açılır veya mevcut müşteri bulunur
-  ↓
-Cihaz kaydı oluşturulur veya mevcut cihaz seçilir
-  ↓
-Servis kaydı / iş emri açılır
-  ↓
-Randevu tarihi ve personel atanır
-  ↓
-Yerinde servis veya cihaz teslim alma süreci başlar
-  ↓
-Arıza tespiti, fotoğraf, not ve parça ihtiyacı girilir
-  ↓
-Fiyat teklifi verilir
-  ↓
-Müşteri onayı beklenir
-  ↓
-Onarım yapılır
-  ↓
-Tahsilat alınır
-  ↓
-Cihaz teslim edilir
-  ↓
-Kayıt geçmişte saklanır
-```
-
-## 12. Servis Durumları
-
-MVP durumları:
-
-```text
-NEW
-APPOINTMENT_SCHEDULED
-ASSIGNED
-IN_PROGRESS
-WAITING_PART
-WAITING_CUSTOMER_APPROVAL
-REPAIRING
-READY_FOR_DELIVERY
-DELIVERED
-CANCELLED
-UNREACHABLE
-UNPAID
-```
-
-Türkçe karşılıklar i18n dosyasında tutulmalıdır.
-
-## 13. Ana Ekranlar
-
-Mevcut demo tasarımı korunarak aşağıdaki sayfalar oluşturulmalıdır:
-
-```text
-/login
-/onboarding
-/dashboard
-/today
-/service-records
-/service-records/new
-/service-records/[id]
-/customers
-/customers/new
-/customers/[id]
-/devices
-/devices/[id]
-/calendar
-/parts
-/cash
-/reports
-/staff
-/audit-logs
-/settings
-/track/[code]
-```
-
-`/dashboard` istatistik ekranı gibi değil, operasyon merkezi gibi çalışmalıdır.
-
-Dashboard'da en az:
-
-- Bugünkü işler
-- Bekleyen cihazlar
-- Parça bekleyenler
-- Onay bekleyenler
-- Teslime hazır olanlar
-- Geciken / acil işler
-- Günlük tahsilat / gider
-- Son servis kayıtları
-
-bulunmalıdır.
-
-## 14. i18n Kuralları
-
-- Varsayılan dil Türkçe olmalıdır.
-- İngilizce destek altyapısı kurulmalıdır.
-- UI metinleri hardcode edilmemelidir.
-- Backend enum değerleri İngilizce kalmalı, frontend çeviriyi i18n'den almalıdır.
-- Para birimi MVP'de TRY varsayılan olmalıdır.
-- Tarihler `Europe/Istanbul` gösterimine göre formatlanmalıdır.
-- Uygulama route'ları locale prefix ile çalışmalıdır: `/tr/dashboard`, `/en/dashboard`.
-- Varsayılan Türkçe locale için `/dashboard` gibi prefix'siz route gelirse `/tr/dashboard` adresine yönlendirilmelidir.
-
-## 14.1 PWA Minimum Beklentisi
-
-MVP'de PWA kapsamı sınırlı tutulacaktır. Beklenen minimumlar:
-
-- `manifest.webmanifest` tanımlı olmalıdır.
-- Uygulama adı, kısa ad, ikonlar, `theme_color`, `background_color` ve `display` alanları bulunmalıdır.
-- Mobil tarayıcıda ana ekrana ekleme desteklenmelidir.
-- Offline çalışma zorunlu değildir; ancak bağlantı yokken kullanıcıya anlaşılır offline fallback gösterilmelidir.
-- Kritik servis verileri tarayıcıda kalıcı ve şifresiz cache'lenmemelidir.
-
-## 15. Güvenlik Kuralları
-
-- Kullanıcı sadece bağlı olduğu firmaların verisini görebilir.
-- Her tenant verisi `company_id` ile filtrelenir.
-- Backend'de tenant kontrolü atlanamaz.
-- Role/permission kontrolü sadece frontend'e bırakılmaz.
-- Public takip linki tahmin edilebilir olmamalıdır.
-- Fotoğraflar public URL ile açık edilmemelidir.
-- Her kritik write işleminde audit log oluşturulur.
-- Şifreler hashlenir; plain text saklanmaz.
-
-## 16. MVP Başarı Kriterleri
-
-MVP başarılı sayılırsa:
-
-- Firma yeni servis kaydı açabilir.
-- Müşteri ve cihaz geçmişini görebilir.
-- Bugünün işlerini takip edebilir.
-- Personel görevlendirebilir.
-- Durum güncelleyebilir.
-- Fotoğraf ekleyebilir.
-- QR/takip kodu üretebilir.
-- Müşteri public linkten durum görebilir.
-- Tahsilat/gider girebilir.
-- Yönetici kimin ne yaptığını audit logda görebilir.
-- Uygulama mobil ve masaüstünde rahat kullanılabilir.
