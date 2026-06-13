@@ -76,7 +76,11 @@
     "owner": "Sahibi",
     "noDevices": "Henüz cihaz eklenmemiş",
     "addFirst": "İlk cihazı ekleyin",
-    "deleteConfirm": "Bu cihazı silmek istediğinize emin misiniz?"
+    "deleteConfirm": "Bu cihazı silmek istediğinize emin misiniz?",
+    "detail": "Cihaz Detayı",
+    "customerInfo": "Müşteri Bilgisi",
+    "serviceHistory": "Servis Geçmişi",
+    "noRecords": "Henüz servis kaydı yok"
   },
   "serviceRecords": {
     "title": "Servis Kayıtları",

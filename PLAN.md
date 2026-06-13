@@ -63,12 +63,12 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ## Phase 4: Cihaz Yönetimi
 
-- [ ] Cihaz API: `GET/POST /api/devices`, `GET/PUT/DELETE /api/devices/[id]`
-- [ ] Cihaz listesi sayfası (marka/model/seri no/müşteri arama)
-- [ ] Cihaz detay sayfası (bilgiler, müşteri kartı, servis geçmişi)
-- [ ] Cihaz ekleme/düzenleme formu (müşteri seçimli)
-- [ ] Müşteri detayında bağlı cihazlar listesi
-- [ ] Boş / hata / yükleniyor durumları
+- [x] Cihaz API: `GET/POST /api/devices`, `GET/PUT/DELETE /api/devices/[id]`
+- [x] Cihaz listesi sayfası (marka/model/seri no/müşteri arama)
+- [x] Cihaz detay sayfası (bilgiler, müşteri kartı, servis geçmişi)
+- [x] Cihaz ekleme/düzenleme formu (müşteri seçimli)
+- [x] Müşteri detayında bağlı cihazlar listesi (Phase 3'te yapıldı)
+- [x] Boş / hata / yükleniyor durumları
 
 ---
 
