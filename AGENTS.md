@@ -6,11 +6,11 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 
 ## Teknolojiler
 
-- **Frontend + Backend:** Next.js 15 (App Router, API routes)
-- **UI:** Mantine v7 (CSS Modules, responsive)
+- **Frontend + Backend:** Next.js 16 (App Router, API routes)
+- **UI:** Mantine v7 + Tabler Icons
 - **Database:** PostgreSQL + Prisma ORM
-- **Auth:** JWT (access token, httpOnly cookie) + bcrypt
-- **Form:** react-hook-form + zod
+- **Auth:** JWT (jose) + bcryptjs, httpOnly cookie
+- **Form:** Mantine form + zod
 - **Data Fetching:** TanStack Query
 - **i18n:** next-intl (şimdilik sadece `tr`, altyapı `en` için hazır)
 - **Deploy:** Docker (multi-stage build, mevcut PostgreSQL'e bağlanır)
@@ -44,36 +44,37 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 - Form validation şeması (`zod`) API route'una yakın tanımlanır (örn. aynı dosyada).
 - `.env`'den okunan değerler `src/lib/env.ts`'de tek merkezden validate edilir.
 - `prisma/schema.prisma` tüm modelleri içerir, Phase'ler ekledikçe büyür.
+- İlk kurulum `.env`'den otomatik yapılır (manuel register sayfası yok).
+- Authenticated sayfalar `(app)` route group'u altında, login sayfası bunun dışında.
 
 ## Dizin Yapısı
 
 ```
 src/
   app/
-    [locale]/         # next-intl locale segment
-      page.tsx         # Dashboard (Server Component)
-      login/page.tsx
-      register/page.tsx
-      customers/
-      devices/
-      service-records/
-      scheduled-tasks/
-      settings/
-    api/               # API route'ları
+    [locale]/                  # next-intl locale segment
+      layout.tsx               # Mantine + intl + QueryProvider
+      login/page.tsx           # Standalone login (AppShell yok)
+      (app)/                   # Route group — AppShell'li sayfalar
+        layout.tsx             # AppShell wrapper
+        dashboard/page.tsx
+        customers/
+        devices/
+        service-records/
+        scheduled-tasks/
+        settings/
+    api/                       # API route'ları
   components/
-    ui/                # Küçük, tekrar kullanılabilir UI bileşenleri
-    layout/            # AppShell, Sidebar, Header
-  features/            # View bileşenleri (sayfa mantığı)
-    customers/
-    devices/
-    service-records/
-    scheduled-tasks/
-    dashboard/
-    settings/
-  lib/                 # Utility, config, helpers
-    prisma.ts          # Prisma client singleton
-    auth.ts            # JWT, bcrypt, cookie helpers
-    api.ts             # Client-side fetch wrapper
+    providers/                 # Auth, Query provider'lar
+    layout/                    # AppShell, Sidebar, Header
+  lib/                         # Utility, config, helpers
+    prisma.ts                  # Prisma client singleton
+    auth.ts                    # JWT, bcrypt, cookie helpers
+    api.ts                     # Client-side fetch wrapper
+    env.ts                     # .EV validation
+    i18n.ts                    # next-intl config
+    routing.ts                 # Locale routing config
+    navigation.ts              # next-intl navigation helpers
   types/
     index.ts
 ```
@@ -82,15 +83,15 @@ src/
 
 - Mantine responsive props kullanılır (`visibleFrom`, `hiddenFrom`, `maw`, vb.).
 - Mobil first yaklaşımı.
-- Sidebar mobilde drawer'a dönüşür.
-- Tablolar mobilde kart görünümüne dönüşebilir (Mantine `Table` scrollable).
+- Sidebar mobilde drawer'a dönüşür (Burger menü ile).
+- Tablolar mobilde scrollable yapılır.
 - Touch target minimum 44x44px.
 
 ## UI / Tasarım
 
 - AI-slop estetiği yasak (glowing gradient, neon, glassmorphism, blob, sparkle).
 - Sade, düzenli, profesyonel görünüm.
-- Renk paleti Mantine varsayılanı kullanılır, özel tema gerekiyorsa `mantine-theme.ts`.
+- Renk paleti Mantine varsayılanı kullanılır.
 - Yükleme durumları için `Skeleton` kullanılır.
 - Boş liste durumları için açıklayıcı mesaj + aksiyon butonu.
 - Hata durumları için `Alert` bileşeni.
@@ -101,24 +102,24 @@ src/
 
 - Server state: TanStack Query (client-side fetching).
 - UI state: React `useState` / `useReducer`.
-- Global state: React Context (auth gibi).
+- Global state: AuthProvider (kullanıcı bilgisi).
 - URL state: Next.js searchParams (filtre, sayfa, arama).
 
 ## Veritabanı
 
-- PostgreSQL + Prisma.
-- Tüm tenant entity'lerinde `companyId` alanı (single-tenant olsa da ileriye dönük).
+- PostgreSQL + Prisma 6.
+- Tüm tenant entity'lerinde `companyId` alanı.
 - `id` alanları `cuid()` ile oluşturulur.
 - `createdAt` ve `updatedAt` her modelde olur.
-- Soft delete yok, hard delete kullanılır (kullanıcı sayısı az).
+- Soft delete yok, hard delete kullanılır.
 - Migrasyonlar `prisma migrate dev` ile oluşturulur.
-- `prisma/seed.ts` ile demo data eklenebilir.
+- Şema değişiklikleri için `prisma db push` yeterli (geliştirme aşaması).
 
 ## Auth
 
-- JWT access token (15dk) httpOnly cookie'de saklanır.
+- JWT access token (1 gün) httpOnly cookie'de saklanır.
 - Refresh token yok. Süre dolunca tekrar login.
-- `middleware.ts` korumasız rotalar: `/login`, `/register`, `/api/auth/*`.
+- İlk kurulum: Middleware `GET /api/setup` ile kontrol eder, gerekliyse `POST /api/setup` çağırır (`.env`'den okur).
 - Admin ve Technician rolleri arasında sadece `role` enum farkı.
 - Admin her şeyi yapabilir. Technician müşteri/servis görebilir, düzenleyebilir ama kullanıcı yönetemez.
 

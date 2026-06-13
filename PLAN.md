@@ -8,21 +8,22 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 | Karar | Seçim |
 |---|---|
-| **Stack** | Next.js 15 (App Router) — API routes + Frontend tek uygulama |
+| **Stack** | Next.js 16 (App Router) — API routes + Frontend tek uygulama |
 | **Database** | PostgreSQL + Prisma ORM |
-| **UI** | Mantine v7 |
-| **Auth** | JWT (access token) + bcrypt, cookies ile |
-| **Form** | react-hook-form + zod |
+| **UI** | Mantine v7 + Tabler Icons |
+| **Auth** | JWT (jose) + bcryptjs, httpOnly cookie |
+| **Form** | Mantine form + zod |
 | **Data Fetching** | TanStack Query |
 | **i18n** | next-intl (şimdilik sadece tr, İngilizce altyapısı hazır) |
 | **Deploy** | Docker (multi-stage build, mevcut PostgreSQL'e bağlanır) |
 | **Kullanıcı** | Çok kullanıcılı (ADMIN / TECHNICIAN rolleri) |
+| **İlk Kurulum** | `.env`'den otomatik (manuel register yok) |
 
 ---
 
-## Phase 1: Proje İskeleti
+## Phase 1: Proje İskeleti ✅
 
-- [x] Next.js 15 kurulumu (TypeScript, App Router)
+- [x] Next.js 16 kurulumu (TypeScript, App Router)
 - [x] Mantine v7 kurulumu (`@mantine/core`, `@mantine/hooks`, `@mantine/notifications`, `@mantine/form`)
 - [x] Prisma kurulumu + PostgreSQL bağlantısı (`DATABASE_URL`)
 - [x] Tüm DB modellerinin `schema.prisma`'ya yazılması
@@ -35,16 +36,17 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ---
 
-## Phase 2: Kimlik Doğrulama & Ana İskelet
+## Phase 2: Kimlik Doğrulama & Ana İskelet ✅
 
-- [ ] Auth API: `POST /api/auth/login`, `POST /api/auth/register`, `GET /api/auth/me`, `POST /api/auth/logout`
-- [ ] JWT middleware: API route'larda auth kontrolü
-- [ ] Login sayfası (Mantine ile responsive form)
-- [ ] AppShell layout: sidebar + header + main content
-- [ ] Sidebar navigasyonu (responsive — mobilde drawer)
-- [ ] `middleware.ts` ile route koruması
-- [ ] İlk kurulum akışı (DB boşsa register'a yönlendir)
-- [ ] Loading / error / empty state'ler layout seviyesinde
+- [x] Auth API: `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/logout`
+- [x] Login sayfası (Mantine form, zod validation)
+- [x] JWT middleware: API route'larda auth kontrolü (cookie bazlı)
+- [x] `middleware.ts` ile route koruması (login kontrolü)
+- [x] AppShell layout: sidebar + header + main content
+- [x] Sidebar navigasyonu (responsive — mobilde burger drawer)
+- [x] AuthProvider context (kullanıcı bilgisi, logout)
+- [x] Header (kullanıcı adı + avatar + logout menüsü)
+- [x] İlk kurulum akışı (`.env`'den otomatik setup, sonra login'e yönlendir)
 
 ---
 
@@ -157,28 +159,33 @@ servis-takip/
   src/
     app/
       [locale]/
-        page.tsx               # Dashboard
-        login/page.tsx
-        register/page.tsx      # İlk kurulum
-        customers/
-          page.tsx
-          [id]/page.tsx
-        devices/
-          page.tsx
-          [id]/page.tsx
-        service-records/
-          page.tsx
-          new/page.tsx
-          [id]/page.tsx
-        scheduled-tasks/
-          page.tsx
-        settings/
-          page.tsx
+        layout.tsx               # Mantine + intl + QueryProvider
+        page.tsx                 # Dashboard (redirect) — her sayfayı (app) altına aldık
+        login/page.tsx           # Standalone login (AppShell yok)
+        (app)/                   # Route group — AppShell'li sayfalar
+          layout.tsx             # AppShell wrapper
+          dashboard/page.tsx
+          customers/
+            page.tsx
+            [id]/page.tsx
+          devices/
+            page.tsx
+            [id]/page.tsx
+          service-records/
+            page.tsx
+            new/page.tsx
+            [id]/page.tsx
+          scheduled-tasks/
+            page.tsx
+          settings/
+            page.tsx
       api/
-        auth/login/route.ts
-        auth/register/route.ts
-        auth/me/route.ts
-        customers/route.ts
+        auth/
+          login/route.ts
+          me/route.ts
+          logout/route.ts
+        setup/route.ts           # .env'den otomatik kurulum
+        customers/route.ts       # (ileride)
         customers/[id]/route.ts
         devices/route.ts
         devices/[id]/route.ts
@@ -191,20 +198,21 @@ servis-takip/
         scheduled-tasks/route.ts
         scheduled-tasks/[id]/route.ts
     components/
-      ui/
-      layout/ (app-shell, sidebar, header)
-    features/
-      customers/
-      devices/
-      service-records/
-      scheduled-tasks/
-      dashboard/
-      settings/
+      providers/
+        auth-provider.tsx
+        query-provider.tsx
+      layout/
+        app-shell.tsx
+        sidebar.tsx
+        header.tsx
     lib/
       prisma.ts
       auth.ts
       api.ts
       i18n.ts
+      routing.ts
+      navigation.ts
+      env.ts
     types/
       index.ts
   Dockerfile
