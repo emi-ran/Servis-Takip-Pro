@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useDisclosure, useDebouncedValue } from "@mantine/hooks";
@@ -42,6 +42,7 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { normalizePhone, isValidPhone } from "@/lib/phone";
 
 type Customer = {
   id: string;
@@ -87,17 +88,25 @@ export default function CustomersPage() {
       }),
   });
 
+  const phoneValidate = (v: string) => {
+    if (v.length < 1) return "Telefon zorunlu";
+    if (!isValidPhone(normalizePhone(v))) return "Geçerli bir telefon girin (05XX XXX XXXX)";
+    return null;
+  };
+
   const createForm = useForm({
     mode: "uncontrolled" as const,
     initialValues: { name: "", surname: "", phone: "", email: "", address: "" },
     validate: {
       name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
       surname: (v: string) => (v.length < 1 ? "Soyad zorunlu" : null),
-      phone: (v: string) => (v.length < 1 ? "Telefon zorunlu" : null),
-      email: (v: string) =>
-        v && v.length > 0 && !z.string().email().safeParse(v).success
+      phone: phoneValidate,
+      email: (v: string) => {
+        const trimmed = v.trim();
+        return trimmed && !z.string().email().safeParse(trimmed).success
           ? "Geçersiz e-posta"
-          : null,
+          : null;
+      },
     },
   });
 
@@ -107,11 +116,13 @@ export default function CustomersPage() {
     validate: {
       name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
       surname: (v: string) => (v.length < 1 ? "Soyad zorunlu" : null),
-      phone: (v: string) => (v.length < 1 ? "Telefon zorunlu" : null),
-      email: (v: string) =>
-        v && v.length > 0 && !z.string().email().safeParse(v).success
+      phone: phoneValidate,
+      email: (v: string) => {
+        const trimmed = v.trim();
+        return trimmed && !z.string().email().safeParse(trimmed).success
           ? "Geçersiz e-posta"
-          : null,
+          : null;
+      },
     },
   });
 
@@ -260,6 +271,7 @@ export default function CustomersPage() {
           placeholder={ct("search") + "..."}
           leftSection={<IconSearch size={16} stroke={1.5} />}
           value={searchValue}
+          autoComplete="nope"
           onChange={(e) => {
             setSearchValue(e.currentTarget.value);
             setPage(1);
@@ -364,13 +376,20 @@ export default function CustomersPage() {
         }}
         transitionProps={{ transition: "fade", duration: 150 }}
       >
-        <form onSubmit={createForm.onSubmit((values) => createMutation.mutate(values))} style={{ paddingTop: "8px" }}>
+        <form
+          autoComplete="nope"
+          onSubmit={createForm.onSubmit((values) =>
+            createMutation.mutate({ ...values, phone: normalizePhone(values.phone) })
+          )}
+          style={{ paddingTop: "8px" }}
+        >
           <Stack gap="md">
             <SimpleGrid cols={2} spacing="md">
               <TextInput
                 label={t("name")}
                 placeholder="Örn. Ahmet"
                 required
+                autoComplete="nope"
                 leftSection={<IconUser size={16} stroke={1.5} />}
                 key={createForm.key("name")}
                 {...createForm.getInputProps("name")}
@@ -379,6 +398,7 @@ export default function CustomersPage() {
                 label={t("surname")}
                 placeholder="Örn. Yılmaz"
                 required
+                autoComplete="nope"
                 leftSection={<IconUser size={16} stroke={1.5} />}
                 key={createForm.key("surname")}
                 {...createForm.getInputProps("surname")}
@@ -390,13 +410,23 @@ export default function CustomersPage() {
                 label={t("phone")}
                 placeholder="0555 555 5555"
                 required
+                autoComplete="nope"
                 leftSection={<IconPhone size={16} stroke={1.5} />}
                 key={createForm.key("phone")}
                 {...createForm.getInputProps("phone")}
+                onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+                }}
+                onBlur={(e) => {
+                  const normalized = normalizePhone(e.currentTarget.value);
+                  e.currentTarget.value = normalized;
+                  createForm.setFieldValue("phone", normalized);
+                }}
               />
               <TextInput
                 label={t("email")}
                 placeholder="ahmet@ornek.com"
+                autoComplete="nope"
                 leftSection={<IconMail size={16} stroke={1.5} />}
                 key={createForm.key("email")}
                 {...createForm.getInputProps("email")}
@@ -408,6 +438,7 @@ export default function CustomersPage() {
               placeholder="Müşterinin detaylı adresi..."
               minRows={3}
               maxRows={5}
+              autoComplete="nope"
               leftSection={<IconMapPin size={16} stroke={1.5} style={{ alignSelf: "flex-start", marginTop: "10px" }} />}
               leftSectionPointerEvents="none"
               key={createForm.key("address")}
@@ -452,8 +483,9 @@ export default function CustomersPage() {
         transitionProps={{ transition: "fade", duration: 150 }}
       >
         <form
+          autoComplete="nope"
           onSubmit={editForm.onSubmit((values) =>
-            updateMutation.mutate({ ...values, id: editingCustomer!.id })
+            updateMutation.mutate({ ...values, phone: normalizePhone(values.phone), id: editingCustomer!.id })
           )}
           style={{ paddingTop: "8px" }}
         >
@@ -462,6 +494,7 @@ export default function CustomersPage() {
               <TextInput
                 label={t("name")}
                 required
+                autoComplete="nope"
                 leftSection={<IconUser size={16} stroke={1.5} />}
                 key={editForm.key("name")}
                 {...editForm.getInputProps("name")}
@@ -469,6 +502,7 @@ export default function CustomersPage() {
               <TextInput
                 label={t("surname")}
                 required
+                autoComplete="nope"
                 leftSection={<IconUser size={16} stroke={1.5} />}
                 key={editForm.key("surname")}
                 {...editForm.getInputProps("surname")}
@@ -479,12 +513,22 @@ export default function CustomersPage() {
               <TextInput
                 label={t("phone")}
                 required
+                autoComplete="nope"
                 leftSection={<IconPhone size={16} stroke={1.5} />}
                 key={editForm.key("phone")}
                 {...editForm.getInputProps("phone")}
+                onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+                }}
+                onBlur={(e) => {
+                  const normalized = normalizePhone(e.currentTarget.value);
+                  e.currentTarget.value = normalized;
+                  editForm.setFieldValue("phone", normalized);
+                }}
               />
               <TextInput
                 label={t("email")}
+                autoComplete="nope"
                 leftSection={<IconMail size={16} stroke={1.5} />}
                 key={editForm.key("email")}
                 {...editForm.getInputProps("email")}
@@ -495,6 +539,7 @@ export default function CustomersPage() {
               label={t("address")}
               minRows={3}
               maxRows={5}
+              autoComplete="nope"
               leftSection={<IconMapPin size={16} stroke={1.5} style={{ alignSelf: "flex-start", marginTop: "10px" }} />}
               leftSectionPointerEvents="none"
               key={editForm.key("address")}

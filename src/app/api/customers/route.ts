@@ -2,12 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth";
 import { z } from "zod";
+import { normalizePhone, isValidPhone } from "@/lib/phone";
+
+const phoneSchema = z.string().min(1).transform(normalizePhone).refine(isValidPhone, {
+  message: "Geçerli bir telefon numarası girin (05XX XXX XXXX)",
+});
 
 const createCustomerSchema = z.object({
-  name: z.string().min(1),
-  surname: z.string().min(1),
-  phone: z.string().min(1),
-  email: z.string().email().optional().or(z.literal("")),
+  name: z.string().min(1, "Ad zorunlu"),
+  surname: z.string().min(1, "Soyad zorunlu"),
+  phone: phoneSchema,
+  email: z.string().email("Geçersiz e-posta").trim().optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
 });
 

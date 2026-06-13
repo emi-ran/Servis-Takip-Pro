@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Servis Takip
 
-## Getting Started
+Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis kaydı, tahsilat ve planlı iş takibi yapmasını sağlar.
 
-First, run the development server:
+## Teknolojiler
+
+- **Frontend + Backend:** Next.js 16 (App Router, API routes)
+- **UI:** Mantine v9.3.1 + Tabler Icons
+- **Database:** PostgreSQL + Prisma ORM
+- **Auth:** JWT (jose) + bcryptjs, httpOnly cookie
+- **Form:** Mantine form (uncontrolled) + zod
+- **Data Fetching:** TanStack Query
+- **i18n:** next-intl (şimdilik sadece tr, İngilizce altyapısı hazır)
+- **Deploy:** Docker (multi-stage build)
+
+## Gereksinimler
+
+- Node.js 20+
+- PostgreSQL (mevcut bir PostgreSQL sunucusu)
+
+## Kurulum
+
+### 1. Environment değişkenleri
+
+`.env.example` dosyasını `.env` olarak kopyalayın ve doldurun:
+
+```bash
+cp .env.example .env
+```
+
+| Değişken | Açıklama |
+|---|---|
+| `DATABASE_URL` | PostgreSQL bağlantı dizesi |
+| `JWT_SECRET` | JWT imzalama anahtarı (en az 32 karakter) |
+| `ADMIN_EMAIL` | İlk kurulumda oluşturulacak admin e-posta |
+| `ADMIN_PASSWORD` | Admin şifresi |
+| `ADMIN_NAME` | Admin adı |
+| `ADMIN_SURNAME` | Admin soyadı |
+| `COMPANY_NAME` | Şirket adı |
+| `COMPANY_SLUG` | Şirket URL slug |
+| `NEXT_PUBLIC_APP_URL` | Uygulama URL'si (ör. `http://localhost:3000`) |
+
+### 2. Bağımlılıkları yükleme
+
+```bash
+npm install
+```
+
+### 3. Veritabanı şemasını oluşturma
+
+```bash
+npx prisma db push
+```
+
+### 4. Geliştirme sunucusunu başlatma
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+İlk çalıştırmada `.env`'deki admin bilgileriyle kullanıcı ve şirket otomatik oluşturulur, ardından login sayfasına yönlendirilirsiniz.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Docker ile deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker build -t servis-takip .
+docker run -p 3000:3000 --env-file .env servis-takip
+```
 
-## Learn More
+## Proje Yapısı
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/
+    [locale]/login/           # Login sayfası
+    [locale]/(app)/           # AppShell'li sayfalar
+      dashboard/
+      customers/
+      devices/
+      service-records/
+      scheduled-tasks/
+      settings/
+    api/                      # API route'ları
+  components/
+    providers/                # Auth, Query provider
+    layout/                   # AppShell, Sidebar, Header
+  lib/                        # Utility, config
+    prisma.ts, auth.ts, api.ts, phone.ts, env.ts, i18n.ts, routing.ts, navigation.ts
+  types/
+  theme.ts
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Geliştirme
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev        # Geliştirme sunucusu
+npm run build      # Production build
+npm run lint       # ESLint
+npm run typecheck  # TypeScript kontrolü
+npm run db:push    # Prisma şema değişikliklerini uygula
+npm run db:studio  # Prisma Studio (veritabanı görüntüleyici)
+```

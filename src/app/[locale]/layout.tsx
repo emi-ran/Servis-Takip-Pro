@@ -1,11 +1,12 @@
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from "@mantine/core";
+import { MantineProvider, mantineHtmlProps } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getLocale } from "next-intl/server";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ColorSchemeScript } from "@/components/layout/color-scheme-script";
 import { theme } from "@/theme";
 
 type Props = {
@@ -23,7 +24,7 @@ export default async function LocaleLayout({ children }: Props) {
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <MantineProvider theme={theme}>
+          <MantineProvider theme={theme} defaultColorScheme="auto">
             <Notifications />
             <QueryProvider>{children}</QueryProvider>
           </MantineProvider>

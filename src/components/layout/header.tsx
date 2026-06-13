@@ -7,13 +7,11 @@ import {
   Burger,
   Avatar,
   Menu,
-  ActionIcon,
-  useMantineColorScheme,
-  useComputedColorScheme,
 } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/providers/auth-provider";
-import { IconSun, IconMoon, IconLogout, IconUser } from "@tabler/icons-react";
+import { IconLogout, IconUser } from "@tabler/icons-react";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 type HeaderProps = {
   onToggle: () => void;
@@ -23,15 +21,6 @@ type HeaderProps = {
 export function Header({ onToggle, opened }: HeaderProps) {
   const t = useTranslations();
   const { user, logout } = useAuth();
-  const { setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme("light", {
-    getInitialValueInEffect: true,
-  });
-
-  const toggleColorScheme = () => {
-    setColorScheme(computedColorScheme === "light" ? "dark" : "light");
-  };
-
   return (
     <AppShell.Header style={{ borderBottom: "1px solid var(--mantine-color-default-border)" }}>
       <Group h="100%" px="md" justify="space-between">
@@ -49,20 +38,7 @@ export function Header({ onToggle, opened }: HeaderProps) {
         </Group>
 
         <Group gap="md">
-          <ActionIcon
-            onClick={toggleColorScheme}
-            variant="default"
-            size="md"
-            radius="md"
-            aria-label="Toggle color scheme"
-            style={{ width: "36px", height: "36px" }}
-          >
-            {computedColorScheme === "light" ? (
-              <IconMoon size={18} stroke={1.5} />
-            ) : (
-              <IconSun size={18} stroke={1.5} />
-            )}
-          </ActionIcon>
+          <ThemeToggle />
 
           <Menu shadow="md" width={220} radius="md" transitionProps={{ transition: "pop-top-right", duration: 150 }}>
             <Menu.Target>

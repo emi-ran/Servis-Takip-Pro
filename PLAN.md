@@ -10,7 +10,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 |---|---|
 | **Stack** | Next.js 16 (App Router) — API routes + Frontend tek uygulama |
 | **Database** | PostgreSQL + Prisma ORM |
-| **UI** | Mantine v7 + Tabler Icons |
+| **UI** | Mantine v9.3.1 + Tabler Icons |
 | **Auth** | JWT (jose) + bcryptjs, httpOnly cookie |
 | **Form** | Mantine form + zod |
 | **Data Fetching** | TanStack Query |
@@ -24,7 +24,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 ## Phase 1: Proje İskeleti ✅
 
 - [x] Next.js 16 kurulumu (TypeScript, App Router)
-- [x] Mantine v7 kurulumu (`@mantine/core`, `@mantine/hooks`, `@mantine/notifications`, `@mantine/form`)
+- [x] Mantine v9.3.1 kurulumu (`@mantine/core`, `@mantine/hooks`, `@mantine/notifications`, `@mantine/form`, `@mantine/dates`)
 - [x] Prisma kurulumu + PostgreSQL bağlantısı (`DATABASE_URL`)
 - [x] Tüm DB modellerinin `schema.prisma`'ya yazılması
 - [x] `next-intl` kurulumu + `/messages/tr.json`
@@ -52,12 +52,12 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ## Phase 3: Müşteri Yönetimi
 
-- [ ] Müşteri API: `GET/POST /api/customers`, `GET/PUT/DELETE /api/customers/[id]`
-- [ ] Müşteri listesi sayfası (arama, sıralama, sayfalama)
+- [x] Müşteri API: `GET/POST /api/customers`, `GET/PUT/DELETE /api/customers/[id]`
+- [x] Müşteri listesi sayfası (arama, sıralama, sayfalama, sayfalama)
 - [ ] Müşteri detay sayfası (bilgiler, adres, bağlı cihazlar)
-- [ ] Müşteri ekleme/düzenleme modalı (ad, soyad, telefon, email, adres)
+- [x] Müşteri ekleme/düzenleme modalı (ad, soyad, telefon, email, adres)
 - [ ] Servis geçmişi özeti müşteri detayında
-- [ ] Boş / hata / yükleniyor durumları
+- [x] Boş / hata / yükleniyor durumları
 
 ---
 
@@ -185,7 +185,7 @@ servis-takip/
           me/route.ts
           logout/route.ts
         setup/route.ts           # .env'den otomatik kurulum
-        customers/route.ts       # (ileride)
+        customers/route.ts
         customers/[id]/route.ts
         devices/route.ts
         devices/[id]/route.ts
@@ -205,16 +205,27 @@ servis-takip/
         app-shell.tsx
         sidebar.tsx
         header.tsx
+        color-scheme-script.tsx
+        theme-toggle.tsx
+    features/                # Boş — feature bazlı component'ler için hazır
+      customers/
+      dashboard/
+      devices/
+      scheduled-tasks/
+      service-records/
+      settings/
     lib/
       prisma.ts
       auth.ts
       api.ts
+      phone.ts
+      env.ts
       i18n.ts
       routing.ts
       navigation.ts
-      env.ts
     types/
       index.ts
+    theme.ts
   Dockerfile
   .env.example
   next.config.ts
