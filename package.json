@@ -6,6 +6,10 @@
     "dev:web": "pnpm --filter web dev",
     "build:web": "pnpm --filter web build",
     "lint:web": "pnpm --filter web lint",
-    "typecheck:web": "pnpm --filter web typecheck"
+    "typecheck:web": "pnpm --filter web typecheck",
+    "dev:api": "pnpm --filter api start:dev",
+    "build:api": "pnpm --filter api build",
+    "lint:api": "pnpm --filter api lint",
+    "typecheck:api": "pnpm --filter api typecheck"
   }
 }
