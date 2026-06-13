@@ -25,6 +25,7 @@ import {
   SimpleGrid,
   Textarea,
   Select,
+  Autocomplete,
 } from "@mantine/core";
 import Link from "next/link";
 import {
@@ -116,9 +117,15 @@ export default function DevicesPage() {
     queryFn: () => apiClient("/api/customers", { params: { pageSize: "1000" } }),
   });
 
+  const { data: optionsData } = useQuery<{ brands: string[]; categories: string[] }>({
+    queryKey: ["device-options"],
+    queryFn: () => apiClient("/api/devices/options"),
+    staleTime: 30000,
+  });
+
   const customerOptions = (customersData?.customers ?? []).map((c) => ({
     value: c.id,
-    label: `${c.name} ${c.surname} (${c.phone})`,
+    label: `${c.name} ${c.surname}`,
   }));
 
   const createMutation = useMutation({
@@ -379,23 +386,26 @@ export default function DevicesPage() {
               required
               searchable
               data={customerOptions}
+              limit={5}
               autoComplete="nope"
               key={form.key("customerId")}
               {...form.getInputProps("customerId")}
             />
 
             <SimpleGrid cols={2} spacing="md">
-              <TextInput
+              <Autocomplete
                 label={t("brand")}
-                placeholder="Örn. Samsung"
+                placeholder="Örn. Siemens"
                 required
+                data={optionsData?.brands ?? []}
+                limit={5}
                 autoComplete="nope"
                 key={form.key("brand")}
                 {...form.getInputProps("brand")}
               />
               <TextInput
                 label={t("model")}
-                placeholder="Örn. Galaxy S24"
+                placeholder="Örn. iQ300"
                 required
                 autoComplete="nope"
                 key={form.key("model")}
@@ -404,10 +414,12 @@ export default function DevicesPage() {
             </SimpleGrid>
 
             <SimpleGrid cols={2} spacing="md">
-              <TextInput
+              <Autocomplete
                 label={t("category")}
-                placeholder="Örn. Telefon, Laptop, Yazıcı"
+                placeholder="Örn. Çamaşır Makinesi"
                 required
+                data={optionsData?.categories ?? []}
+                limit={5}
                 autoComplete="nope"
                 key={form.key("category")}
                 {...form.getInputProps("category")}
@@ -479,15 +491,18 @@ export default function DevicesPage() {
               required
               searchable
               data={customerOptions}
+              limit={5}
               autoComplete="nope"
               key={editForm.key("customerId")}
               {...editForm.getInputProps("customerId")}
             />
 
             <SimpleGrid cols={2} spacing="md">
-              <TextInput
+              <Autocomplete
                 label={t("brand")}
                 required
+                data={optionsData?.brands ?? []}
+                limit={5}
                 autoComplete="nope"
                 key={editForm.key("brand")}
                 {...editForm.getInputProps("brand")}
@@ -502,9 +517,11 @@ export default function DevicesPage() {
             </SimpleGrid>
 
             <SimpleGrid cols={2} spacing="md">
-              <TextInput
+              <Autocomplete
                 label={t("category")}
                 required
+                data={optionsData?.categories ?? []}
+                limit={5}
                 autoComplete="nope"
                 key={editForm.key("category")}
                 {...editForm.getInputProps("category")}
