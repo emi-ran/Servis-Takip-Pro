@@ -54,9 +54,9 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 - [x] Müşteri API: `GET/POST /api/customers`, `GET/PUT/DELETE /api/customers/[id]`
 - [x] Müşteri listesi sayfası (arama, sıralama, sayfalama, sayfalama)
-- [ ] Müşteri detay sayfası (bilgiler, adres, bağlı cihazlar)
+- [x] Müşteri detay sayfası (bilgiler, adres, bağlı cihazlar, servis geçmişi)
 - [x] Müşteri ekleme/düzenleme modalı (ad, soyad, telefon, email, adres)
-- [ ] Servis geçmişi özeti müşteri detayında
+- [x] Servis geçmişi özeti müşteri detayında
 - [x] Boş / hata / yükleniyor durumları
 
 ---
