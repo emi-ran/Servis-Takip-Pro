@@ -72,22 +72,22 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ---
 
-## Phase 5: Servis Kayıtları
+## Phase 5: Servis Kayıtları ✅
 
-- [ ] Servis API: CRUD + durum güncelleme + notlar + timeline
-- [ ] Servis kaydı oluşturma (müşteri seç → cihaz seç → arıza → öncelik)
-- [ ] Durum makinası ve geçişleri:
+- [x] Servis API: CRUD + durum güncelleme + notlar + timeline
+- [x] Servis kaydı oluşturma (müşteri seç → cihaz seç → arıza → öncelik)
+- [x] Durum makinası ve geçişleri:
       ```
       KAYIT_ACILDI → TAMIRATTA → FIYAT_TEKLIFI_VERILDI → HAZIR → TESLIM_EDILDI
                           ↘            ↘                    ↘
                        IPTAL_EDILDI   MUSTERI_REDDETTI    ODEME_BEKLIYOR
       ```
-- [ ] Status timeline (kronolojik durum değişimleri)
-- [ ] Not sistemi (ekleme, listeleme, müşteriye görünür opsiyonu)
-- [ ] Cihaz detayında geçmiş servis kayıtları
-- [ ] Müşteri detayında servis kayıtları
-- [ ] Listeleme + filtreleme (durum, tarih, müşteri, cihaz)
-- [ ] Tracking numarası ile hızlı arama
+- [x] Status timeline (kronolojik durum değişimleri)
+- [x] Not sistemi (ekleme, listeleme, müşteriye görünür opsiyonu)
+- [x] Cihaz detayında geçmiş servis kayıtları
+- [x] Müşteri detayında servis kayıtları
+- [x] Listeleme + filtreleme (durum, müşteri, arama)
+- [x] Tracking numarası ile hızlı arama
 
 ---
 
@@ -184,6 +184,7 @@ servis-takip/
           login/route.ts
           me/route.ts
           logout/route.ts
+          users/route.ts
         setup/route.ts           # .env'den otomatik kurulum
         customers/route.ts
         customers/[id]/route.ts

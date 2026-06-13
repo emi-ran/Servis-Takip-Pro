@@ -23,26 +23,32 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get("pageSize") || "20")));
 
-  const where = {
+  const customerId = searchParams.get("customerId") || "";
+
+  const where: Record<string, unknown> = {
     companyId: session.companyId,
-    ...(query
-      ? {
-          OR: [
-            { brand: { contains: query, mode: "insensitive" as const } },
-            { model: { contains: query, mode: "insensitive" as const } },
-            { serialNo: { contains: query } },
-            { category: { contains: query, mode: "insensitive" as const } },
-            { customer: {
-                OR: [
-                  { name: { contains: query, mode: "insensitive" as const } },
-                  { surname: { contains: query, mode: "insensitive" as const } },
-                ],
-              },
-            },
-          ],
-        }
-      : {}),
   };
+
+  if (customerId) {
+    where.customerId = customerId;
+  }
+
+  if (query) {
+    where.OR = [
+      { brand: { contains: query, mode: "insensitive" as const } },
+      { model: { contains: query, mode: "insensitive" as const } },
+      { serialNo: { contains: query } },
+      { category: { contains: query, mode: "insensitive" as const } },
+      {
+        customer: {
+          OR: [
+            { name: { contains: query, mode: "insensitive" as const } },
+            { surname: { contains: query, mode: "insensitive" as const } },
+          ],
+        },
+      },
+    ];
+  }
 
   const [devices, total] = await Promise.all([
     prisma.device.findMany({
