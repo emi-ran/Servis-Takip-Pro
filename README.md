@@ -75,18 +75,46 @@ src/
     [locale]/login/           # Login sayfası
     [locale]/(app)/           # AppShell'li sayfalar
       dashboard/
+        page.tsx
+      customers/
+        page.tsx
+        [id]/page.tsx
+      devices/
+        page.tsx
+        [id]/page.tsx
+      service-records/
+        page.tsx
+        new/page.tsx
+        [id]/page.tsx
+      scheduled-tasks/
+        page.tsx
+      settings/
+        page.tsx
+    api/                      # API route'ları
+      auth/
       customers/
       devices/
       service-records/
+      payments/
       scheduled-tasks/
-      settings/
-    api/                      # API route'ları
+      setup/
   components/
     providers/                # Auth, Query provider
-    layout/                   # AppShell, Sidebar, Header
+      auth-provider.tsx
+      query-provider.tsx
+    layout/                   # AppShell, Sidebar, Header, ThemeToggle
+    ui/                       # Ortak UI bileşenleri
+  features/                   # Feature bazlı component'ler
+    customers/
+    dashboard/
+    devices/
+    service-records/
+    scheduled-tasks/
+    settings/
   lib/                        # Utility, config
     prisma.ts, auth.ts, api.ts, phone.ts, env.ts, i18n.ts, routing.ts, navigation.ts
   types/
+    index.ts
   theme.ts
 ```
 
