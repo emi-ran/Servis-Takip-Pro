@@ -14,6 +14,7 @@ const createCustomerSchema = z.object({
   phone: phoneSchema,
   email: z.string().email("Geçersiz e-posta").trim().optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
+  nickname: z.string().optional().or(z.literal("")),
 });
 
 export async function GET(request: NextRequest) {
@@ -34,6 +35,7 @@ export async function GET(request: NextRequest) {
           OR: [
             { name: { contains: query, mode: "insensitive" as const } },
             { surname: { contains: query, mode: "insensitive" as const } },
+            { nickname: { contains: query, mode: "insensitive" as const } },
             { phone: { contains: query } },
             { email: { contains: query, mode: "insensitive" as const } },
           ],
@@ -73,6 +75,7 @@ export async function POST(request: Request) {
         phone: data.phone,
         email: data.email || null,
         address: data.address || null,
+        nickname: data.nickname || null,
       },
     });
 

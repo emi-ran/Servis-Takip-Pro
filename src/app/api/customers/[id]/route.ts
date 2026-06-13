@@ -14,6 +14,7 @@ const updateCustomerSchema = z.object({
   phone: phoneSchema,
   email: z.string().email("Geçersiz e-posta").trim().optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
+  nickname: z.string().optional().or(z.literal("")),
 });
 
 async function getCustomerOrNull(id: string, companyId: string) {
@@ -81,6 +82,7 @@ export async function PUT(
         phone: data.phone,
         email: data.email || null,
         address: data.address || null,
+        nickname: data.nickname || null,
       },
     });
 
