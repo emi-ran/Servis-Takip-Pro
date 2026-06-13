@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
@@ -17,7 +18,16 @@ import {
   SimpleGrid,
   Anchor,
   Button,
+  Modal,
+  NumberInput,
+  Select,
+  TextInput,
+  Space,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { DatePickerInput } from "@mantine/dates";
+import { notifications } from "@mantine/notifications";
 import {
   IconAlertCircle,
   IconArrowLeft,
@@ -27,6 +37,8 @@ import {
   IconUser,
   IconDeviceLaptop,
   IconTool,
+  IconCurrencyDollar,
+  IconPlus,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 
@@ -52,7 +64,7 @@ type Device = {
 
 type ServiceRecord = {
   id: string;
-  trackingNo: string;
+  trackingNo: number;
   status: string;
   priority: string;
   faultDescription: string | null;
@@ -60,10 +72,23 @@ type ServiceRecord = {
   device: { brand: string; model: string } | null;
 };
 
+type Payment = {
+  id: string;
+  type: "BORC" | "TAHSILAT";
+  amount: number;
+  paymentMethod: string;
+  date: string;
+  description: string | null;
+};
+
 type DetailResponse = {
   customer: Customer;
   devices: Device[];
   serviceRecords: ServiceRecord[];
+  balance: number;
+  totalDebt: number;
+  totalCollection: number;
+  payments: Payment[];
 };
 
 const statusColors: Record<string, string> = {
@@ -84,17 +109,79 @@ const priorityColors: Record<string, string> = {
   ACIL: "red",
 };
 
+const typeColors: Record<string, string> = {
+  BORC: "red",
+  TAHSILAT: "green",
+};
+
+const methodLabels: Record<string, string> = {
+  NAKIT: "payments.method_label.NAKIT",
+  KART: "payments.method_label.KART",
+  EFT: "payments.method_label.EFT",
+  DIGER: "payments.method_label.DIGER",
+};
+
 export default function CustomerDetailPage() {
   const t = useTranslations("customers");
   const dt = useTranslations("devices");
   const sr = useTranslations("serviceRecords");
+  const pt = useTranslations("payments");
   const ct = useTranslations("common");
   const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+
+  const [paymentOpened, { open: openPayment, close: closePayment }] = useDisclosure(false);
+  const [paymentType, setPaymentType] = useState<"BORC" | "TAHSILAT">("BORC");
 
   const { data, isLoading, isError, error } = useQuery<DetailResponse>({
     queryKey: ["customer", id],
     queryFn: () => apiClient(`/api/customers/${id}`),
   });
+
+  const { data: customerServiceRecords } = useQuery<{
+    serviceRecords: { id: string; trackingNo: number; faultDescription: string }[];
+  }>({
+    queryKey: ["customer-service-records", id],
+    queryFn: () =>
+      apiClient("/api/service-records", {
+        params: { customerId: id, pageSize: "100" },
+      }),
+    enabled: paymentOpened,
+  });
+
+  const paymentForm = useForm({
+    mode: "uncontrolled" as const,
+    initialValues: {
+      amount: 0,
+      paymentMethod: "NAKIT",
+      date: new Date().toISOString().split("T")[0],
+      description: "",
+      serviceRecordId: "",
+    },
+    validate: {
+      amount: (v: number) => (v > 0 ? null : pt("amountRequired")),
+    },
+  });
+
+  const createPaymentMutation = useMutation({
+    mutationFn: (values: Record<string, unknown>) =>
+      apiClient("/api/payments", { method: "POST", body: values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customer", id] });
+      notifications.show({ title: ct("success"), message: pt("created"), color: "green" });
+      paymentForm.reset();
+      closePayment();
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
+
+  function openPaymentModal(type: "BORC" | "TAHSILAT") {
+    setPaymentType(type);
+    paymentForm.reset();
+    openPayment();
+  }
 
   if (isLoading) {
     return (
@@ -115,7 +202,7 @@ export default function CustomerDetailPage() {
     );
   }
 
-  const { customer, devices, serviceRecords } = data!;
+  const { customer, devices, serviceRecords, balance, totalDebt, totalCollection, payments } = data!;
 
   return (
     <Stack gap="lg">
@@ -131,46 +218,103 @@ export default function CustomerDetailPage() {
         </Button>
       </Group>
 
-      <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
-        {customer.name} {customer.surname}
-      </Title>
+      <Group justify="space-between" wrap="wrap">
+        <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
+          {customer.name} {customer.surname}
+        </Title>
+      </Group>
 
-      <Card withBorder radius="md" p="lg">
-        <Stack gap="md">
-          <Group>
-            <IconUser size={20} stroke={1.5} opacity={0.5} />
-            <Text fw={600}>{customer.name} {customer.surname}</Text>
-          </Group>
-          <SimpleGrid cols={{ base: 1, sm: 2 }}>
-            <Group gap="xs">
-              <IconPhone size={16} stroke={1.5} opacity={0.5} />
-              <Anchor component={Link} href={`tel:${customer.phone}`} size="sm">
-                {customer.phone}
-              </Anchor>
+      <SimpleGrid cols={{ base: 1, sm: 2 }}>
+        <Card withBorder radius="md" p="lg">
+          <Stack gap="md">
+            <Group>
+              <IconUser size={20} stroke={1.5} opacity={0.5} />
+              <Text fw={600}>{customer.name} {customer.surname}</Text>
             </Group>
-            {customer.email && (
+            <SimpleGrid cols={{ base: 1, sm: 2 }}>
               <Group gap="xs">
-                <IconMail size={16} stroke={1.5} opacity={0.5} />
-                <Anchor component={Link} href={`mailto:${customer.email}`} size="sm">
-                  {customer.email}
+                <IconPhone size={16} stroke={1.5} opacity={0.5} />
+                <Anchor component={Link} href={`tel:${customer.phone}`} size="sm">
+                  {customer.phone}
                 </Anchor>
               </Group>
-            )}
-            {customer.nickname && (
-              <Group gap="xs" style={{ gridColumn: "span 2" }}>
-                <IconUser size={16} stroke={1.5} opacity={0.5} />
-                <Text size="sm" c="dimmed" fs="italic">"{customer.nickname}"</Text>
-              </Group>
-            )}
-            {customer.address && (
-              <Group gap="xs" style={{ gridColumn: "span 2" }}>
-                <IconMapPin size={16} stroke={1.5} opacity={0.5} />
-                <Text size="sm">{customer.address}</Text>
-              </Group>
-            )}
-          </SimpleGrid>
-        </Stack>
-      </Card>
+              {customer.email && (
+                <Group gap="xs">
+                  <IconMail size={16} stroke={1.5} opacity={0.5} />
+                  <Anchor component={Link} href={`mailto:${customer.email}`} size="sm">
+                    {customer.email}
+                  </Anchor>
+                </Group>
+              )}
+              {customer.nickname && (
+                <Group gap="xs" style={{ gridColumn: "span 2" }}>
+                  <IconUser size={16} stroke={1.5} opacity={0.5} />
+                  <Text size="sm" c="dimmed" fs="italic">&ldquo;{customer.nickname}&rdquo;</Text>
+                </Group>
+              )}
+              {customer.address && (
+                <Group gap="xs" style={{ gridColumn: "span 2" }}>
+                  <IconMapPin size={16} stroke={1.5} opacity={0.5} />
+                  <Text size="sm">{customer.address}</Text>
+                </Group>
+              )}
+            </SimpleGrid>
+          </Stack>
+        </Card>
+
+        <Card withBorder radius="md" p="lg">
+          <Stack gap="md">
+            <Group>
+              <IconCurrencyDollar size={20} stroke={1.5} opacity={0.5} />
+              <Text fw={600}>{pt("customerBalance")}</Text>
+            </Group>
+            <SimpleGrid cols={3}>
+              <Stack gap={0} align="center">
+                <Text size="xs" c="dimmed">{pt("debtAmount")}</Text>
+                <Text fw={700} size="lg" c="red">
+                  {totalDebt.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                </Text>
+              </Stack>
+              <Stack gap={0} align="center">
+                <Text size="xs" c="dimmed">{pt("collectionAmount")}</Text>
+                <Text fw={700} size="lg" c="green">
+                  {totalCollection.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                </Text>
+              </Stack>
+              <Stack gap={0} align="center">
+                <Text size="xs" c="dimmed">{pt("balance")}</Text>
+                <Text
+                  fw={800}
+                  size="lg"
+                  c={balance > 0 ? "red" : balance < 0 ? "green" : undefined}
+                >
+                  {balance.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                </Text>
+              </Stack>
+            </SimpleGrid>
+            <Group justify="center" gap="sm">
+              <Button
+                size="sm"
+                variant="light"
+                color="red"
+                leftSection={<IconPlus size={14} />}
+                onClick={() => openPaymentModal("BORC")}
+              >
+                {pt("newDebt")}
+              </Button>
+              <Button
+                size="sm"
+                variant="light"
+                color="green"
+                leftSection={<IconCurrencyDollar size={14} />}
+                onClick={() => openPaymentModal("TAHSILAT")}
+              >
+                {pt("newCollection")}
+              </Button>
+            </Group>
+          </Stack>
+        </Card>
+      </SimpleGrid>
 
       <Card withBorder radius="md" p={0}>
         <Stack gap={0}>
@@ -275,6 +419,175 @@ export default function CustomerDetailPage() {
           )}
         </Stack>
       </Card>
+
+      <Card withBorder radius="md" p={0}>
+        <Stack gap={0}>
+          <Group px="lg" pt="md" pb="xs">
+            <IconCurrencyDollar size={20} stroke={1.5} opacity={0.5} />
+            <Text fw={600} size="sm">{pt("title")}</Text>
+            {payments.length > 0 && (
+              <Badge size="sm" variant="light" color="yellow">{payments.length}</Badge>
+            )}
+          </Group>
+          {payments.length === 0 ? (
+            <Text px="lg" pb="md" size="sm" c="dimmed">{pt("noPayments")}</Text>
+          ) : (
+            <Table.ScrollContainer minWidth={600}>
+              <Table striped>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>{pt("type")}</Table.Th>
+                    <Table.Th>{pt("amount")}</Table.Th>
+                    <Table.Th>{pt("paymentMethod")}</Table.Th>
+                    <Table.Th>{pt("date")}</Table.Th>
+                    <Table.Th>{pt("description")}</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {payments.map((payment) => (
+                    <Table.Tr key={payment.id}>
+                      <Table.Td>
+                        <Badge size="sm" variant="light" color={typeColors[payment.type] || "gray"}>
+                          {pt(`type_label.${payment.type}`)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text fw={600} size="sm">
+                          {payment.amount.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge size="sm" variant="outline" color="gray">
+                          {pt(methodLabels[payment.paymentMethod] || "method_label.DIGER")}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {new Date(payment.date).toLocaleDateString("tr-TR")}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" lineClamp={1} maw={200}>
+                          {payment.description || "—"}
+                        </Text>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
+          )}
+        </Stack>
+      </Card>
+
+      <Modal
+        opened={paymentOpened}
+        onClose={() => { paymentForm.reset(); closePayment(); }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {paymentType === "BORC" ? pt("newDebt") : pt("newCollection")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {paymentType === "BORC" ? pt("addDebtDescription") : pt("addCollectionDescription")}
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+        transitionProps={{ transition: "fade", duration: 150 }}
+      >
+        <form
+          autoComplete="nope"
+          onSubmit={paymentForm.onSubmit((values) => {
+            const payload: Record<string, unknown> = {
+              customerId: id,
+              type: paymentType,
+              ...values,
+            };
+            if (paymentType === "BORC") {
+              delete payload.paymentMethod;
+            }
+            createPaymentMutation.mutate(payload);
+          })}
+        >
+          <Stack gap="md">
+            <NumberInput
+              label={pt("amount")}
+              placeholder="0.00"
+              decimalScale={2}
+              fixedDecimalScale
+              prefix="₺ "
+              thousandSeparator="."
+              decimalSeparator=","
+              min={0}
+              key={paymentForm.key("amount")}
+              {...paymentForm.getInputProps("amount")}
+              required
+            />
+            <Group grow>
+              {paymentType === "TAHSILAT" && (
+                <Select
+                  label={pt("paymentMethod")}
+                  data={[
+                    { value: "NAKIT", label: pt("method_label.NAKIT") },
+                    { value: "KART", label: pt("method_label.KART") },
+                    { value: "EFT", label: pt("method_label.EFT") },
+                    { value: "DIGER", label: pt("method_label.DIGER") },
+                  ]}
+                  key={paymentForm.key("paymentMethod")}
+                  {...paymentForm.getInputProps("paymentMethod")}
+                />
+              )}
+              <DatePickerInput
+                label={pt("date")}
+                valueFormat="DD.MM.YYYY"
+                key={paymentForm.key("date")}
+                {...paymentForm.getInputProps("date")}
+                required
+              />
+            </Group>
+            <TextInput
+              label={pt("description")}
+              placeholder={
+                paymentType === "BORC" ? pt("debtPlaceholder") : pt("collectionPlaceholder")
+              }
+              key={paymentForm.key("description")}
+              {...paymentForm.getInputProps("description")}
+            />
+            <Select
+              label={pt("serviceRecordOptional")}
+              placeholder={pt("serviceRecordOptional")}
+              data={
+                customerServiceRecords?.serviceRecords.map((sr) => ({
+                  value: sr.id,
+                  label: `#${sr.trackingNo} — ${sr.faultDescription.length > 60 ? sr.faultDescription.slice(0, 60) + "..." : sr.faultDescription}`,
+                })) || []
+              }
+              key={paymentForm.key("serviceRecordId")}
+              {...paymentForm.getInputProps("serviceRecordId")}
+              clearable
+              searchable
+              nothingFoundMessage={ct("noResults")}
+            />
+            <Group justify="flex-end">
+              <Button variant="default" onClick={() => { paymentForm.reset(); closePayment(); }}>
+                {ct("cancel")}
+              </Button>
+              <Button
+                type="submit"
+                loading={createPaymentMutation.isPending}
+                px="xl"
+                color={paymentType === "BORC" ? "red" : "green"}
+              >
+                {ct("save")}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
     </Stack>
   );
 }

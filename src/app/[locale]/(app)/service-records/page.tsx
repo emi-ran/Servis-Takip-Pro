@@ -30,7 +30,7 @@ import {
   IconTrash,
   IconAlertCircle,
   IconClipboardList,
-  IconEye,
+  IconEdit,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 
@@ -176,7 +176,7 @@ export default function ServiceRecordsPage() {
               component={Link}
               href={`/service-records/${record.id}`}
             >
-              <IconEye size={16} stroke={1.5} />
+              <IconEdit size={16} stroke={1.5} />
             </ActionIcon>
           </Tooltip>
           <Tooltip label={ct("delete")} position="top" withArrow>

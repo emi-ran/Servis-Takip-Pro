@@ -1,150 +1,194 @@
-# Servis Takip
+<div align="center">
 
-Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis kaydı, tahsilat ve planlı iş takibi yapmasını sağlar.
+# 🛠️ Servis Takip
 
-## Teknolojiler
+**Self-hosted servis ve teknik ekip yönetim platformu. Müşteri, cihaz, servis kaydı, tahsilat ve planlı işler — tek çatı altında.**
 
-- **Frontend + Backend:** Next.js 16 (App Router, API routes)
-- **UI:** Mantine v9.3.1 + Tabler Icons
-- **Database:** PostgreSQL + Prisma ORM
-- **Auth:** JWT (jose) + bcryptjs, httpOnly cookie
-- **Form:** Mantine form (uncontrolled) + zod
-- **Data Fetching:** TanStack Query
-- **i18n:** next-intl (şimdilik sadece tr, İngilizce altyapısı hazır)
-- **Deploy:** Docker (multi-stage build)
-- **Adapter:** @prisma/adapter-pg (PostgreSQL connection pool)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Mantine](https://img.shields.io/badge/Mantine-v9-339af0?style=flat-square&logo=mantine)](https://mantine.dev/)
+[![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
+[![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)]()
 
-## Gereksinimler
+[Özellikler](#-özellikler) · [Hızlı Başlangıç](#-hızlı-başlangıç) · [Docker](#-docker-ile-dağıtım) · [Yapı](#-proje-yapısı) · [Geliştirme](#-geliştirme-komutları)
 
-- Node.js 20+
-- PostgreSQL (mevcut bir PostgreSQL sunucusu)
+</div>
 
-## Kurulum
+---
 
-### 1. Environment değişkenleri
+## 👀 Neden Servis Takip?
 
-`.env.example` dosyasını `.env` olarak kopyalayın ve doldurun:
+Teknisyen ekibiniz için **müşteri yönetimi, cihaz envanteri, servis akışı, tahsilat ve planlama** gibi günlük operasyonları tek bir panoda toplar. Kendi sunucunuzda çalışır, verileriniz size aittir.
 
-```bash
-cp .env.example .env
+---
+
+## ✨ Özellikler
+
+### 👥 Müşteri Yönetimi
+Müşteri kaydı, iletişim bilgileri, bağlı cihazlar ve geçmiş servisler — hepsi tek ekranda. Arama, sıralama ve sayfalama ile hızlı erişim.
+
+### 📟 Cihaz Takibi
+Marka, model, seri numarası ve kategori bazında cihaz envanteri. Her cihazın müşterisine ve servis geçmişine anında ulaşın.
+
+### 🔧 Servis Kayıtları
+Tam durum makinası ile servis akışı:
 ```
+📥 Kayıt Açıldı → 🔧 Tamiratta → 💰 Fiyat Teklifi Verildi → ✅ Hazır → 📦 Teslim Edildi
+                    ↘ 🚫 İptal          ↘ 👎 Müşteri Reddetti    ↘ ⏳ Ödeme Bekliyor
+```
+Tracking numarası, öncelik yönetimi, zaman çizelgesi, müşteriye görünür notlar.
 
-| Değişken | Açıklama |
+### 💳 Tahsilat & Borç Yönetimi
+Servise bağlı veya bağımsız borç/tahsilat girişi. Müşteri bazında güncel bakiye, ödeme geçmişi ve dashboard özeti.
+
+### 📅 Planlı İşler
+Cihaz alım/bırakma, bakım, kurulum gibi iş tipleri. Takvim ve günlük liste görünümü.
+
+### 👮 Rol Tabanlı Erişim
+**Admin** — tam yetki. **Teknisyen** — müşteri, cihaz, servis işlemleri. Kullanıcı yönetimi sadece admin'e özel.
+
+---
+
+## 🧱 Teknoloji Yığını
+
+| Katman | Seçim |
 |---|---|
-| `DATABASE_URL` | PostgreSQL bağlantı dizesi |
-| `JWT_SECRET` | JWT imzalama anahtarı (en az 32 karakter) |
-| `ADMIN_EMAIL` | İlk kurulumda oluşturulacak admin e-posta |
-| `ADMIN_PASSWORD` | Admin şifresi |
-| `ADMIN_NAME` | Admin adı |
-| `ADMIN_SURNAME` | Admin soyadı |
-| `COMPANY_NAME` | Şirket adı |
-| `COMPANY_SLUG` | Şirket URL slug |
-| `NEXT_PUBLIC_APP_URL` | Uygulama URL'si (ör. `http://localhost:3000`) |
+| ⚛️ **Framework** | Next.js 16 (App Router, API routes) |
+| 🎨 **UI** | Mantine v9.3.1 + Tabler Icons |
+| 🗄️ **Veritabanı** | PostgreSQL + Prisma ORM |
+| 🔐 **Auth** | JWT (jose) + bcryptjs, httpOnly cookie |
+| 📋 **Form** | Mantine Form + Zod |
+| 📡 **Data Fetching** | TanStack Query |
+| 🌍 **i18n** | next-intl (Türkçe hazır, İngilizce alt yapısı mevcut) |
+| 🐳 **Deploy** | Docker (multi-stage build) |
 
-### 2. Bağımlılıkları yükleme
+---
+
+## 🚀 Hızlı Başlangıç
+
+### Ön Gereksinimler
+
+| Gereksinim | Versiyon |
+|---|---|
+| Node.js | v20+ |
+| PostgreSQL | Çalışan bir sunucu (yerel veya uzak) |
+
+### Adım Adım Kurulum
 
 ```bash
+# 1. Ortam değişkenlerini ayarlayın
+cp .env.example .env
+
+# 2. Bağımlılıkları yükleyin
 npm install
-```
 
-### 3. Veritabanı şemasını oluşturma
-
-```bash
+# 3. Veritabanı şemasını oluşturun
 npx prisma db push
-```
 
-### 4. Geliştirme sunucusunu başlatma
-
-```bash
+# 4. Geliştirme sunucusunu başlatın
 npm run dev
 ```
 
-İlk çalıştırmada `.env`'deki admin bilgileriyle kullanıcı ve şirket otomatik oluşturulur, ardından login sayfasına yönlendirilirsiniz.
+İlk çalıştırmada `.env`'deki admin bilgileriyle kullanıcı ve şirket hesabınız **otomatik oluşturulur**. Tarayıcınızda `http://localhost:3000` adresine gidip giriş yapmanız yeterli.
 
-## Docker ile deploy
+### 📝 Ortam Değişkenleri
+
+| Değişken | Açıklama | Zorunlu |
+|---|---|---|
+| `DATABASE_URL` | PostgreSQL bağlantı adresi | ✅ |
+| `JWT_SECRET` | JWT imzalama anahtarı (en az 8 karakter) | ✅ |
+| `ADMIN_EMAIL` | Admin e-posta adresi | ✅ |
+| `ADMIN_PASSWORD` | Admin şifresi | ✅ |
+| `ADMIN_NAME` | Admin adı | ✅ |
+| `ADMIN_SURNAME` | Admin soyadı | ✅ |
+| `COMPANY_NAME` | Şirket adı | ✅ |
+| `COMPANY_SLUG` | Şirket URL kısayolu | ✅ |
+| `NEXT_PUBLIC_APP_URL` | Uygulama adresi | ✅ |
+
+---
+
+## 🐳 Docker ile Dağıtım
 
 ```bash
+# Build
 docker build -t servis-takip .
+
+# Çalıştır
 docker run -p 3000:3000 --env-file .env servis-takip
 ```
 
-## Proje Yapısı
+> 💡 Mevcut PostgreSQL sunucunuza bağlanmak için `DATABASE_URL` değerini Docker ağına göre düzenleyin (örneğin `host.docker.internal` kullanarak).
+
+---
+
+## 📁 Proje Yapısı
 
 ```
-prisma/
-  schema.prisma              # Veritabanı şeması
-  seed.ts                    # Seed script
-messages/
-  tr.json                    # Türkçe UI metinleri
-src/
-  app/
-    [locale]/login/           # Login sayfası
-    [locale]/(app)/           # AppShell'li sayfalar
-      dashboard/
-        page.tsx
-      customers/
-        page.tsx
-        [id]/page.tsx
-      devices/
-        page.tsx
-        [id]/page.tsx
-      service-records/
-        page.tsx
-        new/page.tsx
-        [id]/page.tsx
-      scheduled-tasks/
-        page.tsx
-      settings/
-        page.tsx
-    api/                      # API route'ları
-      auth/
-        login/route.ts
-        me/route.ts
-        logout/route.ts
-        users/route.ts
-      customers/
-        route.ts
-        [id]/route.ts
-      devices/
-        route.ts
-        [id]/route.ts
-        options/route.ts
-      service-records/
-        route.ts
-        [id]/route.ts
-        [id]/status/route.ts
-        [id]/notes/route.ts
-      payments/
-      scheduled-tasks/
-      setup/
-        route.ts
-  components/
-    providers/                # Auth, Query provider
-      auth-provider.tsx
-      query-provider.tsx
-    layout/                   # AppShell, Sidebar, Header, ThemeToggle
-    ui/                       # Ortak UI bileşenleri
-  features/                   # Feature bazlı component'ler
-    customers/
-    dashboard/
-    devices/
-    service-records/
-    scheduled-tasks/
-    settings/
-  lib/                        # Utility, config
-    prisma.ts, auth.ts, api.ts, phone.ts, env.ts, i18n.ts, routing.ts, navigation.ts
-  types/
-    index.ts
-  theme.ts
+📦 servis-takip/
+├── prisma/
+│   ├── schema.prisma          Veritabanı modelleri
+├── messages/
+│   └── tr.json                Türkçe UI metinleri
+├── src/
+│   ├── app/
+│   │   ├── [locale]/login/    Giriş sayfası
+│   │   ├── [locale]/(app)/    Ana uygulama
+│   │   │   ├── dashboard/     Genel görünüm
+│   │   │   ├── customers/     Müşteriler
+│   │   │   ├── devices/       Cihazlar
+│   │   │   ├── service-records/  Servis kayıtları
+│   │   │   ├── payments/      Tahsilatlar
+│   │   │   ├── scheduled-tasks/  Planlı işler
+│   │   │   └── settings/      Ayarlar
+│   │   └── api/               API route'ları
+│   ├── components/
+│   │   ├── providers/         Auth, Query sağlayıcıları
+│   │   ├── layout/            AppShell, Sidebar, Header
+│   │   └── ui/                Ortak bileşenler
+│   ├── features/              Özellik bazlı bileşenler
+│   ├── lib/                   Yardımcı kütüphaneler
+│   ├── types/                 Tip tanımları
+│   └── theme.ts               Mantine tema
+├── Dockerfile
+└── .env.example
 ```
 
-## Geliştirme
+---
 
-```bash
-npm run dev        # Geliştirme sunucusu
-npm run build      # Production build
-npm run lint       # ESLint
-npm run typecheck  # TypeScript kontrolü
-npm run db:push    # Prisma şema değişikliklerini uygula
-npm run db:studio  # Prisma Studio (veritabanı görüntüleyici)
-```
+## 🛠️ Geliştirme Komutları
+
+| Komut | Açıklama |
+|---|---|
+| `npm run dev` | Geliştirme sunucusu |
+| `npm run build` | Production build |
+| `npm run start` | Production sunucusu |
+| `npm run lint` | ESLint kod denetimi |
+| `npm run typecheck` | TypeScript tip kontrolü |
+| `npm run db:push` | Prisma şemasını DB'ye uygula |
+| `npm run db:studio` | Prisma Studio (veritabanı görüntüleyici) |
+| `npm run db:seed` | Seed scriptini çalıştır |
+
+---
+
+## 📋 Feature Durumu
+
+| Özellik | Durum |
+|---|---|
+| 🏗️ Proje iskeleti & kurulum | ✅ Tamam |
+| 🔐 Kimlik doğrulama & yetkilendirme | ✅ Tamam |
+| 👥 Müşteri yönetimi | ✅ Tamam |
+| 📟 Cihaz yönetimi | ✅ Tamam |
+| 🔧 Servis kayıtları (durum makinası, notlar, timeline) | ✅ Tamam |
+| 💳 Tahsilat & borç yönetimi | ✅ Tamam |
+| 📅 Planlı işler / takvim | 🔄 Geliştirme aşamasında |
+| 📊 Dashboard (kartlar) | ✅ Tamam |
+| ⚙️ Ayarlar (profil, kullanıcı yönetimi) | 🔄 Geliştirme aşamasında |
+
+---
+
+<div align="center">
+
+**Servis Takip** — Verileriniz size ait. 🛡️
+
+</div>

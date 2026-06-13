@@ -27,6 +27,11 @@ export async function GET(request: NextRequest) {
 
   const where: Record<string, unknown> = { companyId: session.companyId };
 
+  const customerId = searchParams.get("customerId") || "";
+  if (customerId) {
+    where.customerId = customerId;
+  }
+
   if (status) {
     where.status = status;
   }
