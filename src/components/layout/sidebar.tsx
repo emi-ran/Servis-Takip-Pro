@@ -7,6 +7,7 @@ import {
   IconTool,
   IconCurrencyDollar,
   IconCalendar,
+  IconUsersGroup,
   IconSettings,
   IconLogout,
 } from "@tabler/icons-react";
@@ -20,6 +21,7 @@ type NavItem = {
   labelKey: string;
   href: string;
   icon: typeof IconHome;
+  adminOnly?: boolean;
 };
 
 const navItems: NavItem[] = [
@@ -29,19 +31,22 @@ const navItems: NavItem[] = [
   { labelKey: "nav.serviceRecords", href: "/service-records", icon: IconTool },
   { labelKey: "nav.payments", href: "/payments", icon: IconCurrencyDollar },
   { labelKey: "nav.scheduledTasks", href: "/scheduled-tasks", icon: IconCalendar },
+  { labelKey: "nav.staff", href: "/staff", icon: IconUsersGroup, adminOnly: true },
   { labelKey: "nav.settings", href: "/settings", icon: IconSettings },
 ];
 
 export function Sidebar() {
   const t = useTranslations();
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <AppShell.Navbar p="sm" style={{ borderRight: "1px solid var(--mantine-color-default-border)" }}>
       <AppShell.Section grow>
         <Stack gap="xs">
-          {navItems.map((item) => {
+          {navItems
+            .filter((item) => !item.adminOnly || user?.role === "ADMIN")
+            .map((item) => {
             const Icon = item.icon;
             // Exact or prefix match for active state
             const isActive = item.href === "/dashboard" 

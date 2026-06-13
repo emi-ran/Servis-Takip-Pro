@@ -140,6 +140,7 @@ docker run -p 3000:3000 --env-file .env servis-takip
 │   │   │   ├── service-records/  Servis kayıtları
 │   │   │   ├── payments/      Tahsilatlar
 │   │   │   ├── scheduled-tasks/  Planlı işler
+│   │   │   ├── staff/          Personel
 │   │   │   └── settings/      Ayarlar
 │   │   └── api/               API route'ları
 │   ├── components/
@@ -182,8 +183,8 @@ docker run -p 3000:3000 --env-file .env servis-takip
 | 🔧 Servis kayıtları (durum makinası, notlar, timeline) | ✅ Tamam |
 | 💳 Tahsilat & borç yönetimi | ✅ Tamam |
 | 📅 Planlı işler / takvim | ✅ Tamam |
-| 📊 Dashboard (kartlar) | ✅ Tamam |
-| ⚙️ Ayarlar (profil, kullanıcı yönetimi) | 🔄 Geliştirme aşamasında |
+| 📊 Dashboard (kartlar + son kayıtlar) | ✅ Tamam |
+| 👥 Personel yönetimi | ✅ Tamam |
 
 ---
 

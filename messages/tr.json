@@ -37,6 +37,7 @@
     "serviceRecords": "Servis Kayıtları",
     "payments": "Tahsilatlar",
     "scheduledTasks": "Planlanan İşler",
+    "staff": "Personel",
     "settings": "Ayarlar"
   },
   "dashboard": {
@@ -181,6 +182,7 @@
     "currentStatus": "Güncel Durum",
     "backToList": "Listeye Dön",
     "allStatuses": "Tümü",
+    "date": "Tarih",
     "searchByTracking": "Takip no, müşteri veya arıza ile ara..."
   },
   "scheduledTasks": {
@@ -280,18 +282,33 @@
     "searchByCustomer": "Müşteri adı ile ara...",
     "serviceRecordOptional": "Servis kaydına bağla (isteğe bağlı)"
   },
-  "settings": {
-    "title": "Ayarlar",
-    "companyName": "Şirket Adı",
-    "profile": "Profil Bilgileri",
-    "changePassword": "Şifre Değiştir",
-    "users": "Kullanıcılar",
-    "newUser": "Yeni Kullanıcı",
-    "currentPassword": "Mevcut Şifre",
-    "newPassword": "Yeni Şifre",
-    "confirmPassword": "Şifre Tekrar",
+  "staff": {
+    "title": "Personel",
+    "new": "Yeni Personel",
+    "name": "Ad",
+    "surname": "Soyad",
+    "email": "E-posta",
+    "password": "Şifre",
     "role": "Rol",
     "role_admin": "Yönetici",
-    "role_technician": "Teknisyen"
+    "role_technician": "Teknisyen",
+    "noStaff": "Henüz personel eklenmemiş",
+    "addFirst": "İlk personeli ekleyin",
+    "deleteConfirm": "Bu personeli silmek istediğinize emin misiniz?",
+    "created": "Personel oluşturuldu",
+    "deleted": "Personel silindi",
+    "nameRequired": "Ad zorunlu",
+    "surnameRequired": "Soyad zorunlu",
+    "emailRequired": "E-posta zorunlu",
+    "emailInvalid": "Geçersiz e-posta",
+    "passwordRequired": "Şifre zorunlu",
+    "passwordMin": "Şifre en az 6 karakter olmalı",
+    "cannotDeleteSelf": "Kendinizi silemezsiniz",
+    "pageDescription": "Personel kayıtlarını görüntüleyin ve yönetin.",
+    "edit": "Personel Düzenle",
+    "editDescription": "Personel bilgilerini ve yetkilerini güncelleyin.",
+    "passwordOptional": "Şifre (boş bırakılırsa değişmez)",
+    "createDescription": "Yeni personel hesabı oluşturun.",
+    "updated": "Personel güncellendi"
   }
 }
