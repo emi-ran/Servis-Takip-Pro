@@ -38,43 +38,43 @@ R2_BUCKET_NAME=servis-takip-assets
 
 ## 2. Geliştirme Fazları ve Adımlar
 
-### Faz 1: Proje Kurulumu ve Altyapı (Giriş)
-1. **NestJS Başlatılması**: `apps/api` klasörü altında yeni bir NestJS projesi oluşturulması.
-   ```bash
-   npx -y @nestjs/cli@latest new apps/api --package-manager pnpm
-   ```
-2. **Monorepo Entegrasyonu**: Root `package.json` dosyasına api'yi çalıştıracak script'lerin eklenmesi (`dev:api`, `build:api`, `typecheck:api`).
-3. **Environment Setup**: ConfigModule ve dotenv paketleri yüklenerek `.env` okuma mekanizmasının NestJS'e entegre edilmesi.
+### Faz 1: Proje Kurulumu ve Altyapı (Giriş) [TAMAMLANDI]
+1. `[x]` **NestJS Başlatılması**: `apps/api` klasörü altında NestJS projesi oluşturuldu.
+2. `[x]` **Monorepo Entegrasyonu**: Root `package.json` dosyasına api script'leri eklendi.
+3. `[x]` **Environment Setup**: ConfigModule ve dotenv paketleri yüklenerek `.env` okuma entegre edildi.
 
-### Faz 2: Veritabanı ve Prisma Kurulumu
-1. **Prisma Entegrasyonu**: `apps/api` içinde Prisma CLI ve Client kurulumunun yapılması.
-2. **Schema Tanımlama**: [DATABASE_DESIGN.md](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/DATABASE_DESIGN.md) dosyasına birebir sadık kalınarak `schema.prisma` dosyasının oluşturulması (Tablolar, Enum'lar ve İlişkiler).
-3. **Docker Compose Setup**: Yerel geliştirme için PostgreSQL veritabanını ayaklandıracak `docker-compose.yml` dosyasının hazırlanması.
-4. **İlk Göç (Migration)**: Veritabanı tablolarının oluşturulması ve Prisma Client'ın generate edilmesi.
-5. **Seed Dosyası**: Testler için default rolleri, yetkileri ve ilk admin kullanıcısını oluşturacak veritabanı seed script'inin yazılması.
+### Faz 2: Veritabanı ve Prisma Kurulumu [TAMAMLANDI]
+1. `[x]` **Prisma Entegrasyonu**: Prisma CLI ve Client kurulumu (v6.19.3) yapıldı.
+2. `[x]` **Schema Tanımlama**: `schema.prisma` veritabanı şeması oluşturuldu.
+3. `[x]` **Docker Compose Setup**: Yerel PostgreSQL bağlantısı sağlandı.
+4. `[x]` **İlk Göç (Migration)**: Göç başarıyla tamamlandı ve tablolar oluşturuldu.
+5. `[x]` **Seed Dosyası**: `.env`'den okuyan dinamik seed script'i hazırlandı ve başarıyla seed edildi.
 
-### Faz 3: Temel Güvenlik ve Tenant Altyapısı
-1. **Auth Modülü**: Kullanıcı kayıt, giriş (login) ve JWT access/refresh token üretim servislerinin yazılması.
-2. **Tenant Guard / Interceptor**: Gelen isteklerde firmanın izole edilmesi amacıyla, `company_id` filtresini Prisma sorgularına otomatik uygulayacak global guard ve Prisma middleware/extension yapısının kurulması.
-3. **RBAC Guard**: Kullanıcının rollerine göre endpoint'lere erişimini sınırlayan `@Roles` ve `@Permissions` decorator ve guard yapılarının kodlanması.
-4. **Audit Log Interceptor**: Yazma (POST, PUT, DELETE) işlemlerinde kimin hangi veriyi değiştirdiğini kaydedecek loglama interceptor'ının eklenmesi.
+### Faz 3: Temel Güvenlik ve Yetkilendirme [KISMEN TAMAMLANDI]
+1. `[x]` **Auth Modülü**: Giriş ve JWT token üretim servisleri yazıldı.
+2. `[x]` **Demo Modu Entegrasyonu**: Giriş sayfasında mock verilerle çalışan demo modu ve gerçek mod ayrımı yapıldı.
+3. `[x]` **RBAC Guard**: `@Permissions(...)` decorator'ü ve dynamic database tabanlı `PermissionsGuard` kodlandı.
+4. `[ ]` **Audit Log Interceptor**: Yazma işlemlerinde audit log üreten interceptor (Faz 4/6 sırasında eklenecek).
 
-### Faz 4: Modüllerin Adım Adım Kodlanması
-Her modül için Controller, Service, DTO validasyonları ve tenant filtresi yazılacaktır:
-1. **Firma & Personel Modülü**: Firma ayarları ve personel listeleme/yönetimi.
-2. **Müşteriler & Adresler Modülü**: Müşteri CRUD ve adres kayıt işlemleri.
-3. **Cihazlar Modülü**: Cihaz tanımlama ve müşteri cihaz eşleşmeleri.
-4. **Servis Kayıtları & Timeline**: Servis kaydı açma, durum değiştirme, atama yapma ve durum geçmişi (Timeline).
-5. **Stok & Parça Modülü**: Parça tanımları, stok güncelleme ve servis kaydı rezervasyonları.
-6. **Kasa & Cari Modülü**: Tahsilat ve gider hareketlerinin kaydı.
-7. **Raporlar Modülü**: Tarih ve duruma göre istatistiksel veri toplama (Aggregation).
-8. **Public Tracking**: Müşterinin şifresiz ve sidebar olmadan sadece kendi cihazının durumunu görebileceği public tracking endpoint'i.
+### Faz 4: Modüllerin Adım Adım Kodlanması [DEVAM EDİYOR]
+1. `[ ]` **Firma & Personel Modülü**: Firma ayarları ve personel listeleme.
+2. `[x]` **Müşteriler & Adresler Modülü**: Müşteri CRUD ve default adres kayıt işlemleri.
+3. `[x]` **Cihazlar Modülü**: Cihaz tanımlama ve müşteri cihaz eşleşmeleri.
+4. `[ ]` **Servis Kayıtları & Timeline**: [SIRADAKİ ADIM] Servis kaydı açma, durum değişimi, timeline takibi.
+5. `[ ]` **Stok & Parça Modülü**: Parça tanımları, stok güncelleme.
+6. `[ ]` **Kasa & Cari Modülü**: Tahsilat ve gider hareketleri.
+7. `[ ]` **Raporlar Modülü**: Tarih ve duruma göre istatistiksel veri toplama.
+8. `[ ]` **Public Tracking**: Müşteri sorgulama takip linki.
 
-### Faz 5: Frontend Entegrasyonu
-1. **API Client Tanımlanması**: `apps/web` altında mock fonksiyonlar yerine Axios/Fetch ile `NEXT_PUBLIC_API_URL` adresine istek atan api client'ın yazılması.
-2. **Oturum Yönetimi**: JWT token'larının cookie'de saklanması ve frontend route koruma (middleware) işlemlerinin yapılması.
-3. **Sayfaların Bağlanması**: Tüm mock sayfaların (dashboard, service-records, customers, parts, cash vb.) gerçek API isteklerine bağlanması.
+### Faz 5: Frontend Entegrasyonu [DEVAM EDİYOR]
+1. `[x]` **API Client Tanımlanması**: dynamic `fetchWithAuth` (SSR ve Client uyumlu) helper'ı [client.ts](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/apps/web/lib/api/client.ts) altına yazıldı.
+2. `[x]` **Oturum Yönetimi**: JWT token'larının cookie'de saklanması ve middleware entegrasyonu tamamlandı.
+3. `[ ]` **Sayfaların Bağlanması**: 
+   - Giriş & Oturum: `[x]`
+   - Müşteriler: `[x]`
+   - Cihazlar: `[x]` (Müşteri detayındaki cihazlar)
+   - Diğer Sayfalar: `[ ]`
 
 ### Faz 6: Dosya Depolama ve Canlıya Geçiş (R2)
-1. **Cloudflare R2/S3 Entegrasyonu**: Servis fotoğraflarının yüklenmesi ve sadece yetkili kullanıcılara imzalı URL (Signed URL) üretilerek gösterilmesi.
-2. **Manifest & PWA**: Eksik kalan `manifest.webmanifest` ve PWA özelliklerinin tamamlanması.
+1. `[ ]` **Cloudflare R2/S3 Entegrasyonu**: Servis fotoğraflarının signed URL ile yüklenip gösterilmesi.
+2. `[ ]` **Manifest & PWA**: PWA özelliklerinin tamamlanması.
