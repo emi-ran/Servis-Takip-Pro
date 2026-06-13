@@ -181,7 +181,7 @@ docker run -p 3000:3000 --env-file .env servis-takip
 | 📟 Cihaz yönetimi | ✅ Tamam |
 | 🔧 Servis kayıtları (durum makinası, notlar, timeline) | ✅ Tamam |
 | 💳 Tahsilat & borç yönetimi | ✅ Tamam |
-| 📅 Planlı işler / takvim | 🔄 Geliştirme aşamasında |
+| 📅 Planlı işler / takvim | ✅ Tamam |
 | 📊 Dashboard (kartlar) | ✅ Tamam |
 | ⚙️ Ayarlar (profil, kullanıcı yönetimi) | 🔄 Geliştirme aşamasında |
 

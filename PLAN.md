@@ -108,12 +108,12 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ## Phase 7: Planlanmış İşler / Takvim
 
-- [ ] Planlı iş API: `GET/POST /api/scheduled-tasks`, `PUT/DELETE /api/scheduled-tasks/[id]`
-- [ ] İş tipleri: Cihaz Alınacak, Cihaz Bırakılacak, Bakım, Kurulum, Diğer
-- [ ] Takvim/günlük liste görünümü
-- [ ] Müşteri seçme zorunlu (adres ve konum bilgisi için)
-- [ ] İş durumları: PLANLANDI, DEVAM_EDIYOR, TAMAMLANDI, IPTAL
-- [ ] Müşteri detayında planlı işler listesi
+- [x] Planlı iş API: `GET/POST /api/scheduled-tasks`, `PUT/DELETE /api/scheduled-tasks/[id]`
+- [x] İş tipleri: Cihaz Alınacak, Cihaz Bırakılacak, Bakım, Kurulum, Diğer
+- [x] Takvim/günlük liste görünümü
+- [x] Müşteri seçme zorunlu (adres ve konum bilgisi için)
+- [x] İş durumları: PLANLANDI, DEVAM_EDIYOR, TAMAMLANDI, IPTAL
+- [x] Müşteri detayında planlı işler listesi
 
 ---
 
@@ -179,6 +179,8 @@ servis-takip/
             page.tsx
             new/page.tsx
             [id]/page.tsx
+          payments/
+            page.tsx
           scheduled-tasks/
             page.tsx
           settings/
@@ -192,6 +194,8 @@ servis-takip/
         setup/route.ts           # .env'den otomatik kurulum
         customers/route.ts
         customers/[id]/route.ts
+        customers/[id]/balance/route.ts
+        dashboard/route.ts
         devices/route.ts
         devices/[id]/route.ts
         devices/options/route.ts

@@ -69,6 +69,8 @@ src/
           page.tsx
           new/page.tsx
           [id]/page.tsx
+        payments/
+          page.tsx
         scheduled-tasks/
           page.tsx
         settings/
