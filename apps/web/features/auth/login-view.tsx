@@ -122,16 +122,6 @@ export function LoginView({ locale, dictionary }: LoginViewProps) {
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          <div className="mt-8 text-center text-sm text-slate-500">
-            <span>{dictionary.auth.login.noAccount} </span>
-            <Link
-              href={`/${locale}/onboarding`}
-              className="text-blue-600 hover:underline font-semibold"
-            >
-              {dictionary.auth.login.registerLink}
-            </Link>
-          </div>
         </div>
       </div>
     </div>
