@@ -9,9 +9,9 @@ const publicPrefixes = ["/api", "/_next/static", "/favicon"];
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // API and static files bypass locale redirect
+  // API and static files bypass all middleware
   if (publicPrefixes.some((p) => pathname.startsWith(p))) {
-    return intlMiddleware(request);
+    return NextResponse.next();
   }
 
   // Check if setup is needed
@@ -46,5 +46,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/auth|api/setup|_next/static|favicon.ico).*)"],
+  matcher: ["/((?!api/|_next/static|favicon.ico).*)"],
 };
