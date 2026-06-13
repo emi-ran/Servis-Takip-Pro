@@ -6,81 +6,136 @@ import {
   TextInput,
   PasswordInput,
   Button,
-  Paper,
+  Card,
   Title,
   Container,
   Stack,
-  Center,
+  Text,
+  ThemeIcon,
+  Box,
 } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
-import { z } from "zod";
+import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-
-const schema = z.object({
-  email: z.string().email("Geçerli bir e-posta girin"),
-  password: z.string().min(1, "Şifre gerekli"),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { IconTool, IconLock } from "@tabler/icons-react";
+import { useState } from "react";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
+  const tc = useTranslations("common");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  const form = useForm<FormValues>({
-    validate: zodResolver(schema),
+  const form = useForm({
+    mode: "uncontrolled" as const,
     initialValues: {
       email: "",
       password: "",
     },
+    validate: {
+      email: (v: string) => (/^[^\s@]+@[^\s@]+$/.test(v) ? null : "Geçerli bir e-posta girin"),
+      password: (v: string) => (v.length < 1 ? "Şifre gerekli" : null),
+    },
   });
 
-  async function handleSubmit(values: FormValues) {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+  async function handleSubmit(values: typeof form.values) {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        notifications.show({
+          color: "red",
+          title: "Hata",
+          message: data.message || t("loginError"),
+          autoClose: 5000,
+        });
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch (error) {
       notifications.show({
         color: "red",
         title: "Hata",
-        message: data.message || t("loginError"),
+        message: tc("error"),
+        autoClose: 5000,
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    router.push("/dashboard");
   }
 
   return (
-    <Container size={420} my={80}>
-      <Center>
-        <Title order={1} mb="lg">
-          Servis Takip
-        </Title>
-      </Center>
-      <Paper withBorder shadow="md" p={30} radius="md">
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack>
-            <TextInput
-              label={t("email")}
-              placeholder="admin@ornek.com"
-              {...form.getInputProps("email")}
-            />
-            <PasswordInput
-              label={t("password")}
-              placeholder="••••••••"
-              {...form.getInputProps("password")}
-            />
-            <Button type="submit" fullWidth mt="sm">
-              {t("login")}
-            </Button>
+    <Box
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "var(--mantine-color-gray-light)",
+      }}
+    >
+      <Container size={400} px="md">
+        <Card
+          withBorder
+          shadow="xl"
+          p="xl"
+          radius="lg"
+          style={{
+            borderColor: "var(--mantine-color-default-border)",
+            backgroundColor: "var(--mantine-color-body)",
+          }}
+        >
+          <Stack align="center" gap="xs" mb="lg">
+            <ThemeIcon size={48} radius="md" variant="gradient" gradient={{ from: "blue", to: "cyan" }}>
+              <IconTool size={26} stroke={1.5} />
+            </ThemeIcon>
+            <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
+              {tc("appName")}
+            </Title>
+            <Text c="dimmed" size="xs" fw={500}>
+              {t("profile")}
+            </Text>
           </Stack>
-        </form>
-      </Paper>
-    </Container>
+
+          <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Stack gap="md">
+              <TextInput
+                label={t("email")}
+                placeholder="admin@ornek.com"
+                key={form.key("email")}
+                {...form.getInputProps("email")}
+                disabled={loading}
+                required
+                styles={{
+                  label: { fontWeight: 500, marginBottom: "4px" }
+                }}
+              />
+              <PasswordInput
+                label={t("password")}
+                placeholder="••••••••"
+                key={form.key("password")}
+                {...form.getInputProps("password")}
+                disabled={loading}
+                required
+                leftSection={<IconLock size={16} stroke={1.5} />}
+                styles={{
+                  label: { fontWeight: 500, marginBottom: "4px" }
+                }}
+              />
+              <Button type="submit" fullWidth mt="md" size="md" loading={loading}>
+                {t("login")}
+              </Button>
+            </Stack>
+          </form>
+        </Card>
+      </Container>
+    </Box>
   );
 }
+
