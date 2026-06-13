@@ -149,12 +149,17 @@ async function main() {
 
   // 3. Create Default Demo Company (for testing)
   console.log("Creating default demo company...");
+  const companySlug = process.env.COMPANY_SLUG || "demo-servis";
+  const companyName = process.env.COMPANY_NAME || "Demo Teknik Servis";
+
   const company = await prisma.company.upsert({
-    where: { slug: "demo-servis" },
-    update: {},
+    where: { slug: companySlug },
+    update: {
+      name: companyName,
+    },
     create: {
-      name: "Demo Teknik Servis",
-      slug: "demo-servis",
+      name: companyName,
+      slug: companySlug,
       shortCode: "DTS",
       phone: "0212 111 22 33",
       email: "demo@servistakip.com",
@@ -166,9 +171,6 @@ async function main() {
   });
 
   // 4. Create System Admin Role Copy for Demo Company
-  // (In multi-tenant, each company gets a copy of roles linked to companyId if needed,
-  // but users can be mapped directly to the global role or company-specific role copies.
-  // Here we copy the ADMIN system role specifically for the demo company).
   const adminRole = await prisma.role.upsert({
     where: { companyId_key: { companyId: company.id, key: "ADMIN" } },
     update: {},
@@ -192,13 +194,20 @@ async function main() {
 
   // 5. Create Default User (Demo Admin)
   console.log("Creating default user...");
-  const passwordHash = await bcrypt.hash("admin123", 10);
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@servistakip.com";
+  const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+  const adminName = process.env.ADMIN_NAME || "Demo Admin";
+
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
   const user = await prisma.user.upsert({
-    where: { email: "admin@servistakip.com" },
-    update: { passwordHash },
+    where: { email: adminEmail },
+    update: {
+      name: adminName,
+      passwordHash,
+    },
     create: {
-      name: "Demo Admin",
-      email: "admin@servistakip.com",
+      name: adminName,
+      email: adminEmail,
       passwordHash,
       status: UserStatus.ACTIVE,
       locale: "tr",
@@ -218,6 +227,7 @@ async function main() {
       status: UserStatus.ACTIVE,
     },
   });
+
 
   console.log("Seeding database completed successfully!");
 }
