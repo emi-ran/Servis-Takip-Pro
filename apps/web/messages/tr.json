@@ -9,6 +9,39 @@
     "compactName": "CetTech PRO",
     "tagline": "Operasyon paneli"
   },
+  "auth": {
+    "login": {
+      "title": "Giriş Yap",
+      "subtitle": "Hesabınıza erişmek için bilgilerinizi giriniz.",
+      "email": "E-posta",
+      "emailPlaceholder": "ornek@servis.com",
+      "password": "Şifre",
+      "passwordPlaceholder": "••••••••",
+      "button": "Giriş Yap",
+      "loading": "Giriş yapılıyor...",
+      "noAccount": "Hesabınız yok mu?",
+      "registerLink": "Hemen yeni bir firma kaydı oluşturun.",
+      "error": "Kullanıcı adı veya şifre hatalı."
+    },
+    "register": {
+      "title": "Firma Kaydı Oluştur",
+      "subtitle": "Teknik servis takibine başlamak için yeni bir hesap açın.",
+      "companyName": "Firma Adı",
+      "companyNamePlaceholder": "Örn: CetTech Servis",
+      "slug": "Firma Kısa Kodu (URL slug)",
+      "slugPlaceholder": "cettech-servis",
+      "name": "Adınız Soyadınız",
+      "namePlaceholder": "Örn: Ahmet Yılmaz",
+      "email": "Yönetici E-postası",
+      "emailPlaceholder": "admin@firma.com",
+      "password": "Parola",
+      "passwordPlaceholder": "••••••••",
+      "button": "Kayıt Ol ve Giriş Yap",
+      "loading": "Kayıt yapılıyor...",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "loginLink": "Giriş yapın"
+    }
+  },
   "navigation": {
     "sections": {
       "management": "Yönetim",

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BarChart3, CalendarCheck2, Globe, Laptop, LayoutDashboard, LogOut, Package, QrCode, Settings, UserCog, Users, Wallet, Wrench, X } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n/settings";
+import { useAuth } from "@/components/layout/auth-provider";
 
 type Dictionary = Awaited<ReturnType<typeof import("@/lib/i18n/get-dictionary").getDictionary>>;
 type ShellContext = Awaited<ReturnType<typeof import("@/lib/api/shell").getShellContext>>;
@@ -32,6 +33,7 @@ const icons = {
 };
 
 export function AppSidebar({ locale, dictionary, shellContext, pathname, isOpen, onClose }: AppSidebarProps) {
+  const { logout } = useAuth();
   const resolveHref = (href: string) => (href.startsWith("/track/") ? href : `/${locale}${href}`);
   const isActivePath = (href: string) => {
     if (href === "/track" || href === "/" || href === `/${locale}`) {
@@ -108,7 +110,11 @@ export function AppSidebar({ locale, dictionary, shellContext, pathname, isOpen,
             <Settings className="h-5 w-5" />
             <span className="font-medium">{dictionary.navigation.items.settings}</span>
           </Link>
-          <button className="mt-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-red-600 transition-colors duration-200 hover:bg-red-50" type="button">
+          <button
+            className="mt-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-red-600 transition-colors duration-200 hover:bg-red-50"
+            type="button"
+            onClick={logout}
+          >
             <LogOut className="h-5 w-5" />
             <span className="font-medium">{dictionary.navigation.items.logout}</span>
           </button>
