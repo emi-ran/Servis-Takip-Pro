@@ -22,7 +22,6 @@ import {
   NumberInput,
   Select,
   TextInput,
-  Space,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -39,6 +38,7 @@ import {
   IconTool,
   IconCurrencyDollar,
   IconPlus,
+  IconCalendar,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 
@@ -81,6 +81,16 @@ type Payment = {
   description: string | null;
 };
 
+type ScheduledTask = {
+  id: string;
+  title: string;
+  description: string | null;
+  taskType: string;
+  date: string;
+  status: string;
+  assignedUser: { id: string; name: string; surname: string } | null;
+};
+
 type DetailResponse = {
   customer: Customer;
   devices: Device[];
@@ -89,6 +99,7 @@ type DetailResponse = {
   totalDebt: number;
   totalCollection: number;
   payments: Payment[];
+  scheduledTasks: ScheduledTask[];
 };
 
 const statusColors: Record<string, string> = {
@@ -121,11 +132,27 @@ const methodLabels: Record<string, string> = {
   DIGER: "payments.method_label.DIGER",
 };
 
+const taskStatusColors: Record<string, string> = {
+  PLANLANDI: "blue",
+  DEVAM_EDIYOR: "yellow",
+  TAMAMLANDI: "green",
+  IPTAL: "gray",
+};
+
+const taskTypeColors: Record<string, string> = {
+  CIHAZ_ALINACAK: "blue",
+  CIHAZ_BIRAKILACAK: "teal",
+  BAKIM: "orange",
+  KURULUM: "violet",
+  DIGER: "gray",
+};
+
 export default function CustomerDetailPage() {
   const t = useTranslations("customers");
   const dt = useTranslations("devices");
   const sr = useTranslations("serviceRecords");
   const pt = useTranslations("payments");
+  const st = useTranslations("scheduledTasks");
   const ct = useTranslations("common");
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
@@ -202,7 +229,7 @@ export default function CustomerDetailPage() {
     );
   }
 
-  const { customer, devices, serviceRecords, balance, totalDebt, totalCollection, payments } = data!;
+  const { customer, devices, serviceRecords, balance, totalDebt, totalCollection, payments, scheduledTasks } = data!;
 
   return (
     <Stack gap="lg">
@@ -469,6 +496,67 @@ export default function CustomerDetailPage() {
                       <Table.Td>
                         <Text size="sm" lineClamp={1} maw={200}>
                           {payment.description || "—"}
+                        </Text>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
+          )}
+        </Stack>
+      </Card>
+
+      <Card withBorder radius="md" p={0}>
+        <Stack gap={0}>
+          <Group px="lg" pt="md" pb="xs">
+            <IconCalendar size={20} stroke={1.5} opacity={0.5} />
+            <Text fw={600} size="sm">{st("title")}</Text>
+            {scheduledTasks.length > 0 && (
+              <Badge size="sm" variant="light" color="blue">{scheduledTasks.length}</Badge>
+            )}
+          </Group>
+          {scheduledTasks.length === 0 ? (
+            <Text px="lg" pb="md" size="sm" c="dimmed">{st("noTasks")}</Text>
+          ) : (
+            <Table.ScrollContainer minWidth={700}>
+              <Table striped>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>{st("date")}</Table.Th>
+                    <Table.Th>{st("title_field")}</Table.Th>
+                    <Table.Th>{st("taskType")}</Table.Th>
+                    <Table.Th>{st("status")}</Table.Th>
+                    <Table.Th>{st("assignedUser")}</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {scheduledTasks.map((task) => (
+                    <Table.Tr key={task.id}>
+                      <Table.Td>
+                        <Text size="sm" fw={600}>
+                          {new Date(task.date).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" })}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Stack gap={2}>
+                          <Text size="sm" fw={600}>{task.title}</Text>
+                          {task.description && <Text size="xs" c="dimmed" lineClamp={1}>{task.description}</Text>}
+                        </Stack>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge size="sm" variant="light" color={taskTypeColors[task.taskType] || "gray"}>
+                          {st(`type_label.${task.taskType}`)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge size="sm" variant="light" color={taskStatusColors[task.status] || "gray"}>
+                          {st(`status_label.${task.status}`)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {task.assignedUser ? `${task.assignedUser.name} ${task.assignedUser.surname}` : "—"}
                         </Text>
                       </Table.Td>
                     </Table.Tr>

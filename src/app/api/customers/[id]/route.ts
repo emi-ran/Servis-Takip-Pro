@@ -39,7 +39,7 @@ export async function GET(
     return NextResponse.json({ message: "Müşteri bulunamadı" }, { status: 404 });
   }
 
-  const [devices, serviceRecords, debtResult, collectionResult, payments] = await Promise.all([
+  const [devices, serviceRecords, debtResult, collectionResult, payments, scheduledTasks] = await Promise.all([
     prisma.device.findMany({
       where: { customerId: id },
       orderBy: { createdAt: "desc" },
@@ -63,13 +63,28 @@ export async function GET(
       orderBy: { date: "desc" },
       take: 20,
     }),
+    prisma.scheduledTask.findMany({
+      where: { customerId: id },
+      orderBy: { date: "asc" },
+      take: 10,
+      include: { assignedUser: { select: { id: true, name: true, surname: true } } },
+    }),
   ]);
 
   const totalDebt = debtResult._sum.amount?.toNumber() || 0;
   const totalCollection = collectionResult._sum.amount?.toNumber() || 0;
   const balance = totalDebt - totalCollection;
 
-  return NextResponse.json({ customer, devices, serviceRecords, balance, totalDebt, totalCollection, payments });
+  return NextResponse.json({
+    customer,
+    devices,
+    serviceRecords,
+    balance,
+    totalDebt,
+    totalCollection,
+    payments,
+    scheduledTasks,
+  });
 }
 
 export async function PUT(
