@@ -15,7 +15,9 @@
     "saveSuccess": "Başarıyla kaydedildi",
     "deleteSuccess": "Başarıyla silindi",
     "error": "Bir hata oluştu",
-    "required": "Bu alan zorunlu"
+    "required": "Bu alan zorunlu",
+    "success": "Başarılı",
+    "errorTitle": "Hata"
   },
   "auth": {
     "login": "Giriş Yap",
@@ -63,7 +65,24 @@
     "deleteConfirm": "Bu müşteriyi silmek istediğinize emin misiniz?",
     "detail": "Müşteri Detayı",
     "devices": "Kayıtlı Cihazlar",
-    "serviceHistory": "Servis Geçmişi"
+    "serviceHistory": "Servis Geçmişi",
+    "nameRequired": "Ad zorunlu",
+    "surnameRequired": "Soyad zorunlu",
+    "phoneRequired": "Telefon zorunlu",
+    "phoneInvalid": "Geçerli bir telefon girin (05XX XXX XXXX)",
+    "emailInvalid": "Geçersiz e-posta",
+    "created": "Müşteri oluşturuldu",
+    "updated": "Müşteri güncellendi",
+    "deleted": "Müşteri silindi",
+    "nameSurname": "Ad Soyad",
+    "deviceService": "Cihaz / Servis",
+    "pageDescription": "Müşteri kayıtlarını ve bağlı cihazları yönetin.",
+    "createDescription": "Yeni müşteri kaydı ve iletişim bilgilerini oluşturun.",
+    "editDescription": "Müşteri bilgilerini güncelleyin.",
+    "namePlaceholder": "Örn. Ahmet",
+    "surnamePlaceholder": "Örn. Yılmaz",
+    "nicknamePlaceholder": "Örn. Ahmet abinin eşi",
+    "addressPlaceholder": "Müşterinin detaylı adresi..."
   },
   "devices": {
     "title": "Cihazlar",
@@ -81,7 +100,25 @@
     "detail": "Cihaz Detayı",
     "customerInfo": "Müşteri Bilgisi",
     "serviceHistory": "Servis Geçmişi",
-    "noRecords": "Henüz servis kaydı yok"
+    "noRecords": "Henüz servis kaydı yok",
+    "brandRequired": "Marka zorunlu",
+    "modelRequired": "Model zorunlu",
+    "categoryRequired": "Kategori zorunlu",
+    "customerRequired": "Müşteri seçimi zorunlu",
+    "created": "Cihaz oluşturuldu",
+    "updated": "Cihaz güncellendi",
+    "deleted": "Cihaz silindi",
+    "brandModel": "Marka / Model",
+    "serviceCount": "Servis",
+    "pageDescription": "Cihaz kayıtlarını ve bağlı oldukları müşterileri yönetin.",
+    "createDescription": "Yeni cihaz kaydı oluşturun ve müşteriye bağlayın.",
+    "editDescription": "Cihaz bilgilerini güncelleyin.",
+    "brandPlaceholder": "Örn. Siemens",
+    "modelPlaceholder": "Örn. iQ300",
+    "categoryPlaceholder": "Örn. Çamaşır Makinesi",
+    "serialNoPlaceholder": "İsteğe bağlı",
+    "notesPlaceholder": "Cihazla ilgili ek notlar...",
+    "customerPlaceholder": "Müşteri seçin"
   },
   "serviceRecords": {
     "title": "Servis Kayıtları",
