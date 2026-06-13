@@ -1,0 +1,231 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  TECHNICIAN
+}
+
+enum ServiceStatus {
+  KAYIT_ACILDI
+  TAMIRATTA
+  FIYAT_TEKLIFI_VERILDI
+  MUSTERI_REDDETTI
+  HAZIR
+  ODEME_BEKLIYOR
+  TESLIM_EDILDI
+  IPTAL_EDILDI
+}
+
+enum ServicePriority {
+  DUSUK
+  NORMAL
+  YUKSEK
+  ACIL
+}
+
+enum PaymentType {
+  BORC
+  TAHSILAT
+}
+
+enum PaymentMethod {
+  NAKIT
+  KART
+  EFT
+  DIGER
+}
+
+enum TaskType {
+  CIHAZ_ALINACAK
+  CIHAZ_BIRAKILACAK
+  BAKIM
+  KURULUM
+  DIGER
+}
+
+enum TaskStatus {
+  PLANLANDI
+  DEVAM_EDIYOR
+  TAMAMLANDI
+  IPTAL
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users          User[]
+  customers      Customer[]
+  devices        Device[]
+  serviceRecords ServiceRecord[]
+  payments       Payment[]
+  scheduledTasks ScheduledTask[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  surname      String
+  role         UserRole @default(ADMIN)
+  companyId    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company            Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  serviceRecords     ServiceRecord[]     @relation("AssignedUser")
+  statusChanges      ServiceStatusHistory[]
+  notes              ServiceNote[]
+  assignedTasks      ScheduledTask[]     @relation("AssignedUser")
+
+  @@index([companyId])
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  companyId String
+  name      String
+  surname   String
+  phone     String
+  email     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  devices        Device[]
+  serviceRecords ServiceRecord[]
+  payments       Payment[]
+  scheduledTasks ScheduledTask[]
+
+  @@index([companyId])
+  @@index([companyId, name, surname])
+}
+
+model Device {
+  id         String   @id @default(cuid())
+  customerId String
+  companyId  String
+  category   String
+  brand      String
+  model      String
+  serialNo   String
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer       Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  serviceRecords ServiceRecord[]
+
+  @@index([companyId])
+  @@index([customerId])
+  @@index([serialNo])
+}
+
+model ServiceRecord {
+  id               String        @id @default(cuid())
+  companyId        String
+  customerId       String
+  deviceId         String
+  trackingNo       Int           @default(autoincrement())
+  status           ServiceStatus @default(KAYIT_ACILDI)
+  priority         ServicePriority @default(NORMAL)
+  faultDescription String
+  assignedUserId   String?
+  pricing          Decimal?      @db.Decimal(10, 2)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  company       Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer      Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  device        Device               @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  assignedUser  User?                @relation("AssignedUser", fields: [assignedUserId], references: [id])
+  statusHistory ServiceStatusHistory[]
+  notes         ServiceNote[]
+
+  @@unique([companyId, trackingNo])
+  @@index([companyId])
+  @@index([customerId])
+  @@index([deviceId])
+  @@index([status])
+}
+
+model ServiceStatusHistory {
+  id              String        @id @default(cuid())
+  serviceRecordId String
+  fromStatus      ServiceStatus?
+  toStatus        ServiceStatus
+  changedById     String
+  createdAt       DateTime      @default(now())
+
+  serviceRecord ServiceRecord @relation(fields: [serviceRecordId], references: [id], onDelete: Cascade)
+  changedBy     User          @relation(fields: [changedById], references: [id])
+
+  @@index([serviceRecordId])
+}
+
+model ServiceNote {
+  id                String   @id @default(cuid())
+  serviceRecordId   String
+  content           String
+  isCustomerVisible Boolean @default(false)
+  authorId          String
+  createdAt         DateTime @default(now())
+
+  serviceRecord ServiceRecord @relation(fields: [serviceRecordId], references: [id], onDelete: Cascade)
+  author        User          @relation(fields: [authorId], references: [id])
+
+  @@index([serviceRecordId])
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  companyId     String
+  customerId    String
+  type          PaymentType
+  amount        Decimal       @db.Decimal(10, 2)
+  paymentMethod PaymentMethod
+  date          DateTime
+  description   String?
+  createdAt     DateTime      @default(now())
+
+  company  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([customerId])
+}
+
+model ScheduledTask {
+  id          String     @id @default(cuid())
+  companyId   String
+  customerId  String
+  title       String
+  description String?
+  taskType    TaskType
+  date        DateTime
+  status      TaskStatus @default(PLANLANDI)
+  assignedUserId String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  assignedUser User?    @relation("AssignedUser", fields: [assignedUserId], references: [id])
+
+  @@index([companyId])
+  @@index([customerId])
+  @@index([date])
+}
