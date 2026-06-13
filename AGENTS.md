@@ -74,6 +74,10 @@ src/
           page.tsx
     api/                       # API route'ları
       auth/
+        login/route.ts
+        me/route.ts
+        logout/route.ts
+        users/route.ts
       customers/
       devices/
         route.ts

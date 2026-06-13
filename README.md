@@ -12,6 +12,7 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 - **Data Fetching:** TanStack Query
 - **i18n:** next-intl (şimdilik sadece tr, İngilizce altyapısı hazır)
 - **Deploy:** Docker (multi-stage build)
+- **Adapter:** @prisma/adapter-pg (PostgreSQL connection pool)
 
 ## Gereksinimler
 
@@ -70,6 +71,11 @@ docker run -p 3000:3000 --env-file .env servis-takip
 ## Proje Yapısı
 
 ```
+prisma/
+  schema.prisma              # Veritabanı şeması
+  seed.ts                    # Seed script
+messages/
+  tr.json                    # Türkçe UI metinleri
 src/
   app/
     [locale]/login/           # Login sayfası
@@ -92,12 +98,26 @@ src/
         page.tsx
     api/                      # API route'ları
       auth/
+        login/route.ts
+        me/route.ts
+        logout/route.ts
+        users/route.ts
       customers/
+        route.ts
+        [id]/route.ts
       devices/
+        route.ts
+        [id]/route.ts
+        options/route.ts
       service-records/
+        route.ts
+        [id]/route.ts
+        [id]/status/route.ts
+        [id]/notes/route.ts
       payments/
       scheduled-tasks/
       setup/
+        route.ts
   components/
     providers/                # Auth, Query provider
       auth-provider.tsx
