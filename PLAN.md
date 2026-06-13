@@ -22,16 +22,16 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ## Phase 1: Proje İskeleti
 
-- [ ] Next.js 15 kurulumu (TypeScript, App Router)
-- [ ] Mantine v7 kurulumu (`@mantine/core`, `@mantine/hooks`, `@mantine/notifications`, `@mantine/form`)
-- [ ] Prisma kurulumu + PostgreSQL bağlantısı (`DATABASE_URL`)
-- [ ] Tüm DB modellerinin `schema.prisma`'ya yazılması
-- [ ] `next-intl` kurulumu + `/messages/tr.json`
-- [ ] Proje klasör yapısının oluşturulması
-- [ ] `Dockerfile` (Next.js standalone output, multi-stage build)
-- [ ] `.env.example` (DATABASE_URL, admin bilgileri, şirket adı, port, JWT_SECRET)
-- [ ] ESLint + TypeScript strict config
-- [ ] AGENTS.md oluşturma
+- [x] Next.js 15 kurulumu (TypeScript, App Router)
+- [x] Mantine v7 kurulumu (`@mantine/core`, `@mantine/hooks`, `@mantine/notifications`, `@mantine/form`)
+- [x] Prisma kurulumu + PostgreSQL bağlantısı (`DATABASE_URL`)
+- [x] Tüm DB modellerinin `schema.prisma`'ya yazılması
+- [x] `next-intl` kurulumu + `/messages/tr.json`
+- [x] Proje klasör yapısının oluşturulması
+- [x] `Dockerfile` (Next.js standalone output, multi-stage build)
+- [x] `.env.example` (DATABASE_URL, admin bilgileri, şirket adı, port, JWT_SECRET)
+- [x] ESLint + TypeScript strict config
+- [x] AGENTS.md oluşturma
 
 ---
 
