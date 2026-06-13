@@ -1,4 +1,5 @@
 import type { ServiceStatus } from "@/lib/api/service-records";
+import { fetchWithAuth, checkDemoMode } from "./client";
 
 export type Customer = {
   id: string;
@@ -231,6 +232,14 @@ function isOpenStatus(status: ServiceStatus) {
 }
 
 export async function searchCustomers(query: string, limit = 12): Promise<CustomerListResult> {
+  const isDemo = await checkDemoMode();
+  if (!isDemo) {
+    const res = await fetchWithAuth(`/customers?search=${encodeURIComponent(query)}&limit=${limit}`);
+    if (res.ok) {
+      return res.json();
+    }
+  }
+
   const normalizedQuery = query.trim().toLocaleLowerCase("tr-TR");
 
   const matchedCustomers = customers.filter((customer) => {
@@ -262,6 +271,15 @@ export async function searchCustomers(query: string, limit = 12): Promise<Custom
 }
 
 export async function getCustomerDetail(customerId: string): Promise<CustomerDetail | null> {
+  const isDemo = await checkDemoMode();
+  if (!isDemo) {
+    const res = await fetchWithAuth(`/customers/${customerId}`);
+    if (res.ok) {
+      return res.json();
+    }
+    return null;
+  }
+
   const customer = customers.find((entry) => entry.id === customerId);
 
   if (!customer) {
@@ -289,6 +307,15 @@ export async function getCustomerDetail(customerId: string): Promise<CustomerDet
 }
 
 export async function getCustomerDeviceDetail(customerId: string, deviceId: string): Promise<CustomerDeviceDetail | null> {
+  const isDemo = await checkDemoMode();
+  if (!isDemo) {
+    const res = await fetchWithAuth(`/devices/${deviceId}`);
+    if (res.ok) {
+      return res.json();
+    }
+    return null;
+  }
+
   const customer = customers.find((entry) => entry.id === customerId);
 
   if (!customer) {
@@ -317,6 +344,22 @@ export async function getCustomerDeviceDetail(customerId: string, deviceId: stri
 }
 
 export async function createMockCustomer(input: CreateCustomerInput): Promise<{ customerId: string; customerName: string }> {
+  const isDemo = await checkDemoMode();
+  if (!isDemo) {
+    const res = await fetchWithAuth("/customers", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        customerId: data.id,
+        customerName: data.fullName,
+      };
+    }
+    throw new Error("Müşteri oluşturulamadı.");
+  }
+
   const generatedId = `cust-mock-${Math.floor(Date.now() / 1000).toString(36)}`;
 
   return {
@@ -326,6 +369,14 @@ export async function createMockCustomer(input: CreateCustomerInput): Promise<{ 
 }
 
 export async function searchDevices(query: string, limit = 30): Promise<DeviceListResult> {
+  const isDemo = await checkDemoMode();
+  if (!isDemo) {
+    const res = await fetchWithAuth(`/devices?search=${encodeURIComponent(query)}&limit=${limit}`);
+    if (res.ok) {
+      return res.json();
+    }
+  }
+
   const normalizedQuery = query.trim().toLocaleLowerCase("tr-TR");
 
   const items = devices
@@ -372,6 +423,15 @@ export async function searchDevices(query: string, limit = 30): Promise<DeviceLi
 }
 
 export async function getDeviceDetail(deviceId: string): Promise<DeviceDetail | null> {
+  const isDemo = await checkDemoMode();
+  if (!isDemo) {
+    const res = await fetchWithAuth(`/devices/${deviceId}`);
+    if (res.ok) {
+      return res.json();
+    }
+    return null;
+  }
+
   const device = devices.find((entry) => entry.id === deviceId);
 
   if (!device) {
