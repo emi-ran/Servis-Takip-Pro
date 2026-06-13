@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 
 import { AppHeader } from "@/components/layout/app-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AuthProvider } from "@/components/layout/auth-provider";
 import type { Locale } from "@/lib/i18n/settings";
 
 type Dictionary = Awaited<ReturnType<typeof import("@/lib/i18n/get-dictionary").getDictionary>>;
@@ -26,20 +27,28 @@ export function AppShell({ locale, dictionary, shellContext, children }: AppShel
     setIsSidebarOpen(false);
   }, [pathname]);
 
+  const isAuthPage = pathname.endsWith("/login") || pathname.endsWith("/onboarding");
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      <AppSidebar
-        locale={locale}
-        dictionary={dictionary}
-        shellContext={shellContext}
-        pathname={pathname}
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
-      <div className="flex min-h-screen flex-col md:pl-[280px]">
-        <AppHeader dictionary={dictionary} shellContext={shellContext} onOpenSidebar={() => setIsSidebarOpen(true)} />
-        <main className="flex-1 overflow-x-hidden px-4 py-6 md:px-8 md:py-8">{children}</main>
-      </div>
-    </div>
+    <AuthProvider>
+      {isAuthPage ? (
+        <div className="min-h-screen bg-slate-50">{children}</div>
+      ) : (
+        <div className="min-h-screen bg-slate-50">
+          <AppSidebar
+            locale={locale}
+            dictionary={dictionary}
+            shellContext={shellContext}
+            pathname={pathname}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+          <div className="flex min-h-screen flex-col md:pl-[280px]">
+            <AppHeader dictionary={dictionary} shellContext={shellContext} onOpenSidebar={() => setIsSidebarOpen(true)} />
+            <main className="flex-1 overflow-x-hidden px-4 py-6 md:px-8 md:py-8">{children}</main>
+          </div>
+        </div>
+      )}
+    </AuthProvider>
   );
 }

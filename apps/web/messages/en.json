@@ -9,6 +9,39 @@
     "compactName": "CetTech PRO",
     "tagline": "Operations panel"
   },
+  "auth": {
+    "login": {
+      "title": "Log In",
+      "subtitle": "Please enter your credentials to access your account.",
+      "email": "Email",
+      "emailPlaceholder": "example@service.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "button": "Log In",
+      "loading": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create a new company registration now.",
+      "error": "Invalid email or password."
+    },
+    "register": {
+      "title": "Create Company Profile",
+      "subtitle": "Open a new account to start tracking technical service.",
+      "companyName": "Company Name",
+      "companyNamePlaceholder": "e.g., CetTech Service",
+      "slug": "Company URL Slug",
+      "slugPlaceholder": "cettech-service",
+      "name": "Your Full Name",
+      "namePlaceholder": "e.g., John Doe",
+      "email": "Admin Email",
+      "emailPlaceholder": "admin@company.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "button": "Register and Log In",
+      "loading": "Registering...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in"
+    }
+  },
   "navigation": {
     "sections": {
       "management": "Management",
