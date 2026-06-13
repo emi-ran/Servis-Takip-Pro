@@ -181,8 +181,6 @@ servis-takip/
             page.tsx
           staff/
             page.tsx
-          settings/
-            page.tsx
       api/
         auth/
           login/route.ts
@@ -222,7 +220,6 @@ servis-takip/
       devices/
       scheduled-tasks/
       service-records/
-      settings/
     lib/
       prisma.ts
       auth.ts

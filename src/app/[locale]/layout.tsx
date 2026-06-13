@@ -3,7 +3,7 @@ import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 import "dayjs/locale/tr";
 
-import { MantineProvider, mantineHtmlProps } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 import { Notifications } from "@mantine/notifications";
 import { NextIntlClientProvider } from "next-intl";
@@ -21,22 +21,14 @@ export default async function LocaleLayout({ children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale} {...mantineHtmlProps}>
-      <head>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <MantineProvider theme={theme} defaultColorScheme="auto">
         <ColorSchemeScript />
-      </head>
-      <body>
-        <NextIntlClientProvider messages={messages}>
-          <MantineProvider theme={theme} defaultColorScheme="auto">
-            <Notifications />
-            <DatesProvider settings={{ locale: "tr", firstDayOfWeek: 1, weekendDays: [0, 6] }}>
-              <QueryProvider>{children}</QueryProvider>
-            </DatesProvider>
-          </MantineProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+        <Notifications />
+        <DatesProvider settings={{ locale: "tr", firstDayOfWeek: 1, weekendDays: [0, 6] }}>
+          <QueryProvider>{children}</QueryProvider>
+        </DatesProvider>
+      </MantineProvider>
+    </NextIntlClientProvider>
   );
 }
-
-
