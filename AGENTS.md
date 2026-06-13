@@ -75,8 +75,6 @@ src/
           page.tsx
         staff/
           page.tsx
-        settings/
-          page.tsx
     api/                       # API route'ları
       auth/
         login/route.ts
@@ -110,7 +108,6 @@ src/
     devices/
     service-records/
     scheduled-tasks/
-    settings/
   lib/                         # Utility, config, helpers
     prisma.ts                  # Prisma client singleton
     auth.ts                    # JWT, bcrypt, cookie helpers
