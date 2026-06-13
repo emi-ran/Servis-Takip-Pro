@@ -189,6 +189,7 @@ servis-takip/
         customers/[id]/route.ts
         devices/route.ts
         devices/[id]/route.ts
+        devices/options/route.ts
         service-records/route.ts
         service-records/[id]/route.ts
         service-records/[id]/status/route.ts
