@@ -90,8 +90,8 @@ export default function CustomersPage() {
   });
 
   const phoneValidate = (v: string) => {
-    if (v.length < 1) return "Telefon zorunlu";
-    if (!isValidPhone(normalizePhone(v))) return "Geçerli bir telefon girin (05XX XXX XXXX)";
+    if (v.length < 1) return t("phoneRequired");
+    if (!isValidPhone(normalizePhone(v))) return t("phoneInvalid");
     return null;
   };
 
@@ -99,13 +99,13 @@ export default function CustomersPage() {
     mode: "uncontrolled" as const,
     initialValues: { name: "", surname: "", phone: "", email: "", address: "", nickname: "" },
     validate: {
-      name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
-      surname: (v: string) => (v.length < 1 ? "Soyad zorunlu" : null),
+      name: (v: string) => (v.length < 1 ? t("nameRequired") : null),
+      surname: (v: string) => (v.length < 1 ? t("surnameRequired") : null),
       phone: phoneValidate,
       email: (v: string) => {
         const trimmed = v.trim();
         return trimmed && !z.string().email().safeParse(trimmed).success
-          ? "Geçersiz e-posta"
+          ? t("emailInvalid")
           : null;
       },
     },
@@ -115,13 +115,13 @@ export default function CustomersPage() {
     mode: "uncontrolled" as const,
     initialValues: { name: "", surname: "", phone: "", email: "", address: "", nickname: "" },
     validate: {
-      name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
-      surname: (v: string) => (v.length < 1 ? "Soyad zorunlu" : null),
+      name: (v: string) => (v.length < 1 ? t("nameRequired") : null),
+      surname: (v: string) => (v.length < 1 ? t("surnameRequired") : null),
       phone: phoneValidate,
       email: (v: string) => {
         const trimmed = v.trim();
         return trimmed && !z.string().email().safeParse(trimmed).success
-          ? "Geçersiz e-posta"
+          ? t("emailInvalid")
           : null;
       },
     },
@@ -132,12 +132,12 @@ export default function CustomersPage() {
       apiClient("/api/customers", { method: "POST", body: values }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      notifications.show({ title: "Başarılı", message: "Müşteri oluşturuldu", color: "green" });
+      notifications.show({ title: ct("success"), message: t("created"), color: "green" });
       createForm.reset();
       createHandlers.close();
     },
     onError: (err: Error) => {
-      notifications.show({ title: "Hata", message: err.message, color: "red" });
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
     },
   });
 
@@ -146,12 +146,12 @@ export default function CustomersPage() {
       apiClient(`/api/customers/${values.id}`, { method: "PUT", body: values }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      notifications.show({ title: "Başarılı", message: "Müşteri güncellendi", color: "green" });
+      notifications.show({ title: ct("success"), message: t("updated"), color: "green" });
       setEditingCustomer(null);
       editHandlers.close();
     },
     onError: (err: Error) => {
-      notifications.show({ title: "Hata", message: err.message, color: "red" });
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
     },
   });
 
@@ -160,7 +160,7 @@ export default function CustomersPage() {
       apiClient(`/api/customers/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      notifications.show({ title: "Başarılı", message: "Müşteri silindi", color: "green" });
+      notifications.show({ title: ct("success"), message: t("deleted"), color: "green" });
       deleteHandlers.close();
       setDeletingId(null);
     },
@@ -261,7 +261,7 @@ export default function CustomersPage() {
               {t("title")}
             </Title>
             <Text c="dimmed" size="sm">
-              Müşteri kayıtlarını ve bağlı cihazları yönetin.
+              {t("pageDescription")}
             </Text>
           </Stack>
           <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
@@ -287,10 +287,10 @@ export default function CustomersPage() {
               <Table striped highlightOnHover>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th style={{ width: "30%" }}>Ad Soyad</Table.Th>
+                    <Table.Th style={{ width: "30%" }}>{t("nameSurname")}</Table.Th>
                     <Table.Th style={{ width: "20%" }}>{t("phone")}</Table.Th>
                     <Table.Th style={{ width: "25%" }}>{t("email")}</Table.Th>
-                    <Table.Th style={{ width: "15%" }}>Cihaz / Servis</Table.Th>
+                    <Table.Th style={{ width: "15%" }}>{t("deviceService")}</Table.Th>
                     <Table.Th style={{ width: "10%" }}>{ct("actions")}</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
@@ -310,7 +310,7 @@ export default function CustomersPage() {
           </Card>
         ) : isError ? (
           <Alert icon={<IconAlertCircle size={16} />} title={ct("error")} color="red" radius="md">
-            {(error as Error)?.message || "Bir hata oluştu"}
+            {(error as Error)?.message || ct("error")}
           </Alert>
         ) : data?.customers.length === 0 ? (
           <Card withBorder shadow="sm" p="xl" ta="center" radius="md">
@@ -332,10 +332,10 @@ export default function CustomersPage() {
                 <Table striped highlightOnHover>
                   <Table.Thead>
                     <Table.Tr>
-                      <Table.Th>Ad Soyad</Table.Th>
+                      <Table.Th>{t("nameSurname")}</Table.Th>
                       <Table.Th>{t("phone")}</Table.Th>
                       <Table.Th>{t("email")}</Table.Th>
-                      <Table.Th>Cihaz / Servis</Table.Th>
+                      <Table.Th>{t("deviceService")}</Table.Th>
                       <Table.Th>{ct("actions")}</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
@@ -365,7 +365,7 @@ export default function CustomersPage() {
               {t("new")}
             </Text>
             <Text size="xs" c="dimmed">
-              Yeni müşteri kaydı ve iletişim bilgilerini oluşturun.
+              {t("createDescription")}
             </Text>
           </Stack>
         }
@@ -389,7 +389,7 @@ export default function CustomersPage() {
             <SimpleGrid cols={2} spacing="md">
               <TextInput
                 label={t("name")}
-                placeholder="Örn. Ahmet"
+                placeholder={t("namePlaceholder")}
                 required
                 autoComplete="nope"
                 leftSection={<IconUser size={16} stroke={1.5} />}
@@ -398,7 +398,7 @@ export default function CustomersPage() {
               />
               <TextInput
                 label={t("surname")}
-                placeholder="Örn. Yılmaz"
+                placeholder={t("surnamePlaceholder")}
                 required
                 autoComplete="nope"
                 leftSection={<IconUser size={16} stroke={1.5} />}
@@ -435,7 +435,7 @@ export default function CustomersPage() {
               />
               <TextInput
                 label={t("nickname")}
-                placeholder="Örn. Ahmet abinin eşi"
+                placeholder={t("nicknamePlaceholder")}
                 autoComplete="nope"
                 leftSection={<IconUser size={16} stroke={1.5} />}
                 key={createForm.key("nickname")}
@@ -445,7 +445,7 @@ export default function CustomersPage() {
 
             <Textarea
               label={t("address")}
-              placeholder="Müşterinin detaylı adresi..."
+              placeholder={t("addressPlaceholder")}
               minRows={3}
               maxRows={5}
               autoComplete="nope"
@@ -479,7 +479,7 @@ export default function CustomersPage() {
               {t("edit")}
             </Text>
             <Text size="xs" c="dimmed">
-              Müşteri bilgilerini güncelleyin.
+              {t("editDescription")}
             </Text>
           </Stack>
         }

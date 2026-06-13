@@ -110,7 +110,7 @@ export default function CustomerDetailPage() {
   if (isError) {
     return (
       <Alert icon={<IconAlertCircle size={16} />} title={ct("error")} color="red" radius="md">
-        {(error as Error)?.message || "Bir hata oluştu"}
+        {(error as Error)?.message || ct("error")}
       </Alert>
     );
   }

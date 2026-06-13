@@ -87,10 +87,10 @@ export default function DevicesPage() {
     mode: "uncontrolled" as const,
     initialValues: { customerId: "", category: "", brand: "", model: "", serialNo: "", notes: "" },
     validate: {
-      customerId: (v: string) => (v.length < 1 ? "Müşteri seçimi zorunlu" : null),
-      category: (v: string) => (v.length < 1 ? "Kategori zorunlu" : null),
-      brand: (v: string) => (v.length < 1 ? "Marka zorunlu" : null),
-      model: (v: string) => (v.length < 1 ? "Model zorunlu" : null),
+      customerId: (v: string) => (v.length < 1 ? t("customerRequired") : null),
+      category: (v: string) => (v.length < 1 ? t("categoryRequired") : null),
+      brand: (v: string) => (v.length < 1 ? t("brandRequired") : null),
+      model: (v: string) => (v.length < 1 ? t("modelRequired") : null),
     },
   });
 
@@ -98,10 +98,10 @@ export default function DevicesPage() {
     mode: "uncontrolled" as const,
     initialValues: { customerId: "", category: "", brand: "", model: "", serialNo: "", notes: "" },
     validate: {
-      customerId: (v: string) => (v.length < 1 ? "Müşteri seçimi zorunlu" : null),
-      category: (v: string) => (v.length < 1 ? "Kategori zorunlu" : null),
-      brand: (v: string) => (v.length < 1 ? "Marka zorunlu" : null),
-      model: (v: string) => (v.length < 1 ? "Model zorunlu" : null),
+      customerId: (v: string) => (v.length < 1 ? t("customerRequired") : null),
+      category: (v: string) => (v.length < 1 ? t("categoryRequired") : null),
+      brand: (v: string) => (v.length < 1 ? t("brandRequired") : null),
+      model: (v: string) => (v.length < 1 ? t("modelRequired") : null),
     },
   });
 
@@ -134,12 +134,12 @@ export default function DevicesPage() {
       apiClient("/api/devices", { method: "POST", body: values }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["devices"] });
-      notifications.show({ title: "Başarılı", message: "Cihaz oluşturuldu", color: "green" });
+      notifications.show({ title: ct("success"), message: t("created"), color: "green" });
       form.reset();
       createHandlers.close();
     },
     onError: (err: Error) => {
-      notifications.show({ title: "Hata", message: err.message, color: "red" });
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
     },
   });
 
@@ -148,12 +148,12 @@ export default function DevicesPage() {
       apiClient(`/api/devices/${values.id}`, { method: "PUT", body: values }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["devices"] });
-      notifications.show({ title: "Başarılı", message: "Cihaz güncellendi", color: "green" });
+      notifications.show({ title: ct("success"), message: t("updated"), color: "green" });
       setEditingDevice(null);
       editHandlers.close();
     },
     onError: (err: Error) => {
-      notifications.show({ title: "Hata", message: err.message, color: "red" });
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
     },
   });
 
@@ -161,12 +161,12 @@ export default function DevicesPage() {
     mutationFn: (id: string) => apiClient(`/api/devices/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["devices"] });
-      notifications.show({ title: "Başarılı", message: "Cihaz silindi", color: "green" });
+      notifications.show({ title: ct("success"), message: t("deleted"), color: "green" });
       deleteHandlers.close();
       setDeletingId(null);
     },
     onError: (err: Error) => {
-      notifications.show({ title: "Hata", message: err.message, color: "red" });
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
     },
   });
 
@@ -258,7 +258,7 @@ export default function DevicesPage() {
               {t("title")}
             </Title>
             <Text c="dimmed" size="sm">
-              Cihaz kayıtlarını ve bağlı oldukları müşterileri yönetin.
+              {t("pageDescription")}
             </Text>
           </Stack>
           <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
@@ -309,7 +309,7 @@ export default function DevicesPage() {
           </Card>
         ) : isError ? (
           <Alert icon={<IconAlertCircle size={16} />} title={ct("error")} color="red" radius="md">
-            {(error as Error)?.message || "Bir hata oluştu"}
+            {(error as Error)?.message || ct("error")}
           </Alert>
         ) : data?.devices.length === 0 ? (
           <Card withBorder shadow="sm" p="xl" ta="center" radius="md">
@@ -331,11 +331,11 @@ export default function DevicesPage() {
                 <Table striped highlightOnHover>
                   <Table.Thead>
                     <Table.Tr>
-                      <Table.Th>Marka / Model</Table.Th>
+                    <Table.Th>{t("brandModel")}</Table.Th>
                       <Table.Th>{t("category")}</Table.Th>
                       <Table.Th>{t("serialNo")}</Table.Th>
                       <Table.Th>{t("owner")}</Table.Th>
-                      <Table.Th>Servis</Table.Th>
+                    <Table.Th>{t("serviceCount")}</Table.Th>
                       <Table.Th>{ct("actions")}</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
@@ -365,7 +365,7 @@ export default function DevicesPage() {
               {t("new")}
             </Text>
             <Text size="xs" c="dimmed">
-              Yeni cihaz kaydı oluşturun ve müşteriye bağlayın.
+              {t("createDescription")}
             </Text>
           </Stack>
         }
@@ -383,7 +383,7 @@ export default function DevicesPage() {
           <Stack gap="md">
             <Select
               label={t("owner")}
-              placeholder="Müşteri seçin"
+              placeholder={t("customerPlaceholder")}
               required
               searchable
               data={customerOptions}
@@ -396,7 +396,7 @@ export default function DevicesPage() {
             <SimpleGrid cols={2} spacing="md">
               <Autocomplete
                 label={t("brand")}
-                placeholder="Örn. Siemens"
+                placeholder={t("brandPlaceholder")}
                 required
                 data={optionsData?.brands ?? []}
                 limit={5}
@@ -406,7 +406,7 @@ export default function DevicesPage() {
               />
               <TextInput
                 label={t("model")}
-                placeholder="Örn. iQ300"
+                placeholder={t("modelPlaceholder")}
                 required
                 autoComplete="nope"
                 key={form.key("model")}
@@ -417,7 +417,7 @@ export default function DevicesPage() {
             <SimpleGrid cols={2} spacing="md">
               <Autocomplete
                 label={t("category")}
-                placeholder="Örn. Çamaşır Makinesi"
+                placeholder={t("categoryPlaceholder")}
                 required
                 data={optionsData?.categories ?? []}
                 limit={5}
@@ -427,7 +427,7 @@ export default function DevicesPage() {
               />
               <TextInput
                 label={t("serialNo")}
-                placeholder="İsteğe bağlı"
+                placeholder={t("serialNoPlaceholder")}
                 autoComplete="nope"
                 key={form.key("serialNo")}
                 {...form.getInputProps("serialNo")}
@@ -436,7 +436,7 @@ export default function DevicesPage() {
 
             <Textarea
               label={t("notes")}
-              placeholder="Cihazla ilgili ek notlar..."
+              placeholder={t("notesPlaceholder")}
               minRows={3}
               maxRows={5}
               autoComplete="nope"
@@ -468,7 +468,7 @@ export default function DevicesPage() {
               {t("edit")}
             </Text>
             <Text size="xs" c="dimmed">
-              Cihaz bilgilerini güncelleyin.
+              {t("editDescription")}
             </Text>
           </Stack>
         }
@@ -488,7 +488,7 @@ export default function DevicesPage() {
           <Stack gap="md">
             <Select
               label={t("owner")}
-              placeholder="Müşteri seçin"
+              placeholder={t("customerPlaceholder")}
               required
               searchable
               data={customerOptions}
