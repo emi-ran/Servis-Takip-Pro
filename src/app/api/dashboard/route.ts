@@ -13,7 +13,7 @@ export async function GET() {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const [dailyCollectionResult, debtResult, collectionResult, pendingCount, readyCount] =
+  const [dailyCollectionResult, debtResult, collectionResult, pendingCount, readyCount, todayTaskCount, recentRecords] =
     await Promise.all([
       prisma.payment.aggregate({
         where: {
@@ -43,6 +43,25 @@ export async function GET() {
           status: "HAZIR",
         },
       }),
+      prisma.scheduledTask.count({
+        where: {
+          companyId: session.companyId,
+          date: { gte: today, lt: tomorrow },
+        },
+      }),
+      prisma.serviceRecord.findMany({
+        where: { companyId: session.companyId },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: {
+          id: true,
+          trackingNo: true,
+          status: true,
+          createdAt: true,
+          customer: { select: { id: true, name: true, surname: true } },
+          device: { select: { brand: true, model: true } },
+        },
+      }),
     ]);
 
   const totalDebt = debtResult._sum.amount?.toNumber() || 0;
@@ -53,5 +72,7 @@ export async function GET() {
     unpaidBalance: totalDebt - totalCollection,
     pendingServices: pendingCount,
     readyDevices: readyCount,
+    todayTasks: todayTaskCount,
+    recentRecords,
   });
 }

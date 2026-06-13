@@ -73,6 +73,8 @@ src/
           page.tsx
         scheduled-tasks/
           page.tsx
+        staff/
+          page.tsx
         settings/
           page.tsx
     api/                       # API route'ları
@@ -81,6 +83,7 @@ src/
         me/route.ts
         logout/route.ts
         users/route.ts
+        users/[id]/route.ts
       customers/
         route.ts
         [id]/route.ts

@@ -117,21 +117,17 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ---
 
-## Phase 8: Dashboard & Ayarlar
+## Phase 8: Dashboard & Personel Yönetimi
 
-- [ ] Dashboard sayfası:
-  - Bekleyen servis sayısı
-  - Bugünkü planlı işler
-  - Tahsil edilmemiş borç toplamı
-  - Hazır olup teslim edilmeyen cihazlar
-  - Son 10 servis kaydı
-- [ ] Settings sayfası:
-  - Şirket adı düzenleme
-  - Profil düzenleme (ad, email, şifre)
-  - Kullanıcı yönetimi (admin teknisyen ekleyip silebilir)
+- [x] Dashboard sayfası:
+  - Bugünkü planlı işler kartı
+  - Son 10 servis kaydı tablosu
+- [x] Personel Yönetimi sayfası:
+  - Liste, ekleme, düzenleme (ad, soyad, email, şifre, rol), silme
+  - Sidebar'da "Personel" nav item (sadece ADMIN)
 - [ ] Responsive son kontroller (mobil + tablet + masaüstü)
 - [ ] Production build testi
-- [ ] README.md (kurulum talimatları)
+- [ ] Kurulum talimatları kontrolü
 
 ---
 
@@ -183,6 +179,8 @@ servis-takip/
             page.tsx
           scheduled-tasks/
             page.tsx
+          staff/
+            page.tsx
           settings/
             page.tsx
       api/
@@ -191,6 +189,7 @@ servis-takip/
           me/route.ts
           logout/route.ts
           users/route.ts
+          users/[id]/route.ts
         setup/route.ts           # .env'den otomatik kurulum
         customers/route.ts
         customers/[id]/route.ts
