@@ -51,6 +51,7 @@ type Customer = {
   phone: string;
   email: string | null;
   address: string | null;
+  nickname: string | null;
   createdAt: string;
   _count: {
     devices: number;
@@ -96,7 +97,7 @@ export default function CustomersPage() {
 
   const createForm = useForm({
     mode: "uncontrolled" as const,
-    initialValues: { name: "", surname: "", phone: "", email: "", address: "" },
+    initialValues: { name: "", surname: "", phone: "", email: "", address: "", nickname: "" },
     validate: {
       name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
       surname: (v: string) => (v.length < 1 ? "Soyad zorunlu" : null),
@@ -112,7 +113,7 @@ export default function CustomersPage() {
 
   const editForm = useForm({
     mode: "uncontrolled" as const,
-    initialValues: { name: "", surname: "", phone: "", email: "", address: "" },
+    initialValues: { name: "", surname: "", phone: "", email: "", address: "", nickname: "" },
     validate: {
       name: (v: string) => (v.length < 1 ? "Ad zorunlu" : null),
       surname: (v: string) => (v.length < 1 ? "Soyad zorunlu" : null),
@@ -226,6 +227,7 @@ export default function CustomersPage() {
                   phone: customer.phone,
                   email: customer.email || "",
                   address: customer.address || "",
+                  nickname: customer.nickname || "",
                 });
                 editHandlers.open();
               }}
@@ -431,6 +433,14 @@ export default function CustomersPage() {
                 key={createForm.key("email")}
                 {...createForm.getInputProps("email")}
               />
+              <TextInput
+                label={t("nickname")}
+                placeholder="Örn. Ahmet abinin eşi"
+                autoComplete="nope"
+                leftSection={<IconUser size={16} stroke={1.5} />}
+                key={createForm.key("nickname")}
+                {...createForm.getInputProps("nickname")}
+              />
             </SimpleGrid>
 
             <Textarea
@@ -532,6 +542,13 @@ export default function CustomersPage() {
                 leftSection={<IconMail size={16} stroke={1.5} />}
                 key={editForm.key("email")}
                 {...editForm.getInputProps("email")}
+              />
+              <TextInput
+                label={t("nickname")}
+                autoComplete="nope"
+                leftSection={<IconUser size={16} stroke={1.5} />}
+                key={editForm.key("nickname")}
+                {...editForm.getInputProps("nickname")}
               />
             </SimpleGrid>
 

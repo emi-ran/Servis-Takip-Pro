@@ -64,6 +64,7 @@ type Customer = {
   id: string;
   name: string;
   surname: string;
+  nickname: string | null;
   phone: string;
 };
 
@@ -125,7 +126,7 @@ export default function DevicesPage() {
 
   const customerOptions = (customersData?.customers ?? []).map((c) => ({
     value: c.id,
-    label: `${c.name} ${c.surname}`,
+    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${c.phone}`,
   }));
 
   const createMutation = useMutation({

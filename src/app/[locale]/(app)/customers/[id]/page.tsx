@@ -37,6 +37,7 @@ type Customer = {
   phone: string;
   email: string | null;
   address: string | null;
+  nickname: string | null;
   createdAt: string;
 };
 
@@ -153,6 +154,12 @@ export default function CustomerDetailPage() {
                 <Anchor component={Link} href={`mailto:${customer.email}`} size="sm">
                   {customer.email}
                 </Anchor>
+              </Group>
+            )}
+            {customer.nickname && (
+              <Group gap="xs" style={{ gridColumn: "span 2" }}>
+                <IconUser size={16} stroke={1.5} opacity={0.5} />
+                <Text size="sm" c="dimmed" fs="italic">"{customer.nickname}"</Text>
               </Group>
             )}
             {customer.address && (

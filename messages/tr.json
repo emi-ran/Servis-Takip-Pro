@@ -56,6 +56,7 @@
     "address": "Adres",
     "deviceCount": "Cihaz Sayısı",
     "serviceCount": "Servis Sayısı",
+    "nickname": "Takma Ad",
     "balance": "Bakiye",
     "noCustomers": "Henüz müşteri eklenmemiş",
     "addFirst": "İlk müşteriyi ekleyin",
