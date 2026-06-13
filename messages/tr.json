@@ -59,7 +59,10 @@
     "balance": "Bakiye",
     "noCustomers": "Henüz müşteri eklenmemiş",
     "addFirst": "İlk müşteriyi ekleyin",
-    "deleteConfirm": "Bu müşteriyi silmek istediğinize emin misiniz?"
+    "deleteConfirm": "Bu müşteriyi silmek istediğinize emin misiniz?",
+    "detail": "Müşteri Detayı",
+    "devices": "Kayıtlı Cihazlar",
+    "serviceHistory": "Servis Geçmişi"
   },
   "devices": {
     "title": "Cihazlar",
