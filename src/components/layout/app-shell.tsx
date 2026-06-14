@@ -11,7 +11,7 @@ type ShellProps = {
 };
 
 export function AppShell({ children }: ShellProps) {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
 
   return (
     <AuthProvider>
@@ -25,7 +25,7 @@ export function AppShell({ children }: ShellProps) {
         padding="md"
       >
         <Header onToggle={toggle} opened={opened} />
-        <Sidebar />
+        <Sidebar onClose={close} />
         <MantineShell.Main>
           <Container size="xl" py="md">
             {children}

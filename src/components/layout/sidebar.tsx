@@ -33,7 +33,11 @@ const navItems: NavItem[] = [
   { labelKey: "nav.staff", href: "/staff", icon: IconUsersGroup, adminOnly: true },
 ];
 
-export function Sidebar() {
+type SidebarProps = {
+  onClose?: () => void;
+};
+
+export function Sidebar({ onClose }: SidebarProps) {
   const t = useTranslations();
   const pathname = usePathname();
   const { user, logout } = useAuth();
@@ -60,6 +64,7 @@ export function Sidebar() {
                 active={isActive}
                 variant="light"
                 color="blue"
+                onClick={onClose}
                 styles={{
                   root: {
                     fontWeight: isActive ? 600 : 500,
