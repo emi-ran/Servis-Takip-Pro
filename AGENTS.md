@@ -194,3 +194,8 @@ src/
 - `PLAN.md` dosyası mevcut phase durumunu gösterir.
 - Tamamlanan maddeler `[x]` ile işaretlenir.
 - Yeni feature'lar plana eklenmeden implemente edilmez.
+
+## SECURITY_REVIEW.md
+
+- `SECURITY_REVIEW.md` dosyası güvenlik denetim bulgularını ve çözümlerini kaydeder.
+- Yeni güvenlik açıkları veya düzeltmeler bu dosyaya eklenir.

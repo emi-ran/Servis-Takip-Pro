@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query") || "";
+  const normalizedQueryPhone = normalizePhone(query);
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get("pageSize") || "20")));
 
@@ -37,6 +38,7 @@ export async function GET(request: NextRequest) {
             { surname: { contains: query, mode: "insensitive" as const } },
             { nickname: { contains: query, mode: "insensitive" as const } },
             { phone: { contains: query } },
+            ...(normalizedQueryPhone !== query ? [{ phone: { contains: normalizedQueryPhone } }] : []),
             { email: { contains: query, mode: "insensitive" as const } },
           ],
         }

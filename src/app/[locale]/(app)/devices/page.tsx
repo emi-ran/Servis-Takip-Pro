@@ -38,6 +38,7 @@ import {
   IconTool,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 import { z } from "zod";
 
 type Device = {
@@ -126,7 +127,7 @@ export default function DevicesPage() {
 
   const customerOptions = (customersData?.customers ?? []).map((c) => ({
     value: c.id,
-    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${c.phone}`,
+    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${formatPhone(c.phone)}`,
   }));
 
   const createMutation = useMutation({

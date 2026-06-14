@@ -20,6 +20,7 @@ import {
 import { IconArrowLeft, IconDeviceFloppy } from "@tabler/icons-react";
 import { useRouter, Link } from "@/lib/navigation";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 
 type Customer = { id: string; name: string; surname: string; nickname: string | null; phone: string };
 type Device = { id: string; brand: string; model: string; category: string; serialNo: string };
@@ -59,7 +60,7 @@ export default function NewServiceRecordPage() {
 
   const customerOptions = (customersData?.customers ?? []).map((c) => ({
     value: c.id,
-    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${c.phone}`,
+    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${formatPhone(c.phone)}`,
   }));
 
   const deviceOptions = (devicesData?.devices ?? []).map((d) => ({

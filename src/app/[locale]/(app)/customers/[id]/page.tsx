@@ -41,6 +41,7 @@ import {
   IconCalendar,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 
 type Customer = {
   id: string;
@@ -262,7 +263,7 @@ export default function CustomerDetailPage() {
               <Group gap="xs">
                 <IconPhone size={16} stroke={1.5} opacity={0.5} />
                 <Anchor component={Link} href={`tel:${customer.phone}`} size="sm">
-                  {customer.phone}
+                  {formatPhone(customer.phone)}
                 </Anchor>
               </Group>
               {customer.email && (

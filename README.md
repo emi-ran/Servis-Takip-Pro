@@ -150,9 +150,25 @@ docker run -p 3000:3000 --env-file .env servis-takip
 │   │   ├── layout/            AppShell, Sidebar, Header
 │   │   └── ui/                Ortak bileşenler
 │   ├── features/              Özellik bazlı bileşenler
+│   │   ├── customers/         Google Adres giriş bileşeni
+│   │   ├── dashboard/
+│   │   ├── devices/
+│   │   ├── scheduled-tasks/
+│   │   └── service-records/
 │   ├── lib/                   Yardımcı kütüphaneler
+│   │   ├── prisma.ts, auth.ts, api.ts, phone.ts
+│   │   ├── env.ts, i18n.ts, routing.ts, navigation.ts
+│   │   └── rate-limit.ts      Login hız sınırlama
 │   ├── types/                 Tip tanımları
 │   └── theme.ts               Mantine tema
+├── scripts/
+│   └── mock-data.js              Test verisi oluşturma scripti
+├── public/
+│   └── maps.html                 Google Maps iframe sayfası
+├── backups/                      Otomatik yedekler (pg_dump)
+├── SECURITY_REVIEW.md            Güvenlik denetim kaydı
+├── AGENTS.md                     Proje kuralları
+├── PLAN.md                       Uygulama planı ve phase takibi
 ├── Dockerfile
 └── .env.example
 ```
@@ -171,9 +187,9 @@ docker run -p 3000:3000 --env-file .env servis-takip
 | `npm run db:push` | Prisma şemasını DB'ye uygula |
 | `npm run db:studio` | Prisma Studio (veritabanı görüntüleyici) |
 | `npm run db:seed` | Seed scriptini çalıştır |
-| `npm run db:mock` | Çok tehlikeli test verisi scripti (önce yedek alır) |
+| `npm run db:mock` | Çok tehlikeli test verisi scripti (önce yedek sorar) |
 
-> ⚠️ `npm run db:mock` sadece geliştirme/test veritabanında çalıştırılmalıdır. Çalıştırmadan önce birkaç kez onay ister ve otomatik yedek alır.
+> ⚠️ `npm run db:mock` sadece geliştirme/test veritabanında çalıştırılmalıdır. Çalıştırmadan önce birkaç kez onay ister ve isteğe bağlı yedek alır (`pg_dump` gerektirir).
 
 ---
 
