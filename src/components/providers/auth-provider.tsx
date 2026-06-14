@@ -40,13 +40,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(data.user);
       } else {
         setUser(null);
+        if (res.status === 401) {
+          await fetch("/api/auth/logout", { method: "POST" });
+          router.replace("/login");
+        }
       }
     } catch {
       setUser(null);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     fetchUser();

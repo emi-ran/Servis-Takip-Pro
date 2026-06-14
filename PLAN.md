@@ -17,7 +17,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 | **i18n** | next-intl (şimdilik sadece tr, İngilizce altyapısı hazır) |
 | **Deploy** | Docker (multi-stage build, mevcut PostgreSQL'e bağlanır) |
 | **Kullanıcı** | Çok kullanıcılı (ADMIN / TECHNICIAN rolleri) |
-| **İlk Kurulum** | `.env`'den otomatik (manuel register yok) |
+| **İlk Kurulum** | `npm run db:seed` ile `.env`'den şirket ve admin oluşturma |
 
 ---
 
@@ -46,7 +46,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 - [x] Sidebar navigasyonu (responsive — mobilde burger drawer)
 - [x] AuthProvider context (kullanıcı bilgisi, logout)
 - [x] Header (kullanıcı adı + avatar + logout menüsü)
-- [x] İlk kurulum akışı (`.env`'den otomatik setup, sonra login'e yönlendir)
+- [x] İlk kurulum akışı (`npm run db:seed` ile `.env`'den şirket ve admin oluşturma)
 
 ---
 
@@ -188,7 +188,6 @@ servis-takip/
           logout/route.ts
           users/route.ts
           users/[id]/route.ts
-        setup/route.ts           # .env'den otomatik kurulum
         customers/route.ts
         customers/[id]/route.ts
         customers/[id]/balance/route.ts

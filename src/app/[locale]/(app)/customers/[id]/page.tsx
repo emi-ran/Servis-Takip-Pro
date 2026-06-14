@@ -126,10 +126,10 @@ const typeColors: Record<string, string> = {
 };
 
 const methodLabels: Record<string, string> = {
-  NAKIT: "payments.method_label.NAKIT",
-  KART: "payments.method_label.KART",
-  EFT: "payments.method_label.EFT",
-  DIGER: "payments.method_label.DIGER",
+  NAKIT: "method_label.NAKIT",
+  KART: "method_label.KART",
+  EFT: "method_label.EFT",
+  DIGER: "method_label.DIGER",
 };
 
 const taskStatusColors: Record<string, string> = {

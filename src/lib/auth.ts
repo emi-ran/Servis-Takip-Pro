@@ -1,14 +1,17 @@
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { prisma } from "@/lib/prisma";
+import { env } from "@/lib/env";
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
+const JWT_SECRET = new TextEncoder().encode(env.JWT_SECRET);
 const COOKIE_NAME = "session";
 
 export type SessionPayload = {
   userId: string;
   companyId: string;
   role: "ADMIN" | "TECHNICIAN";
+  userUpdatedAt: string;
 };
 
 export async function createSession(payload: SessionPayload) {
@@ -43,7 +46,38 @@ export async function verifySession(): Promise<SessionPayload | null> {
 
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as unknown as SessionPayload;
+    const session = payload as unknown as SessionPayload;
+
+    if (!session.userId || !session.companyId || !session.role || !session.userUpdatedAt) {
+      return null;
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: session.userId,
+        companyId: session.companyId,
+      },
+      select: {
+        id: true,
+        companyId: true,
+        role: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) return null;
+
+    if (user.updatedAt.toISOString() !== session.userUpdatedAt) {
+      cookieStore.delete(COOKIE_NAME);
+      return null;
+    }
+
+    return {
+      userId: user.id,
+      companyId: user.companyId,
+      role: user.role,
+      userUpdatedAt: user.updatedAt.toISOString(),
+    };
   } catch {
     return null;
   }

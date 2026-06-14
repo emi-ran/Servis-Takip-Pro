@@ -45,7 +45,7 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 - Form validation şeması (`zod`) API route'una yakın tanımlanır (örn. aynı dosyada).
 - `.env`'den okunan değerler `src/lib/env.ts`'de tek merkezden validate edilir.
 - `prisma/schema.prisma` tüm modelleri içerir, Phase'ler ekledikçe büyür.
-- İlk kurulum `.env`'den otomatik yapılır (manuel register sayfası yok).
+- İlk kurulum `npm run db:seed` ile `.env` değerlerinden şirket ve admin oluşturulur (manuel register sayfası yok).
 - Authenticated sayfalar `(app)` route group'u altında, login sayfası bunun dışında.
 
 ## Dizin Yapısı
@@ -95,7 +95,6 @@ src/
       service-records/
       payments/
       scheduled-tasks/
-      setup/
   components/
     providers/                 # Auth, Query provider
       auth-provider.tsx
@@ -174,7 +173,7 @@ src/
 
 - JWT access token (1 gün) httpOnly cookie'de saklanır.
 - Refresh token yok. Süre dolunca tekrar login.
-- İlk kurulum: Middleware `GET /api/setup` ile kontrol eder, gerekliyse `POST /api/setup` çağırır (`.env`'den okur).
+- İlk kurulum: `npm run db:seed` `.env` değerlerinden ilk şirketi ve admin kullanıcısını oluşturur; public setup API yoktur.
 - Admin ve Technician rolleri arasında sadece `role` enum farkı.
 - Admin her şeyi yapabilir. Technician müşteri/servis görebilir, düzenleyebilir ama kullanıcı yönetemez.
 
