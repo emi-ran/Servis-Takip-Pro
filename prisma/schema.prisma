@@ -129,6 +129,7 @@ model Device {
   customer       Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
   company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   serviceRecords ServiceRecord[]
+  payments       Payment[]
 
   @@index([companyId])
   @@index([customerId])
@@ -199,6 +200,7 @@ model Payment {
   companyId       String
   customerId      String
   serviceRecordId String?
+  deviceId        String?
   type            PaymentType
   amount          Decimal       @db.Decimal(10, 2)
   paymentMethod   PaymentMethod
@@ -209,10 +211,12 @@ model Payment {
   company       Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   serviceRecord ServiceRecord? @relation(fields: [serviceRecordId], references: [id])
+  device        Device?       @relation(fields: [deviceId], references: [id])
 
   @@index([companyId])
   @@index([customerId])
   @@index([serviceRecordId])
+  @@index([deviceId])
   @@index([companyId, type, date])
 }
 

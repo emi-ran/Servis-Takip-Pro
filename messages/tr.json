@@ -180,6 +180,8 @@
     "statusUpdated": "Durum güncellendi",
     "noteAdded": "Not eklendi",
     "notesSection": "Notlar",
+    "paymentsSection": "Ödemeler ve Borçlar",
+    "noPayments": "Henüz bu servis kaydına bağlı ödeme/borç bulunmuyor.",
     "timeline": "Zaman Çizelgesi",
     "filterByStatus": "Duruma Göre Filtrele",
     "customerVisible": "Müşteriye görünsün",
@@ -291,7 +293,9 @@
     "debtPlaceholder": "Servis ücreti, satış vb. borç açıklaması...",
     "collectionPlaceholder": "Tahsilat açıklaması...",
     "searchByCustomer": "Müşteri adı ile ara...",
-    "serviceRecordOptional": "Servis kaydına bağla (isteğe bağlı)"
+    "serviceRecordOptional": "Servis kaydına bağla (isteğe bağlı)",
+    "deviceOptional": "Cihaza bağla (isteğe bağlı)",
+    "device": "Cihaz"
   },
   "setup": {
     "title": "İlk Kurulum",

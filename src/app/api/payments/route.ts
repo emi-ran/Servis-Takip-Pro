@@ -11,6 +11,7 @@ const createPaymentSchema = z.object({
   date: z.string().min(1, "Tarih zorunlu"),
   description: z.string().optional().or(z.literal("")),
   serviceRecordId: z.string().optional().or(z.literal("")),
+  deviceId: z.string().optional().or(z.literal("")),
 });
 
 export async function GET(request: NextRequest) {
@@ -67,6 +68,7 @@ export async function GET(request: NextRequest) {
       include: {
         customer: { select: { id: true, name: true, surname: true } },
         serviceRecord: { select: { id: true, trackingNo: true } },
+        device: { select: { id: true, brand: true, model: true } },
       },
     }),
     prisma.payment.count({ where }),
@@ -101,6 +103,15 @@ export async function POST(request: Request) {
       }
     }
 
+    if (data.deviceId) {
+      const device = await prisma.device.findFirst({
+        where: { id: data.deviceId, companyId: session.companyId },
+      });
+      if (!device) {
+        return NextResponse.json({ message: "Cihaz bulunamadı" }, { status: 404 });
+      }
+    }
+
     const payment = await prisma.payment.create({
       data: {
         companyId: session.companyId,
@@ -110,6 +121,7 @@ export async function POST(request: Request) {
         date: new Date(data.date),
         description: data.description || null,
         serviceRecordId: data.serviceRecordId || null,
+        deviceId: data.deviceId || null,
         ...(data.type === "TAHSILAT" && data.paymentMethod
           ? { paymentMethod: data.paymentMethod }
           : { paymentMethod: "DIGER" }),
@@ -117,6 +129,7 @@ export async function POST(request: Request) {
       include: {
         customer: { select: { id: true, name: true, surname: true } },
         serviceRecord: { select: { id: true, trackingNo: true } },
+        device: { select: { id: true, brand: true, model: true } },
       },
     });
 

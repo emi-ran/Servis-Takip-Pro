@@ -27,7 +27,10 @@ import {
   ThemeIcon,
   Timeline,
   ActionIcon,
+  NumberInput,
+  Table,
 } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { Link, useRouter } from "@/lib/navigation";
 import {
   IconArrowLeft,
@@ -39,6 +42,7 @@ import {
   IconCheck,
   IconPlus,
   IconHistory,
+  IconCurrencyDollar,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -59,6 +63,7 @@ type ServiceRecord = {
   assignedUser: { id: string; name: string; surname: string } | null;
   statusHistory: StatusHistoryEntry[];
   notes: Note[];
+  payments: Payment[];
 };
 
 type StatusHistoryEntry = {
@@ -75,6 +80,16 @@ type Note = {
   isCustomerVisible: boolean;
   createdAt: string;
   author: { id: string; name: string; surname: string };
+};
+
+type Payment = {
+  id: string;
+  type: "BORC" | "TAHSILAT";
+  amount: number;
+  paymentMethod: string;
+  date: string;
+  description: string | null;
+  createdAt: string;
 };
 
 type User = { id: string; name: string; surname: string; role: string };
@@ -111,6 +126,7 @@ const validTransitions: Record<string, string[]> = {
 export default function ServiceRecordDetailPage() {
   const t = useTranslations("serviceRecords");
   const ct = useTranslations("common");
+  const pt = useTranslations("payments");
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -121,6 +137,36 @@ export default function ServiceRecordDetailPage() {
   const [noteEditOpened, noteEditHandlers] = useDisclosure(false);
   const [noteDeleteOpened, noteDeleteHandlers] = useDisclosure(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  const [paymentOpened, { open: openPayment, close: closePayment }] = useDisclosure(false);
+  const [paymentType, setPaymentType] = useState<"BORC" | "TAHSILAT">("BORC");
+
+  const paymentForm = useForm({
+    mode: "uncontrolled" as const,
+    initialValues: {
+      amount: 0,
+      paymentMethod: "NAKIT" as string,
+      date: new Date().toISOString().split("T")[0],
+      description: "",
+    },
+    validate: {
+      amount: (v: number) => (v > 0 ? null : pt("amountRequired")),
+    },
+  });
+
+  const createPaymentMutation = useMutation({
+    mutationFn: (values: Record<string, unknown>) =>
+      apiClient("/api/payments", { method: "POST", body: values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-record", params.id] });
+      notifications.show({ title: ct("success"), message: pt("created"), color: "green" });
+      paymentForm.reset();
+      closePayment();
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
 
   const { data, isLoading, isError, error } = useQuery<{ serviceRecord: ServiceRecord }>({
     queryKey: ["service-record", params.id],
@@ -467,6 +513,115 @@ export default function ServiceRecordDetailPage() {
           </Card>
         )}
 
+        <Card withBorder shadow="sm" radius="md" p="lg">
+          <Stack gap="md">
+            <Group justify="space-between" align="center">
+              <Group gap="xs">
+                <IconCurrencyDollar size={20} stroke={1.5} opacity={0.5} />
+                <Text fw={600}>{t("paymentsSection")}</Text>
+                {record.payments.length > 0 && (
+                  <Badge size="sm" variant="light" color="blue">
+                    {record.payments.length}
+                  </Badge>
+                )}
+              </Group>
+              <Group gap="xs">
+                <Button
+                  size="xs"
+                  variant="light"
+                  color="red"
+                  leftSection={<IconPlus size={14} />}
+                  onClick={() => {
+                    setPaymentType("BORC");
+                    paymentForm.reset();
+                    const existingDebts = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
+                    const defaultAmount = record.pricing ? Math.max(0, Number(record.pricing) - existingDebts) : 0;
+                    paymentForm.setFieldValue("amount", defaultAmount);
+                    openPayment();
+                  }}
+                >
+                  {pt("newDebt")}
+                </Button>
+                <Button
+                  size="xs"
+                  variant="light"
+                  color="green"
+                  leftSection={<IconCurrencyDollar size={14} />}
+                  onClick={() => {
+                    setPaymentType("TAHSILAT");
+                    paymentForm.reset();
+                    const totalDebt = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
+                    const totalCollection = record.payments.filter((p) => p.type === "TAHSILAT").reduce((sum, p) => sum + Number(p.amount), 0);
+                    const defaultAmount = Math.max(0, totalDebt - totalCollection);
+                    paymentForm.setFieldValue("amount", defaultAmount);
+                    openPayment();
+                  }}
+                >
+                  {pt("newCollection")}
+                </Button>
+              </Group>
+            </Group>
+
+            {record.payments.length === 0 ? (
+              <Text size="sm" c="dimmed" ta="center" py="md">
+                {t("noPayments")}
+              </Text>
+            ) : (
+              <Table.ScrollContainer minWidth={500}>
+                <Table striped>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>{pt("type")}</Table.Th>
+                      <Table.Th>{pt("amount")}</Table.Th>
+                      <Table.Th>{pt("paymentMethod")}</Table.Th>
+                      <Table.Th>{pt("date")}</Table.Th>
+                      <Table.Th>{pt("description")}</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    {record.payments.map((p) => (
+                      <Table.Tr key={p.id}>
+                        <Table.Td>
+                          <Badge
+                            size="sm"
+                            variant="light"
+                            color={p.type === "BORC" ? "red" : "green"}
+                          >
+                            {pt(`type_label.${p.type}`)}
+                          </Badge>
+                        </Table.Td>
+                        <Table.Td>
+                          <Text fw={600} size="sm">
+                            {Number(p.amount).toLocaleString("tr-TR", {
+                              style: "currency",
+                              currency: "TRY",
+                            })}
+                          </Text>
+                        </Table.Td>
+                        <Table.Td>
+                          <Badge size="sm" variant="outline" color="gray">
+                            {p.type === "TAHSILAT" ? pt(`method_label.${p.paymentMethod}`) : "—"}
+                          </Badge>
+                        </Table.Td>
+                        <Table.Td>
+                          <Text size="sm">
+                            {new Date(p.date).toLocaleDateString("tr-TR")}
+                          </Text>
+                        </Table.Td>
+                        <Table.Td>
+                          <Text size="sm" lineClamp={1} maw={200}>
+                            {p.description || "—"}
+                          </Text>
+                        </Table.Td>
+                      </Table.Tr>
+                    ))}
+                  </Table.Tbody>
+                </Table>
+              </Table.ScrollContainer>
+            )}
+          </Stack>
+        </Card>
+
         {record.statusHistory.length > 0 && (
           <Card withBorder shadow="sm" radius="md" p="lg">
             <Stack gap="md">
@@ -807,6 +962,113 @@ export default function ServiceRecordDetailPage() {
             {ct("delete")}
           </Button>
         </Group>
+      </Modal>
+      <Modal
+        opened={paymentOpened}
+        onClose={() => { paymentForm.reset(); closePayment(); }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {paymentType === "BORC" ? pt("newDebt") : pt("newCollection")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {paymentType === "BORC" ? pt("addDebtDescription") : pt("addCollectionDescription")}
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+        transitionProps={{ transition: "fade", duration: 150 }}
+      >
+        <form
+          autoComplete="nope"
+          onSubmit={paymentForm.onSubmit((values) => {
+            const payload: Record<string, unknown> = {
+              customerId: record.customer.id,
+              serviceRecordId: record.id,
+              deviceId: record.device.id,
+              type: paymentType,
+              ...values,
+            };
+            if (paymentType === "BORC") {
+              delete payload.paymentMethod;
+            }
+            createPaymentMutation.mutate(payload);
+          })}
+        >
+          <Stack gap="md">
+            <TextInput
+              label={pt("customer")}
+              value={`${record.customer.name} ${record.customer.surname}`}
+              disabled
+              readOnly
+            />
+            <TextInput
+              label={pt("device")}
+              value={`${record.device.brand} ${record.device.model}`}
+              disabled
+              readOnly
+            />
+            <NumberInput
+              label={pt("amount")}
+              placeholder="0.00"
+              decimalScale={2}
+              fixedDecimalScale
+              prefix="₺ "
+              thousandSeparator="."
+              decimalSeparator=","
+              min={0}
+              key={paymentForm.key("amount")}
+              {...paymentForm.getInputProps("amount")}
+              required
+            />
+            <Group grow>
+              {paymentType === "TAHSILAT" && (
+                <Select
+                  label={pt("paymentMethod")}
+                  data={[
+                    { value: "NAKIT", label: pt("method_label.NAKIT") },
+                    { value: "KART", label: pt("method_label.KART") },
+                    { value: "EFT", label: pt("method_label.EFT") },
+                    { value: "DIGER", label: pt("method_label.DIGER") },
+                  ]}
+                  key={paymentForm.key("paymentMethod")}
+                  {...paymentForm.getInputProps("paymentMethod")}
+                />
+              )}
+              <DatePickerInput
+                label={pt("date")}
+                valueFormat="DD.MM.YYYY"
+                key={paymentForm.key("date")}
+                {...paymentForm.getInputProps("date")}
+                required
+              />
+            </Group>
+            <TextInput
+              label={pt("description")}
+              placeholder={
+                paymentType === "BORC" ? pt("debtPlaceholder") : pt("collectionPlaceholder")
+              }
+              key={paymentForm.key("description")}
+              {...paymentForm.getInputProps("description")}
+            />
+            <Group justify="flex-end">
+              <Button variant="default" onClick={() => { paymentForm.reset(); closePayment(); }}>
+                {ct("cancel")}
+              </Button>
+              <Button
+                type="submit"
+                loading={createPaymentMutation.isPending}
+                px="xl"
+                color={paymentType === "BORC" ? "red" : "green"}
+              >
+                {ct("save")}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
       </Modal>
     </>
   );

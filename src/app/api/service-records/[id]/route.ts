@@ -40,6 +40,9 @@ export async function GET(
         orderBy: { createdAt: "desc" },
         include: { author: { select: { id: true, name: true, surname: true } } },
       },
+      payments: {
+        orderBy: { date: "desc" },
+      },
     },
   });
 

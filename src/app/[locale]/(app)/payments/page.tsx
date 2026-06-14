@@ -36,6 +36,7 @@ import { formatPhone } from "@/lib/phone";
 
 type CustomerResponse = { id: string; name: string; surname: string };
 type ServiceRecordResponse = { id: string; trackingNo: number };
+type DeviceResponse = { id: string; brand: string; model: string };
 
 type CustomerOption = {
   id: string;
@@ -54,6 +55,7 @@ type Payment = {
   description: string | null;
   customer: CustomerResponse;
   serviceRecord: ServiceRecordResponse | null;
+  device: DeviceResponse | null;
   createdAt: string;
 };
 
@@ -104,11 +106,22 @@ export default function PaymentsPage() {
   });
 
   const { data: customerServiceRecords } = useQuery<{
-    serviceRecords: { id: string; trackingNo: number; faultDescription: string; status: string }[];
+    serviceRecords: { id: string; trackingNo: number; faultDescription: string; status: string; deviceId: string }[];
   }>({
     queryKey: ["service-records-customer", selectedCustomerId],
     queryFn: () =>
       apiClient("/api/service-records", {
+        params: { customerId: selectedCustomerId, pageSize: "100" },
+      }),
+    enabled: !!selectedCustomerId,
+  });
+
+  const { data: customerDevices } = useQuery<{
+    devices: { id: string; brand: string; model: string; category: string }[];
+  }>({
+    queryKey: ["devices-customer", selectedCustomerId],
+    queryFn: () =>
+      apiClient("/api/devices", {
         params: { customerId: selectedCustomerId, pageSize: "100" },
       }),
     enabled: !!selectedCustomerId,
@@ -128,6 +141,7 @@ export default function PaymentsPage() {
       date: new Date().toISOString().split("T")[0],
       description: "",
       serviceRecordId: "",
+      deviceId: "",
     },
     validate: {
       customerId: (v: string) => (v ? null : t("customerRequired")),
@@ -249,6 +263,7 @@ export default function PaymentsPage() {
                   <Table.Tr>
                     <Table.Th>{t("type")}</Table.Th>
                     <Table.Th>{t("customer")}</Table.Th>
+                    <Table.Th>{t("device")}</Table.Th>
                     <Table.Th>{t("amount")}</Table.Th>
                     <Table.Th>{t("paymentMethod")}</Table.Th>
                     <Table.Th>{t("date")}</Table.Th>
@@ -271,6 +286,11 @@ export default function PaymentsPage() {
                       <Table.Td>
                         <Text size="sm">
                           {payment.customer.name} {payment.customer.surname}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">
+                          {payment.device ? `${payment.device.brand} ${payment.device.model}` : "—"}
                         </Text>
                       </Table.Td>
                       <Table.Td>
@@ -410,21 +430,38 @@ export default function PaymentsPage() {
               {...form.getInputProps("description")}
             />
             {selectedCustomerId && (
-              <Select
-                label={t("serviceRecordOptional")}
-                placeholder={t("serviceRecordOptional")}
-                data={
-                  customerServiceRecords?.serviceRecords.map((sr) => ({
-                    value: sr.id,
-                    label: `#${sr.trackingNo} — ${sr.faultDescription.length > 60 ? sr.faultDescription.slice(0, 60) + "..." : sr.faultDescription}`,
-                  })) || []
-                }
-                key={form.key("serviceRecordId")}
-                {...form.getInputProps("serviceRecordId")}
-                clearable
-                searchable
-                nothingFoundMessage={ct("noResults")}
-              />
+              <Group grow>
+                <Select
+                  label={t("deviceOptional")}
+                  placeholder={t("deviceOptional")}
+                  data={
+                    customerDevices?.devices.map((d) => ({
+                      value: d.id,
+                      label: `${d.brand} ${d.model} (${d.category})`,
+                    })) || []
+                  }
+                  key={form.key("deviceId")}
+                  {...form.getInputProps("deviceId")}
+                  clearable
+                  searchable
+                  nothingFoundMessage={ct("noResults")}
+                />
+                <Select
+                  label={t("serviceRecordOptional")}
+                  placeholder={t("serviceRecordOptional")}
+                  data={
+                    customerServiceRecords?.serviceRecords.map((sr) => ({
+                      value: sr.id,
+                      label: `#${sr.trackingNo} — ${sr.faultDescription.length > 60 ? sr.faultDescription.slice(0, 60) + "..." : sr.faultDescription}`,
+                    })) || []
+                  }
+                  key={form.key("serviceRecordId")}
+                  {...form.getInputProps("serviceRecordId")}
+                  clearable
+                  searchable
+                  nothingFoundMessage={ct("noResults")}
+                />
+              </Group>
             )}
             <Space />
             <Group justify="flex-end">
