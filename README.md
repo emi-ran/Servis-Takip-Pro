@@ -129,58 +129,63 @@ docker compose up --build
 ```
 📦 servis-takip/
 ├── prisma/
-│   ├── schema.prisma          Veritabanı modelleri
+│   └── schema.prisma              Veritabanı modelleri
 ├── messages/
-│   └── tr.json                Türkçe UI metinleri
+│   └── tr.json                    Türkçe UI metinleri
 ├── src/
 │   ├── app/
-│   │   ├── [locale]/setup/    İlk kurulum ekranı
-│   │   ├── [locale]/login/    Giriş sayfası
-│   │   ├── [locale]/(app)/    Ana uygulama
-│   │   │   ├── dashboard/     Genel görünüm
-│   │   │   ├── customers/     Müşteriler
-│   │   │   ├── devices/       Cihazlar
-│   │   │   ├── service-records/  Servis kayıtları
-│   │   │   ├── payments/      Tahsilatlar
-│   │   │   ├── scheduled-tasks/  Planlı işler
-│   │   │   └── staff/          Personel
-│   │   ├── globals.css           Global stiller
-│   │   ├── icon.svg              Favicon / app ikonu
-│   │       └── api/               API route'ları
-│   │           ├── setup/            İlk kurulum API'si
-│   │           ├── auth/             Kimlik doğrulama
-│   │           ├── customers/        Müşteri CRUD + bakiye
-│   │           ├── devices/          Cihaz CRUD + seçenekler
-│   │           ├── service-records/  Servis kaydı + durum + notlar
-│   │           ├── payments/         Ödeme CRUD
-│   │           ├── dashboard/        Dashboard istatistikleri
-│   │           └── scheduled-tasks/  Planlı iş CRUD
+│   │   ├── layout.tsx             Root layout (html, body, renk modu)
+│   │   ├── page.tsx               Root redirect → [locale]
+│   │   ├── globals.css            Global stiller
+│   │   ├── icon.svg               Favicon / app ikonu
+│   │   ├── [locale]/              next-intl locale segment
+│   │   │   ├── setup/             İlk kurulum ekranı
+│   │   │   ├── login/             Giriş sayfası
+│   │   │   └── (app)/             Ana uygulama (AppShell)
+│   │   │       ├── dashboard/     Genel görünüm
+│   │   │       ├── customers/     Müşteriler
+│   │   │       ├── devices/       Cihazlar
+│   │   │       ├── service-records/  Servis kayıtları
+│   │   │       ├── payments/      Tahsilatlar
+│   │   │       ├── scheduled-tasks/  Planlı işler
+│   │   │       └── staff/         Personel
+│   │   └── api/                   API route'ları
+│   │       ├── setup/             İlk kurulum
+│   │       ├── auth/              Kimlik doğrulama
+│   │       ├── customers/         Müşteri CRUD + bakiye
+│   │       ├── devices/           Cihaz CRUD + seçenekler
+│   │       ├── service-records/   Servis kaydı + durum + notlar
+│   │       ├── payments/          Ödeme CRUD
+│   │       ├── dashboard/         Dashboard istatistikleri
+│   │       └── scheduled-tasks/   Planlı iş CRUD
 │   ├── components/
-│   │   ├── providers/         Auth, Query sağlayıcıları
-│   │   ├── layout/            AppShell, Sidebar, Header
-│   │   └── ui/                Ortak bileşenler (logo-mark.tsx)
-│   ├── features/              Özellik bazlı bileşen katalogları
+│   │   ├── providers/             Auth, Query sağlayıcıları
+│   │   ├── layout/                AppShell, Sidebar, Header
+│   │   ├── ui/                    Ortak bileşenler (logo-mark.tsx)
+│   │   └── features/              UI bileşenleri (presentational)
+│   │       └── customers/         Google Adres giriş bileşeni
+│   ├── features/                  Özellik bazlı bileşen katalogları (boş — hazırlık)
 │   │   ├── customers/
 │   │   ├── dashboard/
 │   │   ├── devices/
 │   │   ├── scheduled-tasks/
 │   │   └── service-records/
-│   ├── components/features/   UI bileşenleri (presentational)
-│   │   └── customers/         Google Adres giriş bileşeni
-│   ├── lib/                   Yardımcı kütüphaneler
+│   ├── lib/                       Yardımcı kütüphaneler
 │   │   ├── prisma.ts, auth.ts, api.ts, phone.ts
 │   │   ├── env.ts, i18n.ts, routing.ts, navigation.ts
-│   │   └── rate-limit.ts      Login hız sınırlama
-│   ├── types/                 Tip tanımları
-│   └── theme.ts               Mantine tema
+│   │   ├── rate-limit.ts          Login hız sınırlama
+│   ├── types/                     Tip tanımları
+│   ├── middleware.ts               Route koruma middleware
+│   └── theme.ts                   Mantine tema
 ├── scripts/
-│   └── mock-data.js              Test verisi oluşturma scripti
+│   ├── mock-data.js               Test verisi oluşturma scripti
+│   └── docker-entrypoint.js       Docker başlangıç scripti
 ├── public/
-│   └── maps.html                 Google Maps iframe sayfası
-├── backups/                      Otomatik yedekler (pg_dump)
-├── SECURITY_REVIEW.md            Güvenlik denetim kaydı
-├── AGENTS.md                     Proje kuralları
-├── PLAN.md                       Uygulama planı ve phase takibi
+│   └── maps.html                  Google Maps iframe sayfası
+├── backups/                       Otomatik yedekler (pg_dump)
+├── SECURITY_REVIEW.md             Güvenlik denetim kaydı
+├── AGENTS.md                      Proje kuralları
+├── PLAN.md                        Uygulama planı ve phase takibi
 ├── Dockerfile
 └── .env.example
 ```

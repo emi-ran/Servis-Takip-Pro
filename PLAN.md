@@ -142,7 +142,7 @@ ServiceRecord  (id, companyId, customerId, deviceId, trackingNo, status, priorit
                 faultDescription, assignedUserId?, pricing?, createdAt)
 StatusHistory  (id, serviceRecordId, fromStatus, toStatus, changedById, createdAt)
 ServiceNote    (id, serviceRecordId, content, isCustomerVisible, authorId, createdAt)
-Payment        (id, companyId, customerId, serviceRecordId?, type, amount, paymentMethod, date, description, createdAt)
+Payment        (id, companyId, customerId, serviceRecordId?, deviceId?, type, amount, paymentMethod, date, description, createdAt)
 ScheduledTask  (id, companyId, customerId, title, description, taskType, date, status, assignedUserId?, createdAt, updatedAt)
 ```
 
@@ -157,12 +157,14 @@ servis-takip/
   messages/
     tr.json
   src/
-      app/
-        globals.css                # Global stiller
-        icon.svg                   # Favicon / app ikonu
-        [locale]/
+    app/
+      layout.tsx                 # Root layout (html, body, renk modu script)
+      page.tsx                   # Root redirect → [locale]
+      globals.css                # Global stiller
+      icon.svg                   # Favicon / app ikonu
+      [locale]/
         layout.tsx               # Mantine + intl + QueryProvider
-        page.tsx                 # Dashboard (redirect) — her sayfayı (app) altına aldık
+        page.tsx                 # Locale root redirect → dashboard
         setup/page.tsx           # İlk kurulum ekranı
         login/page.tsx           # Standalone login (AppShell yok)
         (app)/                   # Route group — AppShell'li sayfalar
@@ -203,6 +205,7 @@ servis-takip/
         service-records/[id]/route.ts
         service-records/[id]/status/route.ts
         service-records/[id]/notes/route.ts
+        service-records/[id]/notes/[noteId]/route.ts
         payments/route.ts
         payments/[id]/route.ts
         scheduled-tasks/route.ts
@@ -217,18 +220,18 @@ servis-takip/
         header.tsx
         color-scheme-script.tsx
         theme-toggle.tsx
-        ui/
-          logo-mark.tsx            SVG logo bileşeni
-    features/                # Feature bazlı component katalogları
+      ui/
+        logo-mark.tsx            # SVG logo bileşeni
+      features/                  # UI bileşenleri (presentational)
+        customers/
+          google-address-input.tsx
+          google-address-input.module.css
+    features/                # Feature bazlı component katalogları (boş — hazırlık)
       customers/
       dashboard/
       devices/
       scheduled-tasks/
       service-records/
-    components/features/      # UI bileşenleri (presentational)
-      customers/
-        google-address-input.tsx
-        google-address-input.module.css
     lib/
       prisma.ts
       auth.ts
@@ -241,6 +244,7 @@ servis-takip/
       rate-limit.ts
     types/
       index.ts
+    middleware.ts
     theme.ts
   scripts/
     mock-data.js             Test verisi oluşturma scripti

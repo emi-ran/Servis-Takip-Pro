@@ -53,60 +53,74 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 ```
 src/
     app/
-      globals.css                # Global stiller
-      icon.svg                   # Favicon / app ikonu
-      [locale]/                  # next-intl locale segment
-        layout.tsx               # Mantine + intl + QueryProvider
-        setup/page.tsx           # İlk kurulum ekranı
-        login/page.tsx           # Standalone login (AppShell yok)
-      (app)/                   # Route group — AppShell'li sayfalar
-        layout.tsx             # AppShell wrapper
-        dashboard/page.tsx
+      layout.tsx               # Root layout (html, body, renk modu script)
+      page.tsx                 # Root redirect → [locale]
+      globals.css              # Global stiller
+      icon.svg                 # Favicon / app ikonu
+      [locale]/                # next-intl locale segment
+        layout.tsx             # Mantine + intl + QueryProvider
+        page.tsx               # Locale root redirect → dashboard
+        setup/page.tsx         # İlk kurulum ekranı
+        login/page.tsx         # Standalone login (AppShell yok)
+        (app)/                 # Route group — AppShell'li sayfalar
+          layout.tsx           # AppShell wrapper
+          dashboard/page.tsx
+          customers/
+            page.tsx
+            [id]/page.tsx
+          devices/
+            page.tsx
+            [id]/page.tsx
+          service-records/
+            page.tsx
+            new/page.tsx
+            [id]/page.tsx
+          payments/
+            page.tsx
+          scheduled-tasks/
+            page.tsx
+          staff/
+            page.tsx
+      api/                     # API route'ları
+        auth/
+          login/route.ts
+          me/route.ts
+          logout/route.ts
+          users/route.ts
+          users/[id]/route.ts
+        setup/route.ts
         customers/
-          page.tsx
-          [id]/page.tsx
+          route.ts
+          [id]/route.ts
+          [id]/balance/route.ts
+        dashboard/route.ts
         devices/
-          page.tsx
-          [id]/page.tsx
+          route.ts
+          [id]/route.ts
+          options/route.ts
         service-records/
-          page.tsx
-          new/page.tsx
-          [id]/page.tsx
+          route.ts
+          [id]/route.ts
+          [id]/status/route.ts
+          [id]/notes/route.ts
+          [id]/notes/[noteId]/route.ts
         payments/
-          page.tsx
+          route.ts
+          [id]/route.ts
         scheduled-tasks/
-          page.tsx
-        staff/
-          page.tsx
-    api/                       # API route'ları
-      auth/
-        login/route.ts
-        me/route.ts
-        logout/route.ts
-        users/route.ts
-        users/[id]/route.ts
-      setup/
-        route.ts
-      customers/
-        route.ts
-        [id]/route.ts
-        [id]/balance/route.ts
-      dashboard/
-        route.ts
-      devices/
-        route.ts
-        [id]/route.ts
-        options/route.ts
-      service-records/
-      payments/
-      scheduled-tasks/
+          route.ts
+          [id]/route.ts
   components/
     providers/                 # Auth, Query provider
       auth-provider.tsx
       query-provider.tsx
     layout/                    # AppShell, Sidebar, Header, ThemeToggle
-    ui/                        # Ortak UI bileşenleri (logo-mark.tsx)
-  features/                    # Feature bazlı component'ler
+    ui/                        # Ortak UI (logo-mark.tsx)
+    features/                  # Presentational UI bileşenleri
+      customers/
+        google-address-input.tsx
+        google-address-input.module.css
+  features/                    # Feature component'ler (boş — hazırlık)
     customers/
     dashboard/
     devices/
@@ -121,6 +135,8 @@ src/
     i18n.ts                    # next-intl config
     routing.ts                 # Locale routing config
     navigation.ts              # next-intl navigation helpers
+    rate-limit.ts              # Login hız sınırlama
+  middleware.ts                # Route koruma middleware
   types/
     index.ts
   theme.ts                     # Mantine theme
