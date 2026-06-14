@@ -1,11 +1,9 @@
-"use client";
-
-import Script from "next/script";
-
 export function ColorSchemeScript() {
   return (
-    <Script id="mantine-color-scheme" strategy="beforeInteractive">
-      {`
+    <script
+      id="mantine-color-scheme"
+      dangerouslySetInnerHTML={{
+        __html: `
         try {
           var mantineColorScheme = localStorage.getItem("mantine-color-scheme-value");
           if (mantineColorScheme) {
@@ -18,7 +16,8 @@ export function ColorSchemeScript() {
             );
           }
         } catch(e) {}
-      `}
-    </Script>
+      `,
+      }}
+    />
   );
 }

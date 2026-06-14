@@ -16,6 +16,11 @@ type User = {
   name: string;
   surname: string;
   role: "ADMIN" | "TECHNICIAN";
+  company: {
+    id: string;
+    name: string;
+    slug: string;
+  };
 };
 
 type AuthContext = {

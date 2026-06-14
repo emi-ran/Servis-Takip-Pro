@@ -157,8 +157,10 @@ servis-takip/
   messages/
     tr.json
   src/
-    app/
-      [locale]/
+      app/
+        globals.css                # Global stiller
+        icon.svg                   # Favicon / app ikonu
+        [locale]/
         layout.tsx               # Mantine + intl + QueryProvider
         page.tsx                 # Dashboard (redirect) — her sayfayı (app) altına aldık
         login/page.tsx           # Standalone login (AppShell yok)
@@ -212,8 +214,10 @@ servis-takip/
         sidebar.tsx
         header.tsx
         color-scheme-script.tsx
-        theme-toggle.tsx
-    features/                # Feature bazlı component'ler
+          theme-toggle.tsx
+        ui/
+          logo-mark.tsx            SVG logo bileşeni
+      features/                # Feature bazlı component'ler
       customers/
         google-address-input.tsx
         google-address-input.module.css

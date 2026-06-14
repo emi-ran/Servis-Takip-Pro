@@ -144,11 +144,13 @@ docker run -p 3000:3000 --env-file .env servis-takip
 │   │   │   ├── payments/      Tahsilatlar
 │   │   │   ├── scheduled-tasks/  Planlı işler
 │   │   │   └── staff/          Personel
+│   │   ├── globals.css           Global stiller
+│   │   ├── icon.svg              Favicon / app ikonu
 │   │   └── api/               API route'ları
 │   ├── components/
 │   │   ├── providers/         Auth, Query sağlayıcıları
 │   │   ├── layout/            AppShell, Sidebar, Header
-│   │   └── ui/                Ortak bileşenler
+│   │   └── ui/                Ortak bileşenler (logo-mark.tsx)
 │   ├── features/              Özellik bazlı bileşenler
 │   │   ├── customers/         Google Adres giriş bileşeni
 │   │   ├── dashboard/

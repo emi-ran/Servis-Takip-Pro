@@ -1,0 +1,16 @@
+html,
+body {
+  min-height: 100%;
+  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mantine-color-scheme="light"]),
+  html:not([data-mantine-color-scheme="light"]) body {
+    background: #1a1b1e;
+  }
+}
+
+body {
+  margin: 0;
+}

@@ -10,5 +10,3 @@
 - Next.js middleware uyarısı: `"middleware" file convention is deprecated. Please use "proxy" instead.` — İşlevsel etkisi yok, Next.js 16'daki yeni yönlendirme. Gelecekte `src/proxy.ts`'ye geçiş yapılabilir.
 
 ## Çözüm Bekleyen Mimari Kararlar
-
-- `setup/` ve `settings/` dizinleri boş olarak duruyor (dosyalar silindi ama klasörler temizlenmedi). Kullanılmıyor, silinebilir.

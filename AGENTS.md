@@ -52,8 +52,10 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 
 ```
 src/
-  app/
-    [locale]/                  # next-intl locale segment
+    app/
+      globals.css                # Global stiller
+      icon.svg                   # Favicon / app ikonu
+      [locale]/                  # next-intl locale segment
       layout.tsx               # Mantine + intl + QueryProvider
       login/page.tsx           # Standalone login (AppShell yok)
       (app)/                   # Route group — AppShell'li sayfalar
@@ -100,7 +102,7 @@ src/
       auth-provider.tsx
       query-provider.tsx
     layout/                    # AppShell, Sidebar, Header, ThemeToggle
-    ui/                        # Ortak UI bileşenleri
+    ui/                        # Ortak UI bileşenleri (logo-mark.tsx)
   features/                    # Feature bazlı component'ler
     customers/
     dashboard/
@@ -149,7 +151,7 @@ src/
 
 ## CSS / Renk Modu
 
-- `ColorSchemeScript` React 19 uyarısını önlemek için `next/script` ile sarılır (`src/components/layout/color-scheme-script.tsx`).
+- `ColorSchemeScript` renk modu flash'ını önlemek için `<head>` içine inline `<script>` olarak yerleştirilir (`src/components/layout/color-scheme-script.tsx`).
 - Renk modu toggle'ı hydration mismatch'ını önlemek için `ThemeToggle` component'inde `useState+mounted` pattern'i kullanılır (SSR'da boş placeholder render eder).
 - `MantineProvider`'a `defaultColorScheme="auto"` eklenir.
 
@@ -187,7 +189,7 @@ src/
 - Türkçe commit mesajları.
 - Format: `{phase}: {eylem} — {kısa açıklama}`
 - Örnek: `phase-1: kurulum — Next.js + Mantine + Prisma iskeleti`
-- `main` branch'ine direkt commit yapılır (tek geliştirici).
+- `master` branch'ine direkt commit yapılır (tek geliştirici).
 
 ## PLAN.md
 

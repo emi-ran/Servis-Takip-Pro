@@ -58,6 +58,12 @@
   z-index: 1;
 }
 
+.logoWrap {
+  width: fit-content;
+  padding: 0;
+  line-height: 0;
+}
+
 .title {
   max-width: 360px;
   font-size: clamp(2.2rem, 5vw, 4rem);

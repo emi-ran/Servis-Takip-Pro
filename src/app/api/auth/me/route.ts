@@ -18,6 +18,13 @@ export async function GET() {
       surname: true,
       role: true,
       companyId: true,
+      company: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
     },
   });
 

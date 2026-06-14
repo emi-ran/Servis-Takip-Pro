@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/providers/auth-provider";
 import { IconLogout, IconUser } from "@tabler/icons-react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { LogoMark } from "@/components/ui/logo-mark";
 
 type HeaderProps = {
   onToggle: () => void;
@@ -21,20 +22,25 @@ type HeaderProps = {
 export function Header({ onToggle, opened }: HeaderProps) {
   const t = useTranslations();
   const { user, logout } = useAuth();
+  const brandName = user?.company.name || t("common.appName");
+
   return (
     <AppShell.Header style={{ borderBottom: "1px solid var(--mantine-color-default-border)" }}>
       <Group h="100%" px="md" justify="space-between">
         <Group gap="md">
           <Burger opened={opened} onClick={onToggle} hiddenFrom="sm" size="sm" />
-          <Text
-            fw={800}
-            size="lg"
-            variant="gradient"
-            gradient={{ from: "blue", to: "cyan", deg: 90 }}
-            style={{ letterSpacing: "-0.5px" }}
-          >
-            {t("common.appName")}
-          </Text>
+          <Group gap="xs" wrap="nowrap">
+            <LogoMark size={24} />
+            <Text
+              fw={800}
+              size="lg"
+              variant="gradient"
+              gradient={{ from: "blue", to: "cyan", deg: 90 }}
+              style={{ letterSpacing: "-0.5px" }}
+            >
+              {brandName}
+            </Text>
+          </Group>
         </Group>
 
         <Group gap="md">

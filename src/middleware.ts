@@ -6,7 +6,7 @@ import { routing } from "@/lib/routing";
 const intlMiddleware = createMiddleware(routing);
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
-const publicPrefixes = ["/api", "/_next/static", "/favicon"];
+const publicPrefixes = ["/api", "/_next/static", "/_next/image", "/favicon", "/icon", "/apple-icon"];
 
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -46,5 +46,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/|_next/static|favicon.ico).*)"],
+  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|icon\.svg|apple-icon\.png).*)"],
 };

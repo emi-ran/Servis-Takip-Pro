@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/lib/navigation";
 import {
@@ -10,7 +11,6 @@ import {
   Container,
   Stack,
   Text,
-  ThemeIcon,
   Box,
   Paper,
   Badge,
@@ -18,8 +18,8 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconCalendarCheck, IconDeviceLaptop, IconLock, IconShieldCheck, IconTool } from "@tabler/icons-react";
-import { useState } from "react";
+import { IconCalendarCheck, IconDeviceLaptop, IconLock, IconShieldCheck } from "@tabler/icons-react";
+import { LogoMark } from "@/components/ui/logo-mark";
 import classes from "./page.module.css";
 
 export default function LoginPage() {
@@ -27,6 +27,10 @@ export default function LoginPage() {
   const tc = useTranslations("common");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = `${t("login")} - ${tc("appName")}`;
+  }, [t, tc]);
 
   const form = useForm({
     mode: "uncontrolled" as const,
@@ -82,9 +86,9 @@ export default function LoginPage() {
               {t("badge")}
             </Badge>
             <Stack gap="lg" className={classes.brandContent}>
-              <ThemeIcon size={56} radius="lg" variant="filled" color="blue">
-                <IconTool size={30} stroke={1.7} />
-              </ThemeIcon>
+              <Box className={classes.logoWrap}>
+                <LogoMark size={56} />
+              </Box>
               <Box>
                 <Title order={1} className={classes.title}>
                   {tc("appName")}
