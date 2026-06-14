@@ -21,6 +21,7 @@ import {
   Badge,
   Tooltip,
   SimpleGrid,
+  ThemeIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -40,8 +41,9 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
-import { normalizePhone, isValidPhone } from "@/lib/phone";
+import { normalizePhone, isValidPhone, formatPhone, formatPhoneInput } from "@/lib/phone";
 import { GoogleAddressInput } from "@/components/features/customers/google-address-input";
+import classes from "./page.module.css";
 
 type Customer = {
   id: string;
@@ -74,6 +76,8 @@ export default function CustomersPage() {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearch] = useDebouncedValue(searchValue, 300);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [createPhoneValue, setCreatePhoneValue] = useState("");
+  const [editPhoneValue, setEditPhoneValue] = useState("");
 
   const [createOpened, createHandlers] = useDisclosure(false);
   const [editOpened, editHandlers] = useDisclosure(false);
@@ -133,6 +137,7 @@ export default function CustomersPage() {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       notifications.show({ title: ct("success"), message: t("created"), color: "green" });
       createForm.reset();
+      setCreatePhoneValue("");
       createHandlers.close();
     },
     onError: (err: Error) => {
@@ -185,7 +190,7 @@ export default function CustomersPage() {
         </Text>
       </Table.Td>
       <Table.Td>
-        <Text size="sm">{customer.phone}</Text>
+        <Text size="sm">{formatPhone(customer.phone)}</Text>
       </Table.Td>
       <Table.Td>
         <Text size="sm" c={customer.email ? undefined : "dimmed"}>
@@ -223,11 +228,12 @@ export default function CustomersPage() {
                 editForm.setValues({
                   name: customer.name,
                   surname: customer.surname,
-                  phone: customer.phone,
+                  phone: formatPhoneInput(customer.phone),
                   email: customer.email || "",
                   address: customer.address || "",
                   nickname: customer.nickname || "",
                 });
+                setEditPhoneValue(formatPhoneInput(customer.phone));
                 editHandlers.open();
               }}
             >
@@ -356,6 +362,7 @@ export default function CustomersPage() {
         opened={createOpened}
         onClose={() => {
           createForm.reset();
+          setCreatePhoneValue("");
           createHandlers.close();
         }}
         title={
@@ -369,7 +376,7 @@ export default function CustomersPage() {
           </Stack>
         }
         radius="lg"
-        size="lg"
+        size="xl"
         centered
         overlayProps={{
           backgroundOpacity: 0.55,
@@ -382,74 +389,128 @@ export default function CustomersPage() {
           onSubmit={createForm.onSubmit((values) =>
             createMutation.mutate({ ...values, phone: normalizePhone(values.phone) })
           )}
-          style={{ paddingTop: "8px" }}
+          className={classes.editForm}
         >
-          <Stack gap="md">
-            <SimpleGrid cols={2} spacing="md">
-              <TextInput
-                label={t("name")}
-                placeholder={t("namePlaceholder")}
-                required
-                autoComplete="nope"
-                leftSection={<IconUser size={16} stroke={1.5} />}
-                key={createForm.key("name")}
-                {...createForm.getInputProps("name")}
-              />
-              <TextInput
-                label={t("surname")}
-                placeholder={t("surnamePlaceholder")}
-                required
-                autoComplete="nope"
-                leftSection={<IconUser size={16} stroke={1.5} />}
-                key={createForm.key("surname")}
-                {...createForm.getInputProps("surname")}
-              />
+          <Stack gap="lg">
+            <Card withBorder radius="lg" p="md" className={classes.editSummaryCard}>
+              <Group gap="md" wrap="nowrap">
+                <ThemeIcon size={48} radius="xl" variant="light" color="blue">
+                  <IconPlus size={24} stroke={1.6} />
+                </ThemeIcon>
+                <Stack gap={2}>
+                  <Text fw={700} size="lg">
+                    {t("new")}
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    {t("createDescription")}
+                  </Text>
+                </Stack>
+              </Group>
+            </Card>
+
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <Card withBorder radius="lg" p="md" className={classes.editSection}>
+                <Stack gap="md">
+                  <Stack gap={2}>
+                    <Text fw={700}>{t("nameSurname")}</Text>
+                    <Text size="xs" c="dimmed">
+                      {t("createDescription")}
+                    </Text>
+                  </Stack>
+                  <TextInput
+                    label={t("name")}
+                    placeholder={t("namePlaceholder")}
+                    required
+                    autoComplete="nope"
+                    leftSection={<IconUser size={16} stroke={1.5} />}
+                    key={createForm.key("name")}
+                    {...createForm.getInputProps("name")}
+                  />
+                  <TextInput
+                    label={t("surname")}
+                    placeholder={t("surnamePlaceholder")}
+                    required
+                    autoComplete="nope"
+                    leftSection={<IconUser size={16} stroke={1.5} />}
+                    key={createForm.key("surname")}
+                    {...createForm.getInputProps("surname")}
+                  />
+                  <TextInput
+                    label={t("nickname")}
+                    placeholder={t("nicknamePlaceholder")}
+                    autoComplete="nope"
+                    leftSection={<IconUser size={16} stroke={1.5} />}
+                    key={createForm.key("nickname")}
+                    {...createForm.getInputProps("nickname")}
+                  />
+                </Stack>
+              </Card>
+
+              <Card withBorder radius="lg" p="md" className={classes.editSection}>
+                <Stack gap="md">
+                  <Stack gap={2}>
+                    <Text fw={700}>{t("phone")}</Text>
+                    <Text size="xs" c="dimmed">
+                      {t("email")}
+                    </Text>
+                  </Stack>
+                  <TextInput
+                    label={t("phone")}
+                    placeholder="0555 555 55 55"
+                    required
+                    autoComplete="nope"
+                    leftSection={<IconPhone size={16} stroke={1.5} />}
+                    value={createPhoneValue}
+                    error={createForm.errors.phone}
+                    onChange={(e) => {
+                      const formatted = formatPhoneInput(e.currentTarget.value);
+                      setCreatePhoneValue(formatted);
+                      createForm.setFieldValue("phone", formatted);
+                    }}
+                    onFocus={(e) => {
+                      if (!e.currentTarget.value) {
+                        setCreatePhoneValue("0");
+                        createForm.setFieldValue("phone", "0");
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const formatted = formatPhoneInput(e.currentTarget.value);
+                      setCreatePhoneValue(formatted);
+                      createForm.setFieldValue("phone", formatted);
+                    }}
+                  />
+                  <TextInput
+                    label={t("email")}
+                    placeholder="ahmet@ornek.com"
+                    autoComplete="nope"
+                    leftSection={<IconMail size={16} stroke={1.5} />}
+                    key={createForm.key("email")}
+                    {...createForm.getInputProps("email")}
+                  />
+                </Stack>
+              </Card>
             </SimpleGrid>
 
-            <SimpleGrid cols={2} spacing="md">
-              <TextInput
-                label={t("phone")}
-                placeholder="0555 555 5555"
-                required
-                autoComplete="nope"
-                leftSection={<IconPhone size={16} stroke={1.5} />}
-                key={createForm.key("phone")}
-                {...createForm.getInputProps("phone")}
-                onInput={(e) => {
-                  e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
-                }}
-                onBlur={(e) => {
-                  const normalized = normalizePhone(e.currentTarget.value);
-                  e.currentTarget.value = normalized;
-                  createForm.setFieldValue("phone", normalized);
-                }}
-              />
-              <TextInput
-                label={t("email")}
-                placeholder="ahmet@ornek.com"
-                autoComplete="nope"
-                leftSection={<IconMail size={16} stroke={1.5} />}
-                key={createForm.key("email")}
-                {...createForm.getInputProps("email")}
-              />
-              <TextInput
-                label={t("nickname")}
-                placeholder={t("nicknamePlaceholder")}
-                autoComplete="nope"
-                leftSection={<IconUser size={16} stroke={1.5} />}
-                key={createForm.key("nickname")}
-                {...createForm.getInputProps("nickname")}
-              />
-            </SimpleGrid>
+            <Card withBorder radius="lg" p="md" className={classes.editSection}>
+              <Stack gap="md">
+                <Stack gap={2}>
+                  <Text fw={700}>{t("address")}</Text>
+                  <Text size="xs" c="dimmed">
+                    {t("addressPlaceholder")}
+                  </Text>
+                </Stack>
+                <GoogleAddressInput
+                  key={createForm.key("address")}
+                  label={t("address")}
+                  placeholder={t("addressPlaceholder")}
+                  value={createForm.getValues().address}
+                  error={createForm.errors.address}
+                  onChange={(value) => createForm.setFieldValue("address", value)}
+                />
+              </Stack>
+            </Card>
 
-            <GoogleAddressInput
-              key={createForm.key("address")}
-              label={t("address")}
-              placeholder={t("addressPlaceholder")}
-              {...createForm.getInputProps("address")}
-            />
-
-            <Group justify="flex-end" mt="lg">
+            <Group justify="flex-end" className={classes.editActions}>
               <Button variant="default" onClick={createHandlers.close}>
                 {ct("cancel")}
               </Button>
@@ -465,6 +526,7 @@ export default function CustomersPage() {
         opened={editOpened}
         onClose={() => {
           setEditingCustomer(null);
+          setEditPhoneValue("");
           editHandlers.close();
         }}
         title={
@@ -491,73 +553,135 @@ export default function CustomersPage() {
           onSubmit={editForm.onSubmit((values) =>
             updateMutation.mutate({ ...values, phone: normalizePhone(values.phone), id: editingCustomer!.id })
           )}
-          style={{ paddingTop: "8px" }}
+          className={classes.editForm}
         >
-          <Stack gap="md">
-            <SimpleGrid cols={2} spacing="md">
-              <TextInput
-                label={t("name")}
-                required
-                autoComplete="nope"
-                leftSection={<IconUser size={16} stroke={1.5} />}
-                key={editForm.key("name")}
-                {...editForm.getInputProps("name")}
-              />
-              <TextInput
-                label={t("surname")}
-                required
-                autoComplete="nope"
-                leftSection={<IconUser size={16} stroke={1.5} />}
-                key={editForm.key("surname")}
-                {...editForm.getInputProps("surname")}
-              />
+          <Stack gap="lg">
+            <Card withBorder radius="lg" p="md" className={classes.editSummaryCard}>
+              <Group justify="space-between" align="center" wrap="nowrap">
+                <Group gap="md" wrap="nowrap">
+                  <ThemeIcon size={48} radius="xl" variant="light" color="blue">
+                    <IconUser size={24} stroke={1.6} />
+                  </ThemeIcon>
+                  <Stack gap={2}>
+                    <Text fw={700} size="lg">
+                      {editingCustomer?.name} {editingCustomer?.surname}
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                      {editPhoneValue || t("phone")}
+                    </Text>
+                  </Stack>
+                </Group>
+                {editingCustomer?.nickname && (
+                  <Badge variant="light" color="gray" size="lg" className={classes.nicknameBadge}>
+                    {editingCustomer.nickname}
+                  </Badge>
+                )}
+              </Group>
+            </Card>
+
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <Card withBorder radius="lg" p="md" className={classes.editSection}>
+                <Stack gap="md">
+                  <Stack gap={2}>
+                    <Text fw={700}>{t("nameSurname")}</Text>
+                    <Text size="xs" c="dimmed">
+                      {t("editDescription")}
+                    </Text>
+                  </Stack>
+                  <TextInput
+                    label={t("name")}
+                    required
+                    autoComplete="nope"
+                    leftSection={<IconUser size={16} stroke={1.5} />}
+                    key={editForm.key("name")}
+                    {...editForm.getInputProps("name")}
+                  />
+                  <TextInput
+                    label={t("surname")}
+                    required
+                    autoComplete="nope"
+                    leftSection={<IconUser size={16} stroke={1.5} />}
+                    key={editForm.key("surname")}
+                    {...editForm.getInputProps("surname")}
+                  />
+                  <TextInput
+                    label={t("nickname")}
+                    autoComplete="nope"
+                    leftSection={<IconUser size={16} stroke={1.5} />}
+                    key={editForm.key("nickname")}
+                    {...editForm.getInputProps("nickname")}
+                  />
+                </Stack>
+              </Card>
+
+              <Card withBorder radius="lg" p="md" className={classes.editSection}>
+                <Stack gap="md">
+                  <Stack gap={2}>
+                    <Text fw={700}>{t("phone")}</Text>
+                    <Text size="xs" c="dimmed">
+                      {t("email")}
+                    </Text>
+                  </Stack>
+                  <TextInput
+                    label={t("phone")}
+                    required
+                    autoComplete="nope"
+                    leftSection={<IconPhone size={16} stroke={1.5} />}
+                    value={editPhoneValue}
+                    error={editForm.errors.phone}
+                    onChange={(e) => {
+                      const formatted = formatPhoneInput(e.currentTarget.value);
+                      setEditPhoneValue(formatted);
+                      editForm.setFieldValue("phone", formatted);
+                    }}
+                    onFocus={(e) => {
+                      if (!e.currentTarget.value) {
+                        setEditPhoneValue("0");
+                        editForm.setFieldValue("phone", "0");
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const formatted = formatPhoneInput(e.currentTarget.value);
+                      setEditPhoneValue(formatted);
+                      editForm.setFieldValue("phone", formatted);
+                    }}
+                  />
+                  <TextInput
+                    label={t("email")}
+                    autoComplete="nope"
+                    leftSection={<IconMail size={16} stroke={1.5} />}
+                    key={editForm.key("email")}
+                    {...editForm.getInputProps("email")}
+                  />
+                </Stack>
+              </Card>
             </SimpleGrid>
 
-            <SimpleGrid cols={2} spacing="md">
-              <TextInput
-                label={t("phone")}
-                required
-                autoComplete="nope"
-                leftSection={<IconPhone size={16} stroke={1.5} />}
-                key={editForm.key("phone")}
-                {...editForm.getInputProps("phone")}
-                onInput={(e) => {
-                  e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
-                }}
-                onBlur={(e) => {
-                  const normalized = normalizePhone(e.currentTarget.value);
-                  e.currentTarget.value = normalized;
-                  editForm.setFieldValue("phone", normalized);
-                }}
-              />
-              <TextInput
-                label={t("email")}
-                autoComplete="nope"
-                leftSection={<IconMail size={16} stroke={1.5} />}
-                key={editForm.key("email")}
-                {...editForm.getInputProps("email")}
-              />
-              <TextInput
-                label={t("nickname")}
-                autoComplete="nope"
-                leftSection={<IconUser size={16} stroke={1.5} />}
-                key={editForm.key("nickname")}
-                {...editForm.getInputProps("nickname")}
-              />
-            </SimpleGrid>
+            <Card withBorder radius="lg" p="md" className={classes.editSection}>
+              <Stack gap="md">
+                <Stack gap={2}>
+                  <Text fw={700}>{t("address")}</Text>
+                  <Text size="xs" c="dimmed">
+                    {t("addressPlaceholder")}
+                  </Text>
+                </Stack>
+                <GoogleAddressInput
+                  key={`${editingCustomer?.id ?? "edit"}-${editingCustomer?.address ?? ""}`}
+                  label={t("address")}
+                  placeholder={t("addressPlaceholder")}
+                  value={editForm.getValues().address}
+                  error={editForm.errors.address}
+                  onChange={(value) => editForm.setFieldValue("address", value)}
+                />
+              </Stack>
+            </Card>
 
-            <GoogleAddressInput
-              key={editForm.key("address")}
-              label={t("address")}
-              placeholder={t("addressPlaceholder")}
-              {...editForm.getInputProps("address")}
-            />
-
-            <Group justify="flex-end" mt="lg">
+            <Group justify="flex-end" className={classes.editActions}>
               <Button
                 variant="default"
                 onClick={() => {
                   setEditingCustomer(null);
+                  setEditPhoneValue("");
                   editHandlers.close();
                 }}
               >
@@ -612,4 +736,3 @@ export default function CustomersPage() {
     </>
   );
 }
-

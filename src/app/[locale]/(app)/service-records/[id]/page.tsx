@@ -40,6 +40,7 @@ import {
   IconHistory,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 
 type ServiceRecord = {
   id: string;
@@ -345,7 +346,7 @@ export default function ServiceRecordDetailPage() {
               <Text size="lg" fw={700}>
                 {record.customer.name} {record.customer.surname}
               </Text>
-              <Text size="sm" c="dimmed">{record.customer.phone}</Text>
+              <Text size="sm" c="dimmed">{formatPhone(record.customer.phone)}</Text>
               {record.customer.email && <Text size="sm" c="dimmed">{record.customer.email}</Text>}
               {record.customer.address && (
                 <Text size="sm" c="dimmed" lineClamp={2}>{record.customer.address}</Text>

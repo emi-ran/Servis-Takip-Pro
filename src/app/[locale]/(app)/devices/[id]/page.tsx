@@ -26,6 +26,7 @@ import {
   IconTool,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 
 type Customer = {
   id: string;
@@ -169,7 +170,7 @@ export default function DeviceDetailPage() {
           >
             {customer.name} {customer.surname}
           </Anchor>
-          <Text size="sm" c="dimmed">{customer.phone}</Text>
+          <Text size="sm" c="dimmed">{formatPhone(customer.phone)}</Text>
           {customer.email && <Text size="sm" c="dimmed">{customer.email}</Text>}
           {customer.address && <Text size="sm" c="dimmed">{customer.address}</Text>}
         </Stack>

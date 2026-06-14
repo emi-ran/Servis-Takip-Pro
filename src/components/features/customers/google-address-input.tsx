@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, type ReactNode } from "react";
 import { TextInput, Stack, Card, Text } from "@mantine/core";
 import { IconMapPin } from "@tabler/icons-react";
 import classes from "./google-address-input.module.css";
@@ -15,7 +15,7 @@ interface GoogleAddressInputProps {
   onChange?: (value: string) => void;
   label?: string;
   placeholder?: string;
-  error?: string;
+  error?: ReactNode;
 }
 
 export function GoogleAddressInput({ value, onChange, label, placeholder, error }: GoogleAddressInputProps) {
@@ -25,6 +25,7 @@ export function GoogleAddressInput({ value, onChange, label, placeholder, error 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [inputValue, setInputValue] = useState(value || "");
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const mapAddressRef = useRef("");
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
@@ -35,14 +36,29 @@ export function GoogleAddressInput({ value, onChange, label, placeholder, error 
         setIsReady(true);
       } else if (data.action === "suggestions") {
         if (data.predictions && data.status === "OK") {
-          setSuggestions(
-            data.predictions.map((p: { description: string; place_id: string }) => ({
+          const nextSuggestions = data.predictions.map((p: { description: string; place_id: string }) => ({
               description: p.description,
               place_id: p.place_id,
-            }))
-          );
+            }));
+
+          if (mapAddressRef.current && data.query === mapAddressRef.current) {
+            const firstSuggestion = nextSuggestions[0];
+            mapAddressRef.current = "";
+            if (firstSuggestion && iframeRef.current?.contentWindow) {
+              iframeRef.current.contentWindow.postMessage(
+                { action: "searchByPlaceId", placeId: firstSuggestion.place_id },
+                "*"
+              );
+            }
+            return;
+          }
+
+          setSuggestions(nextSuggestions);
           setShowSuggestions(true);
         } else {
+          if (data.query === mapAddressRef.current) {
+            mapAddressRef.current = "";
+          }
           setSuggestions([]);
           setShowSuggestions(false);
         }
@@ -60,6 +76,14 @@ export function GoogleAddressInput({ value, onChange, label, placeholder, error 
   useEffect(() => {
     setInputValue(value || "");
   }, [value]);
+
+  useEffect(() => {
+    const address = (value || "").trim();
+    if (!isReady || address.length < 3 || !iframeRef.current?.contentWindow) return;
+
+    mapAddressRef.current = address;
+    iframeRef.current.contentWindow.postMessage({ action: "getSuggestions", query: address }, "*");
+  }, [isReady, value]);
 
   const sendQuery = useCallback(
     (query: string) => {

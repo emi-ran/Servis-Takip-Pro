@@ -38,6 +38,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 
 type TaskType = "CIHAZ_ALINACAK" | "CIHAZ_BIRAKILACAK" | "BAKIM" | "KURULUM" | "DIGER";
 type TaskStatus = "PLANLANDI" | "DEVAM_EDIYOR" | "TAMAMLANDI" | "IPTAL";
@@ -185,7 +186,7 @@ export default function ScheduledTasksPage() {
 
   const customerOptions = (customersData?.customers ?? []).map((customer) => ({
     value: customer.id,
-    label: `${customer.name} ${customer.surname}${customer.nickname ? ` (${customer.nickname})` : ""} — ${customer.phone}`,
+    label: `${customer.name} ${customer.surname}${customer.nickname ? ` (${customer.nickname})` : ""} — ${formatPhone(customer.phone)}`,
   }));
 
   const userOptions = (usersData?.users ?? []).map((user) => ({
@@ -369,7 +370,7 @@ export default function ScheduledTasksPage() {
                                 <Anchor component={Link} href={`/customers/${task.customer.id}`} size="sm" fw={500}>
                                   {task.customer.name} {task.customer.surname}
                                 </Anchor>
-                                <Text size="xs" c="dimmed">{task.customer.phone}</Text>
+                                <Text size="xs" c="dimmed">{formatPhone(task.customer.phone)}</Text>
                               </Stack>
                             </Table.Td>
                             <Table.Td>

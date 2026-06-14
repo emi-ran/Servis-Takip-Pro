@@ -213,8 +213,10 @@ servis-takip/
         header.tsx
         color-scheme-script.tsx
         theme-toggle.tsx
-    features/                # Boş — feature bazlı component'ler için hazır
+    features/                # Feature bazlı component'ler
       customers/
+        google-address-input.tsx
+        google-address-input.module.css
       dashboard/
       devices/
       scheduled-tasks/
@@ -228,9 +230,15 @@ servis-takip/
       i18n.ts
       routing.ts
       navigation.ts
+      rate-limit.ts
     types/
       index.ts
     theme.ts
+  scripts/
+    mock-data.js             Test verisi oluşturma scripti
+  public/
+    maps.html                Google Maps iframe sayfası
+  backups/                   Otomatik yedekler (pg_dump)
   Dockerfile
   .env.example
   next.config.ts

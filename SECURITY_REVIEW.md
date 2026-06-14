@@ -20,7 +20,7 @@ Uygulanan duzeltmeler:
 
 ## 1. Session Revocation Eksikligi
 
-Durum: RESOLVED
+Durum: RESOLVED (cozuldu)
 
 Ilgili dosyalar:
 
@@ -63,12 +63,12 @@ mevcut token suresi dolana kadar eski yetkileri kullanmaya devam edebilir.
 
 ## 2. Public Setup Endpoint ve Otomatik Kurulum Tasarimi
 
-Durum: HIGH RISK
+Durum: RESOLVED (cozuldu — public setup API kaldirildi)
 
 Ilgili dosyalar:
 
 - `src/middleware.ts`
-- `prisma/seed.ts`
+- `prisma/seed.js`
 
 ### Sorun
 
@@ -94,7 +94,7 @@ Uygulamanin ilk kurulumu public erisilebilir HTTP endpoint uzerinden calisiyordu
 
 ## 3. Middleware Cookie Varligina Bakarak Auth Karari Veriyor
 
-Durum: REVISE
+Durum: RESOLVED (cozuldu — token dogrulamasi eklendi)
 
 Ilgili dosya:
 
@@ -123,7 +123,7 @@ Middleware sadece `session` cookie'sinin varligina bakiyor; token'in gecerliligi
 
 ## 4. Zayif Secret ve Admin Sifre Politikasi
 
-Durum: REVISE
+Durum: RESOLVED (cozuldu — minimumlar guclendirildi)
 
 Ilgili dosya:
 
@@ -152,7 +152,7 @@ Ilgili dosya:
 
 ## 5. Login Endpoint'te Rate Limit Yok
 
-Durum: REVISE
+Durum: RESOLVED (cozuldu — rate limit eklendi)
 
 Ilgili dosya:
 

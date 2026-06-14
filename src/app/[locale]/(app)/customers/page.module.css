@@ -1,0 +1,41 @@
+.editForm {
+  padding-top: 8px;
+}
+
+.editSummaryCard {
+  background: light-dark(var(--mantine-color-blue-0), var(--mantine-color-dark-6));
+  border-color: light-dark(var(--mantine-color-blue-1), var(--mantine-color-dark-4));
+}
+
+.editSection {
+  height: 100%;
+  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+}
+
+.nicknameBadge {
+  flex-shrink: 0;
+}
+
+.editActions {
+  padding-top: var(--mantine-spacing-xs);
+}
+
+@media (max-width: 48em) {
+  .editSummaryCard :global(.mantine-Group-root) {
+    align-items: flex-start;
+  }
+
+  .nicknameBadge {
+    display: none;
+  }
+
+  .editActions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .editActions :global(.mantine-Button-root) {
+    width: 100%;
+    min-height: 44px;
+  }
+}

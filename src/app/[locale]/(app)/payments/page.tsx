@@ -32,6 +32,7 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 
 type CustomerResponse = { id: string; name: string; surname: string };
 type ServiceRecordResponse = { id: string; trackingNo: number };
@@ -115,7 +116,7 @@ export default function PaymentsPage() {
 
   const customerOptions = (customersData?.customers ?? []).map((c) => ({
     value: c.id,
-    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${c.phone}`,
+    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${formatPhone(c.phone)}`,
   }));
 
   const form = useForm({
