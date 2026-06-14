@@ -6,18 +6,21 @@ import {
   TextInput,
   PasswordInput,
   Button,
-  Card,
   Title,
   Container,
   Stack,
   Text,
   ThemeIcon,
   Box,
+  Paper,
+  Badge,
+  SimpleGrid,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconTool, IconLock } from "@tabler/icons-react";
+import { IconCalendarCheck, IconDeviceLaptop, IconLock, IconShieldCheck, IconTool } from "@tabler/icons-react";
 import { useState } from "react";
+import classes from "./page.module.css";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
@@ -32,8 +35,8 @@ export default function LoginPage() {
       password: "",
     },
     validate: {
-      email: (v: string) => (/^[^\s@]+@[^\s@]+$/.test(v) ? null : "Geçerli bir e-posta girin"),
-      password: (v: string) => (v.length < 1 ? "Şifre gerekli" : null),
+      email: (v: string) => (/^[^\s@]+@[^\s@]+$/.test(v) ? null : t("emailInvalid")),
+      password: (v: string) => (v.length < 1 ? t("passwordRequired") : null),
     },
   });
 
@@ -58,10 +61,10 @@ export default function LoginPage() {
       }
 
       router.push("/dashboard");
-    } catch (error) {
+    } catch {
       notifications.show({
         color: "red",
-        title: "Hata",
+        title: tc("errorTitle"),
         message: tc("error"),
         autoClose: 5000,
       });
@@ -71,71 +74,78 @@ export default function LoginPage() {
   }
 
   return (
-    <Box
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "var(--mantine-color-gray-light)",
-      }}
-    >
-      <Container size={400} px="md">
-        <Card
-          withBorder
-          shadow="xl"
-          p="xl"
-          radius="lg"
-          style={{
-            borderColor: "var(--mantine-color-default-border)",
-            backgroundColor: "var(--mantine-color-body)",
-          }}
-        >
-          <Stack align="center" gap="xs" mb="lg">
-            <ThemeIcon size={48} radius="md" variant="gradient" gradient={{ from: "blue", to: "cyan" }}>
-              <IconTool size={26} stroke={1.5} />
-            </ThemeIcon>
-            <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
-              {tc("appName")}
-            </Title>
-            <Text c="dimmed" size="xs" fw={500}>
-              {t("profile")}
-            </Text>
-          </Stack>
-
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack gap="md">
-              <TextInput
-                label={t("email")}
-                placeholder="admin@ornek.com"
-                key={form.key("email")}
-                {...form.getInputProps("email")}
-                disabled={loading}
-                required
-                styles={{
-                  label: { fontWeight: 500, marginBottom: "4px" }
-                }}
-              />
-              <PasswordInput
-                label={t("password")}
-                placeholder="••••••••"
-                key={form.key("password")}
-                {...form.getInputProps("password")}
-                disabled={loading}
-                required
-                leftSection={<IconLock size={16} stroke={1.5} />}
-                styles={{
-                  label: { fontWeight: 500, marginBottom: "4px" }
-                }}
-              />
-              <Button type="submit" fullWidth mt="md" size="md" loading={loading}>
-                {t("login")}
-              </Button>
+    <Box className={classes.shell}>
+      <Container size="lg" className={classes.container}>
+        <Paper className={classes.panel} radius="xl" shadow="xl">
+          <Box className={classes.brandSide}>
+            <Badge className={classes.badge} variant="light" color="blue">
+              {t("badge")}
+            </Badge>
+            <Stack gap="lg" className={classes.brandContent}>
+              <ThemeIcon size={56} radius="lg" variant="filled" color="blue">
+                <IconTool size={30} stroke={1.7} />
+              </ThemeIcon>
+              <Box>
+                <Title order={1} className={classes.title}>
+                  {tc("appName")}
+                </Title>
+                <Text className={classes.subtitle}>{t("subtitle")}</Text>
+              </Box>
+              <SimpleGrid cols={{ base: 1, xs: 3 }} spacing="sm" className={classes.metrics}>
+                <Box className={classes.metric}>
+                  <IconDeviceLaptop size={19} stroke={1.7} />
+                  <Text size="xs" fw={700}>{t("metricDevices")}</Text>
+                </Box>
+                <Box className={classes.metric}>
+                  <IconCalendarCheck size={19} stroke={1.7} />
+                  <Text size="xs" fw={700}>{t("metricTasks")}</Text>
+                </Box>
+                <Box className={classes.metric}>
+                  <IconShieldCheck size={19} stroke={1.7} />
+                  <Text size="xs" fw={700}>{t("metricSecure")}</Text>
+                </Box>
+              </SimpleGrid>
             </Stack>
-          </form>
-        </Card>
+          </Box>
+
+          <Box className={classes.formSide}>
+            <Stack gap="xs" mb="xl">
+              <Text className={classes.eyebrow}>{t("formEyebrow")}</Text>
+              <Title order={2} className={classes.formTitle}>{t("formTitle")}</Title>
+              <Text c="dimmed" size="sm">{t("formDescription")}</Text>
+            </Stack>
+
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+              <Stack gap="md">
+                <TextInput
+                  label={t("email")}
+                  placeholder={t("emailPlaceholder")}
+                  key={form.key("email")}
+                  {...form.getInputProps("email")}
+                  disabled={loading}
+                  required
+                  size="md"
+                  classNames={{ label: classes.inputLabel }}
+                />
+                <PasswordInput
+                  label={t("password")}
+                  placeholder={t("passwordPlaceholder")}
+                  key={form.key("password")}
+                  {...form.getInputProps("password")}
+                  disabled={loading}
+                  required
+                  size="md"
+                  leftSection={<IconLock size={16} stroke={1.7} />}
+                  classNames={{ label: classes.inputLabel }}
+                />
+                <Button type="submit" fullWidth size="md" loading={loading} className={classes.submitButton}>
+                  {t("login")}
+                </Button>
+              </Stack>
+            </form>
+          </Box>
+        </Paper>
       </Container>
     </Box>
   );
 }
-

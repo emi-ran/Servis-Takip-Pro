@@ -86,20 +86,23 @@ npm install
 # 3. Veritabanı şemasını oluşturun
 npx prisma db push
 
-# 4. Geliştirme sunucusunu başlatın
+# 4. İlk şirket ve admin kullanıcısını oluşturun
+npm run db:seed
+
+# 5. Geliştirme sunucusunu başlatın
 npm run dev
 ```
 
-İlk çalıştırmada `.env`'deki admin bilgileriyle kullanıcı ve şirket hesabınız **otomatik oluşturulur**. Tarayıcınızda `http://localhost:3000` adresine gidip giriş yapmanız yeterli.
+Seed komutu `.env`'deki admin bilgileriyle ilk kullanıcı ve şirket hesabını oluşturur. Tarayıcınızda `http://localhost:3000` adresine gidip giriş yapmanız yeterli.
 
 ### 📝 Ortam Değişkenleri
 
 | Değişken | Açıklama | Zorunlu |
 |---|---|---|
 | `DATABASE_URL` | PostgreSQL bağlantı adresi | ✅ |
-| `JWT_SECRET` | JWT imzalama anahtarı (en az 8 karakter) | ✅ |
+| `JWT_SECRET` | JWT imzalama anahtarı (en az 32 karakter) | ✅ |
 | `ADMIN_EMAIL` | Admin e-posta adresi | ✅ |
-| `ADMIN_PASSWORD` | Admin şifresi | ✅ |
+| `ADMIN_PASSWORD` | Admin şifresi (en az 12 karakter) | ✅ |
 | `ADMIN_NAME` | Admin adı | ✅ |
 | `ADMIN_SURNAME` | Admin soyadı | ✅ |
 | `COMPANY_NAME` | Şirket adı | ✅ |
@@ -140,8 +143,7 @@ docker run -p 3000:3000 --env-file .env servis-takip
 │   │   │   ├── service-records/  Servis kayıtları
 │   │   │   ├── payments/      Tahsilatlar
 │   │   │   ├── scheduled-tasks/  Planlı işler
-│   │   │   ├── staff/          Personel
-│   │   │   └── settings/      Ayarlar
+│   │   │   └── staff/          Personel
 │   │   └── api/               API route'ları
 │   ├── components/
 │   │   ├── providers/         Auth, Query sağlayıcıları
@@ -169,6 +171,9 @@ docker run -p 3000:3000 --env-file .env servis-takip
 | `npm run db:push` | Prisma şemasını DB'ye uygula |
 | `npm run db:studio` | Prisma Studio (veritabanı görüntüleyici) |
 | `npm run db:seed` | Seed scriptini çalıştır |
+| `npm run db:mock` | Çok tehlikeli test verisi scripti (önce yedek alır) |
+
+> ⚠️ `npm run db:mock` sadece geliştirme/test veritabanında çalıştırılmalıdır. Çalıştırmadan önce birkaç kez onay ister ve otomatik yedek alır.
 
 ---
 

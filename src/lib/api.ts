@@ -22,6 +22,12 @@ export async function apiClient<T>(
   });
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+      window.location.replace("/login");
+      throw new Error("Oturum geçersiz");
+    }
+
     const error = await response.json().catch(() => ({ message: "Bir hata oluştu" }));
     throw new Error(error.message || `HTTP ${response.status}`);
   }
