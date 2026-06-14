@@ -134,12 +134,12 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 ## Veritabanı Şeması
 
 ```
-Company        (id, name, slug, createdAt)
-User           (id, email, passwordHash, name, surname, role, companyId, createdAt)
-Customer       (id, companyId, name, surname, phone, email?, address?, createdAt)
-Device         (id, customerId, companyId, category, brand, model, serialNo, notes?, createdAt)
+Company        (id, name, slug, createdAt, updatedAt)
+User           (id, email, passwordHash, name, surname, role, companyId, createdAt, updatedAt)
+Customer       (id, companyId, name, surname, phone, email?, address?, nickname?, createdAt, updatedAt)
+Device         (id, customerId, companyId, category, brand, model, serialNo, notes?, createdAt, updatedAt)
 ServiceRecord  (id, companyId, customerId, deviceId, trackingNo, status, priority,
-                faultDescription, assignedUserId?, pricing?, createdAt)
+                faultDescription, assignedUserId?, pricing?, createdAt, updatedAt)
 StatusHistory  (id, serviceRecordId, fromStatus, toStatus, changedById, createdAt)
 ServiceNote    (id, serviceRecordId, content, isCustomerVisible, authorId, createdAt)
 Payment        (id, companyId, customerId, serviceRecordId?, deviceId?, type, amount, paymentMethod, date, description, createdAt)
@@ -152,8 +152,11 @@ ScheduledTask  (id, companyId, customerId, title, description, taskType, date, s
 
 ```
 servis-takip/
+  .env.example
+  next.config.ts
   prisma/
     schema.prisma
+    seed.js
   messages/
     tr.json
   src/
@@ -165,8 +168,13 @@ servis-takip/
       [locale]/
         layout.tsx               # Mantine + intl + QueryProvider
         page.tsx                 # Locale root redirect → dashboard
-        setup/page.tsx           # İlk kurulum ekranı
-        login/page.tsx           # Standalone login (AppShell yok)
+        setup/                   # İlk kurulum ekranı
+          page.tsx
+          page.module.css
+          setup-form.tsx
+        login/                   # Standalone login (AppShell yok)
+          page.tsx
+          page.module.css
         (app)/                   # Route group — AppShell'li sayfalar
           layout.tsx             # AppShell wrapper
           dashboard/page.tsx
@@ -178,7 +186,6 @@ servis-takip/
             [id]/page.tsx
           service-records/
             page.tsx
-            new/page.tsx
             [id]/page.tsx
           payments/
             page.tsx
@@ -222,6 +229,7 @@ servis-takip/
         theme-toggle.tsx
       ui/
         logo-mark.tsx            # SVG logo bileşeni
+        pagination.tsx           # Paylaşılan sayfalama bileşeni
       features/                  # UI bileşenleri (presentational)
         customers/
           google-address-input.tsx

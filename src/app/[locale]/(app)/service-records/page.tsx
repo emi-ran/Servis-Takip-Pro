@@ -22,8 +22,10 @@ import {
   Badge,
   Tooltip,
   Select,
+  Textarea,
 } from "@mantine/core";
-import { Link } from "@/lib/navigation";
+import { Link, useRouter } from "@/lib/navigation";
+import { useForm } from "@mantine/form";
 import {
   IconSearch,
   IconPlus,
@@ -31,8 +33,10 @@ import {
   IconAlertCircle,
   IconClipboardList,
   IconEdit,
+  IconDeviceFloppy,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { formatPhone } from "@/lib/phone";
 
 type ServiceRecord = {
   id: string;
@@ -71,10 +75,72 @@ const priorityColors: Record<string, string> = {
   ACIL: "red",
 };
 
+type Customer = { id: string; name: string; surname: string; nickname: string | null; phone: string };
+type Device = { id: string; brand: string; model: string; category: string; serialNo: string };
+
 export default function ServiceRecordsPage() {
   const t = useTranslations("serviceRecords");
   const ct = useTranslations("common");
   const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const [createOpened, createHandlers] = useDisclosure(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
+
+  const form = useForm({
+    mode: "uncontrolled" as const,
+    initialValues: { customerId: "", deviceId: "", faultDescription: "", priority: "NORMAL" },
+    validate: {
+      customerId: (v: string) => (v.length < 1 ? t("customerRequired") : null),
+      deviceId: (v: string) => (v.length < 1 ? t("deviceRequired") : null),
+      faultDescription: (v: string) => (v.length < 1 ? t("faultRequired") : null),
+    },
+  });
+
+  const { data: customersData } = useQuery<{ customers: Customer[] }>({
+    queryKey: ["customers-for-service"],
+    queryFn: () => apiClient("/api/customers", { params: { pageSize: "1000" } }),
+  });
+
+  const { data: devicesData } = useQuery<{ devices: Device[] }>({
+    queryKey: ["devices-for-service", selectedCustomerId],
+    queryFn: () =>
+      apiClient("/api/devices", {
+        params: selectedCustomerId
+          ? { pageSize: "1000", customerId: selectedCustomerId }
+          : { pageSize: "1000" },
+      }),
+    enabled: selectedCustomerId.length > 0,
+  });
+
+  const customerOptions = (customersData?.customers ?? []).map((c) => ({
+    value: c.id,
+    label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${formatPhone(c.phone)}`,
+  }));
+
+  const deviceOptions = (devicesData?.devices ?? []).map((d) => ({
+    value: d.id,
+    label: `${d.brand} ${d.model} — ${d.category}${d.serialNo ? ` (${d.serialNo})` : ""}`,
+  }));
+
+  const createMutation = useMutation({
+    mutationFn: (values: typeof form.values) =>
+      apiClient<{ serviceRecord: { id: string } }>("/api/service-records", {
+        method: "POST",
+        body: values,
+      }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["service-records"] });
+      notifications.show({ title: ct("success"), message: t("created"), color: "green" });
+      form.reset();
+      setSelectedCustomerId("");
+      createHandlers.close();
+      router.push(`/service-records/${data.serviceRecord.id}`);
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
 
   const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
@@ -211,7 +277,7 @@ export default function ServiceRecordsPage() {
               {t("pageDescription")}
             </Text>
           </Stack>
-          <Button leftSection={<IconPlus size={16} />} component={Link} href="/service-records/new" prefetch={false}>
+          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
             {t("new")}
           </Button>
         </Group>
@@ -287,9 +353,7 @@ export default function ServiceRecordsPage() {
               </Text>
               <Button
                 leftSection={<IconPlus size={16} />}
-                component={Link}
-                href="/service-records/new"
-                prefetch={false}
+                onClick={createHandlers.open}
                 mt="xs"
               >
                 {t("new")}
@@ -330,6 +394,114 @@ export default function ServiceRecordsPage() {
           </>
         )}
       </Stack>
+
+      <Modal
+        opened={createOpened}
+        onClose={() => {
+          form.reset();
+          setSelectedCustomerId("");
+          createHandlers.close();
+        }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {t("new")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {t("createDescription")}
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+        transitionProps={{ transition: "fade", duration: 150 }}
+      >
+        <form
+          autoComplete="nope"
+          onSubmit={form.onSubmit((values) => createMutation.mutate(values))}
+          style={{ paddingTop: "8px" }}
+        >
+          <Stack gap="md">
+            <Select
+              label={t("customer")}
+              placeholder={t("customerPlaceholder")}
+              required
+              searchable
+              data={customerOptions}
+              limit={5}
+              autoComplete="nope"
+              key={form.key("customerId")}
+              {...form.getInputProps("customerId")}
+              onChange={(value) => {
+                form.setFieldValue("customerId", value || "");
+                form.setFieldValue("deviceId", "");
+                setSelectedCustomerId(value || "");
+              }}
+            />
+
+            <Select
+              label={t("device")}
+              placeholder={selectedCustomerId ? t("devicePlaceholder") : t("selectCustomerFirst")}
+              required
+              searchable
+              data={deviceOptions}
+              limit={10}
+              disabled={!selectedCustomerId}
+              autoComplete="nope"
+              key={form.key("deviceId")}
+              {...form.getInputProps("deviceId")}
+            />
+
+            <Textarea
+              label={t("faultDescription")}
+              placeholder={t("faultPlaceholder")}
+              required
+              minRows={4}
+              maxRows={8}
+              autosize
+              autoComplete="nope"
+              key={form.key("faultDescription")}
+              {...form.getInputProps("faultDescription")}
+            />
+
+            <Select
+              label={t("priority")}
+              data={[
+                { value: "DUSUK", label: t("priority_label.DUSUK") },
+                { value: "NORMAL", label: t("priority_label.NORMAL") },
+                { value: "YUKSEK", label: t("priority_label.YUKSEK") },
+                { value: "ACIL", label: t("priority_label.ACIL") },
+              ]}
+              autoComplete="nope"
+              key={form.key("priority")}
+              {...form.getInputProps("priority")}
+            />
+
+            <Group justify="flex-end" mt="lg">
+              <Button
+                variant="default"
+                onClick={() => {
+                  form.reset();
+                  setSelectedCustomerId("");
+                  createHandlers.close();
+                }}
+              >
+                {ct("cancel")}
+              </Button>
+              <Button
+                type="submit"
+                loading={createMutation.isPending}
+                leftSection={<IconDeviceFloppy size={16} />}
+                px="xl"
+              >
+                {ct("save")}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
 
       <Modal
         opened={deleteOpened}

@@ -129,7 +129,8 @@ docker compose up --build
 ```
 📦 servis-takip/
 ├── prisma/
-│   └── schema.prisma              Veritabanı modelleri
+│   ├── schema.prisma              Veritabanı modelleri
+│   └── seed.js                    Opsiyonel seed scripti
 ├── messages/
 │   └── tr.json                    Türkçe UI metinleri
 ├── src/
@@ -140,7 +141,12 @@ docker compose up --build
 │   │   ├── icon.svg               Favicon / app ikonu
 │   │   ├── [locale]/              next-intl locale segment
 │   │   │   ├── setup/             İlk kurulum ekranı
+│   │   │   │   ├── page.tsx
+│   │   │   │   ├── page.module.css
+│   │   │   │   └── setup-form.tsx
 │   │   │   ├── login/             Giriş sayfası
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── page.module.css
 │   │   │   └── (app)/             Ana uygulama (AppShell)
 │   │   │       ├── dashboard/     Genel görünüm
 │   │   │       ├── customers/     Müşteriler
@@ -160,8 +166,10 @@ docker compose up --build
 │   │       └── scheduled-tasks/   Planlı iş CRUD
 │   ├── components/
 │   │   ├── providers/             Auth, Query sağlayıcıları
-│   │   ├── layout/                AppShell, Sidebar, Header
-│   │   ├── ui/                    Ortak bileşenler (logo-mark.tsx)
+│   │   ├── layout/                AppShell, Sidebar, Header, ThemeToggle
+│   │   ├── ui/                    Ortak bileşenler
+│   │   │   ├── logo-mark.tsx      SVG logo bileşeni
+│   │   │   └── pagination.tsx     Paylaşılan sayfalama bileşeni
 │   │   └── features/              UI bileşenleri (presentational)
 │   │       └── customers/         Google Adres giriş bileşeni
 │   ├── features/                  Özellik bazlı bileşen katalogları (boş — hazırlık)
@@ -186,8 +194,10 @@ docker compose up --build
 ├── SECURITY_REVIEW.md             Güvenlik denetim kaydı
 ├── AGENTS.md                      Proje kuralları
 ├── PLAN.md                        Uygulama planı ve phase takibi
+├── BUGS.md                        Bilinen sorunlar
 ├── Dockerfile
-└── .env.example
+├── .env.example
+└── next.config.ts                 Next.js yapılandırması
 ```
 
 ---

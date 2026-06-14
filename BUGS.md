@@ -2,8 +2,11 @@
 
 ## Lint Hataları
 
-- `src/components/layout/theme-toggle.tsx` — Önceden var olan lint hatası, mevcut çalışmayı etkilemez.
-- `src/components/providers/auth-provider.tsx` — Önceden var olan lint hatası, mevcut çalışmayı etkilemez.
+- `src/components/layout/theme-toggle.tsx` — Önceden var olan lint hatası (`useEffect` içinde `setState`), mevcut çalışmayı etkilemez.
+- `src/components/providers/auth-provider.tsx` — Önceden var olan lint hatası (`useEffect` içinde `setState`), mevcut çalışmayı etkilemez.
+- `prisma/seed.js` — CommonJS modülü olduğu için `require()` kullanımı lint hatası verir, çalışmayı etkilemez.
+- `scripts/docker-entrypoint.js` — CommonJS modülü olduğu için `require()` kullanımı lint hatası verir, çalışmayı etkilemez.
+- `scripts/mock-data.js` — CommonJS modülü olduğu için `require()` kullanımı lint hatası verir, çalışmayı etkilemez.
 
 ## Uyarılar
 

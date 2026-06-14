@@ -123,7 +123,7 @@ Middleware sadece `session` cookie'sinin varlığına bakıyor; token'in geçerl
 
 ## 4. Zayıf Secret ve Admin Şifre Politikası
 
-Durum: RESOLVED (çözüldü — minimumlar güçlendirildi)
+Durum: RESOLVED (çözüldü — JWT_SECRET minimum 32 karaktere yükseltildi, ADMIN_PASSWORD ortam değişkeni kaldırıldı)
 
 İlgili dosya:
 
@@ -131,22 +131,16 @@ Durum: RESOLVED (çözüldü — minimumlar güçlendirildi)
 
 ### Sorun
 
-`JWT_SECRET` için minimum 8 karakter, `ADMIN_PASSWORD` için minimum 4 karakter zorunluluğu var.
+`JWT_SECRET` için minimum 8 karakter zorunluluğu vardı. Eski `ADMIN_PASSWORD` ortam değişkeni için minimum 4 karakter zorunluluğu vardı.
 
 ### Etki
 
 - Üretim ortamında zayıf secret kullanımı daha olası olur.
-- Admin hesabı kaba kuvvet saldırılarına karşı daha zayıf kalır.
 
-### Kanıt
+### Çözüm
 
-- `src/lib/env.ts` zod kuralları bunu açıkça gösteriyor.
-
-### Öneri
-
-- `JWT_SECRET`: minimum 32 karakter
-- `ADMIN_PASSWORD`: minimum 8 veya tercihen 12 karakter
-- Mümkünse complexity yerine uzunluk odaklı kural kullanın.
+- `JWT_SECRET`: minimum 32 karaktere yükseltildi.
+- `ADMIN_PASSWORD` ortam değişkeni tamamen kaldırıldı; admin şifresi artık `/setup` ekranından form aracılığıyla alınıyor. Setup formu şifre için minimum 8 karakter zorunluluğu uyguluyor.
 
 ---
 

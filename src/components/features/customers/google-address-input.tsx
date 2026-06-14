@@ -26,6 +26,7 @@ export function GoogleAddressInput({ value, onChange, label, placeholder, error 
   const [inputValue, setInputValue] = useState(value || "");
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const mapAddressRef = useRef("");
+  const initializedRef = useRef(false);
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
@@ -75,12 +76,18 @@ export function GoogleAddressInput({ value, onChange, label, placeholder, error 
 
   useEffect(() => {
     setInputValue(value || "");
+    const trimmed = (value || "").trim();
+    if (trimmed.length < 3) {
+      initializedRef.current = true;
+    }
   }, [value]);
 
   useEffect(() => {
     const address = (value || "").trim();
     if (!isReady || address.length < 3 || !iframeRef.current?.contentWindow) return;
+    if (initializedRef.current) return;
 
+    initializedRef.current = true;
     mapAddressRef.current = address;
     iframeRef.current.contentWindow.postMessage({ action: "getSuggestions", query: address }, "*");
   }, [isReady, value]);

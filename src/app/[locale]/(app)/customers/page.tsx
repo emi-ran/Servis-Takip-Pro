@@ -398,21 +398,6 @@ export default function CustomersPage() {
           className={classes.editForm}
         >
           <Stack gap="lg">
-            <Card withBorder radius="lg" p="md" className={classes.editSummaryCard}>
-              <Group gap="md" wrap="nowrap">
-                <ThemeIcon size={48} radius="xl" variant="light" color="blue">
-                  <IconPlus size={24} stroke={1.6} />
-                </ThemeIcon>
-                <Stack gap={2}>
-                  <Text fw={700} size="lg">
-                    {t("new")}
-                  </Text>
-                  <Text size="sm" c="dimmed">
-                    {t("createDescription")}
-                  </Text>
-                </Stack>
-              </Group>
-            </Card>
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
               <Card withBorder radius="lg" p="md" className={classes.editSection}>
@@ -506,7 +491,7 @@ export default function CustomersPage() {
                   </Text>
                 </Stack>
                 <GoogleAddressInput
-                  key={createForm.key("address")}
+                  key="create-customer-address"
                   label={t("address")}
                   placeholder={t("addressPlaceholder")}
                   value={createForm.getValues().address}
