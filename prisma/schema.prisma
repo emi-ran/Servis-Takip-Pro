@@ -161,7 +161,9 @@ model ServiceRecord {
   @@index([companyId])
   @@index([customerId])
   @@index([deviceId])
+  @@index([assignedUserId])
   @@index([status])
+  @@index([companyId, status])
 }
 
 model ServiceStatusHistory {
@@ -211,6 +213,7 @@ model Payment {
   @@index([companyId])
   @@index([customerId])
   @@index([serviceRecordId])
+  @@index([companyId, type, date])
 }
 
 model ScheduledTask {
@@ -233,4 +236,5 @@ model ScheduledTask {
   @@index([companyId])
   @@index([customerId])
   @@index([date])
+  @@index([assignedUserId])
 }

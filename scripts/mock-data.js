@@ -1,5 +1,6 @@
 const { PrismaClient, ServiceStatus, ServicePriority, PaymentType, PaymentMethod, TaskType, TaskStatus } = require("@prisma/client");
 const { spawnSync } = require("child_process");
+const { randomUUID } = require("crypto");
 const { mkdirSync, existsSync } = require("fs");
 const { join } = require("path");
 const readline = require("readline");
@@ -226,6 +227,14 @@ function formatDate(daysAgo, rng, base = new Date()) {
 
 function newDateForward(minDays, maxDays, rng, base = new Date()) {
   return formatDate(-randomInt(minDays, maxDays, rng), rng, base);
+}
+
+async function createManyInChunks(delegate, data, progressKey, progress, chunkSize = 1000) {
+  for (let i = 0; i < data.length; i += chunkSize) {
+    const chunk = data.slice(i, i + chunkSize);
+    await delegate.createMany({ data: chunk });
+    progress[progressKey] = (progress[progressKey] || 0) + chunk.length;
+  }
 }
 
 function generateEmail(name, surname, index, rng) {
@@ -483,30 +492,32 @@ async function main() {
   showProgress();
 
   const createdCustomers = [];
+  const customerRows = [];
   for (let i = 0; i < counts.customers; i += 1) {
     const name = pick(FIRST_NAMES, rng);
     const surname = pick(LAST_NAMES, rng);
     const nickname = generateNickname(name, surname, rng);
 
-    const customer = await prisma.customer.create({
-      data: {
-        companyId: company.id,
-        name,
-        surname,
-        phone: generatePhone(rng),
-        email: generateEmail(name, surname, i + 1, rng),
-        address: generateAddress(rng),
-        nickname,
-      },
-    });
+    const customer = {
+      id: randomUUID(),
+      companyId: company.id,
+      name,
+      surname,
+      phone: generatePhone(rng),
+      email: generateEmail(name, surname, i + 1, rng),
+      address: generateAddress(rng),
+      nickname,
+    };
     createdCustomers.push(customer);
-    progress.customers += 1;
+    customerRows.push(customer);
     doneSoFar += 1;
     if (doneSoFar % 25 === 0) showProgress();
   }
+  await createManyInChunks(prisma.customer, customerRows, "customers", progress);
 
   // Devices
   const createdDevices = [];
+  const deviceRows = [];
   const customerIdsForDevices = [];
   for (let i = 0; i < counts.customers; i += 1) {
     const times = Math.ceil(counts.devices / counts.customers);
@@ -526,34 +537,38 @@ async function main() {
     const category = pick(Object.keys(CATEGORY_BRAND_MODELS), rng);
     const { brand, model } = generateBrandAndModel(category, rng);
 
-    const device = await prisma.device.create({
-      data: {
-        companyId: company.id,
-        customerId: custId,
-        category,
-        brand,
-        model,
-        serialNo: generateSerialNo(category, i + 1, rng),
-        notes: rng() > 0.55 ? pickWeighted([
-          { value: "İkinci el cihaz", weight: 2 },
-          { value: "Garantili", weight: 3 },
-          { value: "Garanti süresi dolmuş", weight: 3 },
-          { value: "Sıfır cihaz", weight: 2 },
-          { value: "Yedek cihaz", weight: 1 },
-          { value: "Faturalı", weight: 2 },
-          { value: "Elden teslim alındı", weight: 1 },
-          { value: "Kutusuyla birlikte", weight: 1 },
-        ], rng) : null,
-      },
-    });
+    const device = {
+      id: randomUUID(),
+      companyId: company.id,
+      customerId: custId,
+      category,
+      brand,
+      model,
+      serialNo: generateSerialNo(category, i + 1, rng),
+      notes: rng() > 0.55 ? pickWeighted([
+        { value: "İkinci el cihaz", weight: 2 },
+        { value: "Garantili", weight: 3 },
+        { value: "Garanti süresi dolmuş", weight: 3 },
+        { value: "Sıfır cihaz", weight: 2 },
+        { value: "Yedek cihaz", weight: 1 },
+        { value: "Faturalı", weight: 2 },
+        { value: "Elden teslim alındı", weight: 1 },
+        { value: "Kutusuyla birlikte", weight: 1 },
+      ], rng) : null,
+    };
     createdDevices.push(device);
-    progress.devices += 1;
+    deviceRows.push(device);
     doneSoFar += 1;
     if (doneSoFar % 25 === 0) showProgress();
   }
+  await createManyInChunks(prisma.device, deviceRows, "devices", progress);
 
   // Service Records
   const createdRecords = [];
+  const serviceRecordRows = [];
+  const statusHistoryRows = [];
+  const serviceNoteRows = [];
+  const paymentRows = [];
   const deviceIdsForSr = [];
   for (let i = 0; i < createdDevices.length; i += 1) {
     const times = Math.ceil(counts.serviceRecords / createdDevices.length);
@@ -581,26 +596,25 @@ async function main() {
     const status = pick(statusesAvailable, rng);
     const fault = pick(FAULTS, rng);
 
-    const record = await prisma.serviceRecord.create({
-      data: {
-        companyId: company.id,
-        customerId: custId,
-        deviceId,
-        faultDescription: fault,
-        status,
-        priority: pickWeighted([
-          { value: ServicePriority.DUSUK, weight: 2 },
-          { value: ServicePriority.NORMAL, weight: 5 },
-          { value: ServicePriority.YUKSEK, weight: 2 },
-          { value: ServicePriority.ACIL, weight: 1 },
-        ], rng),
-        assignedUserId: pick(users, rng).id,
-        pricing: rng() > 0.25 ? randomDecimal(150, 18000, 2, rng) : null,
-        createdAt: formatDate(randomInt(0, 120, rng), rng),
-      },
-    });
+    const record = {
+      id: randomUUID(),
+      companyId: company.id,
+      customerId: custId,
+      deviceId,
+      faultDescription: fault,
+      status,
+      priority: pickWeighted([
+        { value: ServicePriority.DUSUK, weight: 2 },
+        { value: ServicePriority.NORMAL, weight: 5 },
+        { value: ServicePriority.YUKSEK, weight: 2 },
+        { value: ServicePriority.ACIL, weight: 1 },
+      ], rng),
+      assignedUserId: pick(users, rng).id,
+      pricing: rng() > 0.25 ? randomDecimal(150, 18000, 2, rng) : null,
+      createdAt: formatDate(randomInt(0, 120, rng), rng),
+    };
     createdRecords.push(record);
-    progress.serviceRecords += 1;
+    serviceRecordRows.push(record);
     doneSoFar += 1;
     if (doneSoFar % 25 === 0) showProgress();
 
@@ -622,14 +636,13 @@ async function main() {
     }
 
     for (let h = 0; h < historyEntries.length; h += 1) {
-      await prisma.serviceStatusHistory.create({
-        data: {
-          serviceRecordId: record.id,
-          fromStatus: historyEntries[h].fromStatus,
-          toStatus: historyEntries[h].toStatus,
-          changedById: pick(users, rng).id,
-          createdAt: formatDate(randomInt(2, 80, rng), rng),
-        },
+      statusHistoryRows.push({
+        id: randomUUID(),
+        serviceRecordId: record.id,
+        fromStatus: historyEntries[h].fromStatus,
+        toStatus: historyEntries[h].toStatus,
+        changedById: pick(users, rng).id,
+        createdAt: formatDate(randomInt(2, 80, rng), rng),
       });
     }
 
@@ -637,14 +650,13 @@ async function main() {
     if (rng() > 0.4) {
       const noteCount = randomInt(1, 3, rng);
       for (let n = 0; n < noteCount; n += 1) {
-        await prisma.serviceNote.create({
-          data: {
-            serviceRecordId: record.id,
-            content: pick(NOTE_TEMPLATES, rng),
-            isCustomerVisible: rng() > 0.4,
-            authorId: pick(users, rng).id,
-            createdAt: formatDate(randomInt(0, 60, rng), rng),
-          },
+        serviceNoteRows.push({
+          id: randomUUID(),
+          serviceRecordId: record.id,
+          content: pick(NOTE_TEMPLATES, rng),
+          isCustomerVisible: rng() > 0.4,
+          authorId: pick(users, rng).id,
+          createdAt: formatDate(randomInt(0, 60, rng), rng),
         });
       }
     }
@@ -654,17 +666,16 @@ async function main() {
       const payCount = randomInt(1, 2, rng);
       for (let p = 0; p < payCount && progress.payments < counts.payments; p += 1) {
         const isDebt = p === 0 || rng() > 0.5;
-        await prisma.payment.create({
-          data: {
-            companyId: company.id,
-            customerId: custId,
-            serviceRecordId: record.id,
-            type: isDebt ? PaymentType.BORC : PaymentType.TAHSILAT,
-            paymentMethod: pick(Object.values(PaymentMethod), rng),
-            amount: isDebt ? randomDecimal(250, 12000, 2, rng) : randomDecimal(100, 8000, 2, rng),
-            date: formatDate(randomInt(0, 90, rng), rng),
-            description: isDebt ? pick(["Servis ücreti", "Tamir ücreti", "Parça bedeli", "İşçilik ücreti", "Keşif ücreti"], rng) : pick(["Nakit tahsilat", "Kredi kartı tahsilat", "Havale/EFT"], rng),
-          },
+        paymentRows.push({
+          id: randomUUID(),
+          companyId: company.id,
+          customerId: custId,
+          serviceRecordId: record.id,
+          type: isDebt ? PaymentType.BORC : PaymentType.TAHSILAT,
+          paymentMethod: pick(Object.values(PaymentMethod), rng),
+          amount: isDebt ? randomDecimal(250, 12000, 2, rng) : randomDecimal(100, 8000, 2, rng),
+          date: formatDate(randomInt(0, 90, rng), rng),
+          description: isDebt ? pick(["Servis ücreti", "Tamir ücreti", "Parça bedeli", "İşçilik ücreti", "Keşif ücreti"], rng) : pick(["Nakit tahsilat", "Kredi kartı tahsilat", "Havale/EFT"], rng),
         });
         progress.payments += 1;
         doneSoFar += 1;
@@ -683,16 +694,15 @@ async function main() {
     for (let i = 0; i < payCustIds.length; i += 1) {
       const custId = payCustIds[i];
       const isDebt = rng() > 0.4;
-      await prisma.payment.create({
-          data: {
-            companyId: company.id,
-            customerId: custId,
-            type: isDebt ? PaymentType.BORC : PaymentType.TAHSILAT,
-            paymentMethod: pick(Object.values(PaymentMethod), rng),
-            amount: isDebt ? randomDecimal(100, 15000, 2, rng) : randomDecimal(50, 10000, 2, rng),
-            date: formatDate(randomInt(0, 180, rng), rng),
-            description: isDebt ? pick(["Genel borç", "Vade farkı", "Önceki hizmet", "Cari hesap"], rng) : pick(["Elden ödeme", "Kart ile ödeme", "Havale/EFT"], rng),
-        },
+      paymentRows.push({
+        id: randomUUID(),
+        companyId: company.id,
+        customerId: custId,
+        type: isDebt ? PaymentType.BORC : PaymentType.TAHSILAT,
+        paymentMethod: pick(Object.values(PaymentMethod), rng),
+        amount: isDebt ? randomDecimal(100, 15000, 2, rng) : randomDecimal(50, 10000, 2, rng),
+        date: formatDate(randomInt(0, 180, rng), rng),
+        description: isDebt ? pick(["Genel borç", "Vade farkı", "Önceki hizmet", "Cari hesap"], rng) : pick(["Elden ödeme", "Kart ile ödeme", "Havale/EFT"], rng),
       });
       progress.payments += 1;
       doneSoFar += 1;
@@ -702,46 +712,54 @@ async function main() {
 
   // Scheduled Tasks
   const taskCustIds = [];
+  const scheduledTaskRows = [];
   for (let i = 0; i < counts.scheduledTasks; i += 1) {
     taskCustIds.push(pick(createdCustomers, rng).id);
   }
   for (let i = 0; i < taskCustIds.length; i += 1) {
     const custId = taskCustIds[i];
     const title = pick(TASK_TITLES, rng);
-    await prisma.scheduledTask.create({
-      data: {
-        companyId: company.id,
-        customerId: custId,
-        title,
-        description: rng() > 0.3 ? pickWeighted([
-          { value: "Müşteriyle iletişime geçildi, randevu bekleniyor.", weight: 2 },
-          { value: "Yedek parça sipariş edildi.", weight: 2 },
-          { value: "Adreste kimse olmadı, yeniden planlanacak.", weight: 1 },
-          { value: "Ön keşif yapıldı, fiyat teklifi hazırlanacak.", weight: 1 },
-          { value: "Müşteri onayı alındı.", weight: 2 },
-          null,
-        ], rng) : null,
-        taskType: pickWeighted([
-          { value: TaskType.CIHAZ_ALINACAK, weight: 2 },
-          { value: TaskType.CIHAZ_BIRAKILACAK, weight: 2 },
-          { value: TaskType.BAKIM, weight: 3 },
-          { value: TaskType.KURULUM, weight: 2 },
-          { value: TaskType.DIGER, weight: 1 },
-        ], rng),
-        date: newDateForward(TUNABLES.scheduledTaskDays.min, TUNABLES.scheduledTaskDays.max, rng),
-        status: pickWeighted([
-          { value: TaskStatus.PLANLANDI, weight: 4 },
-          { value: TaskStatus.DEVAM_EDIYOR, weight: 2 },
-          { value: TaskStatus.TAMAMLANDI, weight: 3 },
-          { value: TaskStatus.IPTAL, weight: 1 },
-        ], rng),
-        assignedUserId: pick(users, rng).id,
-      },
+    scheduledTaskRows.push({
+      id: randomUUID(),
+      companyId: company.id,
+      customerId: custId,
+      title,
+      description: rng() > 0.3 ? pickWeighted([
+        { value: "Müşteriyle iletişime geçildi, randevu bekleniyor.", weight: 2 },
+        { value: "Yedek parça sipariş edildi.", weight: 2 },
+        { value: "Adreste kimse olmadı, yeniden planlanacak.", weight: 1 },
+        { value: "Ön keşif yapıldı, fiyat teklifi hazırlanacak.", weight: 1 },
+        { value: "Müşteri onayı alındı.", weight: 2 },
+        null,
+      ], rng) : null,
+      taskType: pickWeighted([
+        { value: TaskType.CIHAZ_ALINACAK, weight: 2 },
+        { value: TaskType.CIHAZ_BIRAKILACAK, weight: 2 },
+        { value: TaskType.BAKIM, weight: 3 },
+        { value: TaskType.KURULUM, weight: 2 },
+        { value: TaskType.DIGER, weight: 1 },
+      ], rng),
+      date: newDateForward(TUNABLES.scheduledTaskDays.min, TUNABLES.scheduledTaskDays.max, rng),
+      status: pickWeighted([
+        { value: TaskStatus.PLANLANDI, weight: 4 },
+        { value: TaskStatus.DEVAM_EDIYOR, weight: 2 },
+        { value: TaskStatus.TAMAMLANDI, weight: 3 },
+        { value: TaskStatus.IPTAL, weight: 1 },
+      ], rng),
+      assignedUserId: pick(users, rng).id,
     });
     progress.scheduledTasks += 1;
     doneSoFar += 1;
     if (doneSoFar % 50 === 0) showProgress();
   }
+
+  await prisma.$transaction(async (tx) => {
+    await createManyInChunks(tx.serviceRecord, serviceRecordRows, "serviceRecords", progress);
+    await createManyInChunks(tx.serviceStatusHistory, statusHistoryRows, "statusHistory", progress);
+    await createManyInChunks(tx.serviceNote, serviceNoteRows, "serviceNotes", progress);
+    await createManyInChunks(tx.payment, paymentRows, "insertedPayments", progress);
+    await createManyInChunks(tx.scheduledTask, scheduledTaskRows, "insertedScheduledTasks", progress);
+  }, { timeout: 120000 });
 
   showProgress();
   console.log("\n");
