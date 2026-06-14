@@ -1,5 +1,20 @@
 # Değişiklik Günlüğü
 
+## 2026-06-14 (İyileştirmeler & Hata Düzeltmeleri)
+
+### Eklenen
+- Servis notlarına "Düzenle" ve "Sil" aksiyonları ile Mantine modal arayüzleri entegre edildi.
+- Not yönetimi için yeni `/api/service-records/[id]/notes/[noteId]` endpoint'i (PUT/DELETE) eklendi.
+
+### Değişen
+- Durum geçiş kısıtlamaları (durum makinesi) esnetildi; mevcut durum haricindeki tüm diğer durumlara geçişe izin verildi.
+- `verifySession` içindeki veritabanı sorgusu `findFirst` yerine `findUnique` kullanacak şekilde optimize edildi, şirket izolasyonu doğrulaması sunucu belleğine çekildi.
+
+### Düzeltilen
+- `.env` dosyasındaki `JWT_SECRET` değişkeninde yer alan `$` işaretlerinin Next.js env parser tarafından kırpılması/değişken genişletmesi yapması engellendi (kaçış karakteri `\$` kullanıldı).
+- `src/lib/rate-limit.ts` içinde biriken eski/süresi dolmuş IP/e-posta limit kayıtlarının temizlenmesi sağlanarak olası bellek sızıntısı (memory leak) giderildi.
+- Middleware (`src/middleware.ts`) üzerinde oturum geçersizleştiğinde `/tr/setup` sayfasına gitmeye çalışan kullanıcıların `/tr/login` sayfasına yönlendirilip kilitlenmesi hatası giderildi.
+
 ## 2026-06-14
 
 ### Eklenen

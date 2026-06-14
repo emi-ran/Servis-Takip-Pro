@@ -11,6 +11,9 @@
 
 ## Düzeltilen Hatalar
 
+- .env: `JWT_SECRET` değişkeninde yer alan `$` işaretlerinin Next.js env parser tarafından kırpılması/değişken genişletmesi yapması engellendi (kaçış karakteri `\$` kullanıldı).
+- Rate Limit: `src/lib/rate-limit.ts` içinde biriken eski/süresi dolmuş IP/e-posta limit kayıtlarının temizlenmesi sağlanarak olası bellek sızıntısı (memory leak) giderildi.
+- Middleware: `src/middleware.ts` üzerinde oturum geçersizleştiğinde `/tr/setup` sayfasına gitmeye çalışan kullanıcıların `/tr/login` sayfasına yönlendirilip kilitlenmesi hatası giderildi.
 - Mock-data.js: `pick()` çağrısında `rng` parametresi eksikti → `rng is not a function` hatası. Servis kaydı oluşturma aşamasında ödeme eklerken patlıyordu. (Düzeltildi)
 - Mock-data.js: `pickWeighted()` içine `null` entry giriyordu → `Cannot read properties of null (reading 'weight')`. Planlı iş açıklama üretiminde yaklaşık %86 progress'te patlıyordu. (Düzeltildi — helper artık null/undefined entry'leri filtreliyor)
 - Mock-data.js: `generatePhone()` 12 haneli telefon üretiyordu (ör. `055210297349`). API validation'dan geçmeyen bu telefonlar listede ham halde görünüyordu. (Düzeltildi — 11 haneye indirildi)

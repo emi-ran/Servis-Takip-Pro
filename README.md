@@ -120,7 +120,7 @@ docker compose up --build
 ```
 
 > 💡 Mevcut PostgreSQL sunucunuza bağlanmak için `DATABASE_URL` değerini Docker ağına göre düzenleyin (örneğin `host.docker.internal` kullanarak).
-> ⚠️ Docker başlangıcında veritabanı sıfırlama veya otomatik schema push yapılmaz. Şema `npx prisma db push` ile bilinçli olarak uygulanmalıdır.
+> 💡 Docker başlangıcında veritabanında hiç tablo bulunamazsa, `npx prisma db push` otomatik olarak çalıştırılarak veritabanı şeması kurulur.
 
 ---
 

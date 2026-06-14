@@ -76,14 +76,14 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 - [x] Servis API: CRUD + durum güncelleme + notlar + timeline
 - [x] Servis kaydı oluşturma (müşteri seç → cihaz seç → arıza → öncelik)
-- [x] Durum makinası ve geçişleri:
+- [x] Durum makinası ve geçişleri (hata düzeltmeleri için tüm durumlar arası esnek geçiş desteğiyle):
       ```
       KAYIT_ACILDI → TAMIRATTA → FIYAT_TEKLIFI_VERILDI → HAZIR → TESLIM_EDILDI
                           ↘            ↘                    ↘
                        IPTAL_EDILDI   MUSTERI_REDDETTI    ODEME_BEKLIYOR
       ```
 - [x] Status timeline (kronolojik durum değişimleri)
-- [x] Not sistemi (ekleme, listeleme, müşteriye görünür opsiyonu)
+- [x] Not sistemi (ekleme, listeleme, düzenleme, silme, Mantine onay modalleri, müşteriye görünür opsiyonu)
 - [x] Cihaz detayında geçmiş servis kayıtları
 - [x] Müşteri detayında servis kayıtları
 - [x] Listeleme + filtreleme (durum, müşteri, arama)
