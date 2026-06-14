@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adres Haritası</title>
+  <style>
+    html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+    #map { height: 100%; width: 100%; }
+    .gm-style-cc, a[href^="https://maps.google.com/maps"], a[href^="https://www.google.com/maps"], .gmnoprint { display: none !important; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    const API_KEY = "AIzaSyA0NmiZbZEOWAr9vVdD6cz_pWKcEebzHY4";
+    let map, marker, geocoder, autocompleteService, placesService;
+    let currentLat = 41.0082;
+    let currentLng = 28.9784;
+
+    window.addEventListener("message", function (event) {
+      const data = event.data;
+      if (data.action === "getSuggestions" && data.query) {
+        getSuggestions(data.query);
+      } else if (data.action === "searchByPlaceId" && data.placeId) {
+        searchByPlaceId(data.placeId);
+      }
+    });
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: currentLat, lng: currentLng },
+        zoom: 14,
+        disableDefaultUI: true,
+        gestureHandling: "none",
+      });
+      geocoder = new google.maps.Geocoder();
+      autocompleteService = new google.maps.places.AutocompleteService();
+      placesService = new google.maps.places.PlacesService(map);
+      marker = new google.maps.Marker({
+        position: { lat: currentLat, lng: currentLng },
+        map: map,
+        visible: false,
+      });
+      window.parent.postMessage({ action: "mapReady" }, "*");
+    }
+
+    function getSuggestions(query) {
+      autocompleteService.getPlacePredictions(
+        { input: query, componentRestrictions: { country: "tr" } },
+        function (predictions, status) {
+          window.parent.postMessage(
+            { action: "suggestions", predictions: predictions || [], status: status, query: query },
+            "*"
+          );
+        }
+      );
+    }
+
+    function searchByPlaceId(placeId) {
+      placesService.getDetails(
+        { placeId: placeId, fields: ["geometry", "address_components", "formatted_address"] },
+        function (place, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            currentLat = lat;
+            currentLng = lng;
+            marker.setPosition(place.geometry.location);
+            map.setCenter(place.geometry.location);
+            map.setZoom(16);
+            window.parent.postMessage(
+              {
+                action: "addressDetails",
+                formattedAddress: place.formatted_address,
+                latitude: lat,
+                longitude: lng,
+                addressData: parseAddressComponents(place.address_components),
+              },
+              "*"
+            );
+          }
+        }
+      );
+    }
+
+    function parseAddressComponents(components) {
+      const data = { province: "", district: "", neighborhood: "", street: "", building: "", postcode: "" };
+      if (!components) return data;
+      components.forEach(function (c) {
+        if (c.types.includes("administrative_area_level_1")) data.province = c.long_name;
+        else if (c.types.includes("administrative_area_level_2")) data.district = c.long_name;
+        else if (c.types.includes("sublocality") || c.types.includes("neighborhood") || c.types.includes("sublocality_level_1")) data.neighborhood = c.long_name;
+        else if (c.types.includes("route")) data.street = c.long_name;
+        else if (c.types.includes("street_number")) data.building = c.long_name;
+        else if (c.types.includes("postal_code")) data.postcode = c.long_name;
+      });
+      return data;
+    }
+  </script>
+  <script>
+    var script = document.createElement("script");
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + API_KEY + "&libraries=places&callback=initMap";
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  </script>
+</body>
+</html>
