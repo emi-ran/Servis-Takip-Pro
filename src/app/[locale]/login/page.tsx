@@ -32,6 +32,20 @@ export default function LoginPage() {
     document.title = `${t("login")} - ${tc("appName")}`;
   }, [t, tc]);
 
+  useEffect(() => {
+    async function redirectToSetupIfNeeded() {
+      const response = await fetch("/api/setup", { cache: "no-store" });
+      if (!response.ok) return;
+
+      const data = await response.json();
+      if (data.canSetup) {
+        router.replace("/setup");
+      }
+    }
+
+    void redirectToSetupIfNeeded();
+  }, [router]);
+
   const form = useForm({
     mode: "uncontrolled" as const,
     initialValues: {

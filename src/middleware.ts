@@ -20,9 +20,11 @@ export default async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get("session");
   const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}\/?/, "/");
   const isLoginPath = pathWithoutLocale === "/login";
+  const isSetupPath = pathWithoutLocale === "/setup";
+  const isRootPath = pathWithoutLocale === "/";
 
   if (!sessionCookie?.value) {
-    if (pathWithoutLocale !== "/login") {
+    if (!isLoginPath && !isSetupPath && !isRootPath) {
       return NextResponse.redirect(new URL("/tr/login", request.url));
     }
   } else {
@@ -38,7 +40,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   // Already logged in and trying to access login
-  if (sessionCookie?.value && isLoginPath) {
+  if (sessionCookie?.value && (isLoginPath || isSetupPath)) {
     return NextResponse.redirect(new URL("/tr/dashboard", request.url));
   }
 

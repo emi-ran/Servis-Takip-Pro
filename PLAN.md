@@ -17,7 +17,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 | **i18n** | next-intl (şimdilik sadece tr, İngilizce altyapısı hazır) |
 | **Deploy** | Docker (multi-stage build, mevcut PostgreSQL'e bağlanır) |
 | **Kullanıcı** | Çok kullanıcılı (ADMIN / TECHNICIAN rolleri) |
-| **İlk Kurulum** | `npm run db:seed` ile `.env`'den şirket ve admin oluşturma |
+| **İlk Kurulum** | Veritabanında kullanıcı yoksa `/setup` ekranından şirket ve admin oluşturma |
 
 ---
 
@@ -30,7 +30,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 - [x] `next-intl` kurulumu + `/messages/tr.json`
 - [x] Proje klasör yapısının oluşturulması
 - [x] `Dockerfile` (Next.js standalone output, multi-stage build)
-- [x] `.env.example` (DATABASE_URL, admin bilgileri, şirket adı, port, JWT_SECRET)
+- [x] `.env.example` (DATABASE_URL, JWT_SECRET, port, uygulama URL'i)
 - [x] ESLint + TypeScript strict config
 - [x] AGENTS.md oluşturma
 
@@ -46,7 +46,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 - [x] Sidebar navigasyonu (responsive — mobilde burger drawer)
 - [x] AuthProvider context (kullanıcı bilgisi, logout)
 - [x] Header (kullanıcı adı + avatar + logout menüsü)
-- [x] İlk kurulum akışı (`npm run db:seed` ile `.env`'den şirket ve admin oluşturma)
+- [x] İlk kurulum akışı (`/setup` ekranı; sadece kullanıcı yoksa çalışır)
 
 ---
 
@@ -125,9 +125,9 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 - [x] Personel Yönetimi sayfası:
   - Liste, ekleme, düzenleme (ad, soyad, email, şifre, rol), silme
   - Sidebar'da "Personel" nav item (sadece ADMIN)
-- [ ] Responsive son kontroller (mobil + tablet + masaüstü)
-- [ ] Production build testi
-- [ ] Kurulum talimatları kontrolü
+- [x] Responsive son kontroller (mobil + tablet + masaüstü)
+- [x] Production build testi
+- [x] Kurulum talimatları kontrolü
 
 ---
 
@@ -163,6 +163,7 @@ servis-takip/
         [locale]/
         layout.tsx               # Mantine + intl + QueryProvider
         page.tsx                 # Dashboard (redirect) — her sayfayı (app) altına aldık
+        setup/page.tsx           # İlk kurulum ekranı
         login/page.tsx           # Standalone login (AppShell yok)
         (app)/                   # Route group — AppShell'li sayfalar
           layout.tsx             # AppShell wrapper
@@ -190,6 +191,7 @@ servis-takip/
           logout/route.ts
           users/route.ts
           users/[id]/route.ts
+        setup/route.ts
         customers/route.ts
         customers/[id]/route.ts
         customers/[id]/balance/route.ts
@@ -214,17 +216,19 @@ servis-takip/
         sidebar.tsx
         header.tsx
         color-scheme-script.tsx
-          theme-toggle.tsx
+        theme-toggle.tsx
         ui/
           logo-mark.tsx            SVG logo bileşeni
-      features/                # Feature bazlı component'ler
+    features/                # Feature bazlı component katalogları
       customers/
-        google-address-input.tsx
-        google-address-input.module.css
       dashboard/
       devices/
       scheduled-tasks/
       service-records/
+    components/features/      # UI bileşenleri (presentational)
+      customers/
+        google-address-input.tsx
+        google-address-input.module.css
     lib/
       prisma.ts
       auth.ts

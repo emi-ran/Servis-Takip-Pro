@@ -1,17 +1,17 @@
 # Security Review
 
 Tarih: 2026-06-14
-Kapsam: Mevcut Next.js uygulamasi, auth akisi, middleware, setup, API route yetkilendirmesi
-Durum: Manuel kod incelemesi; kritik bulgular icin duzeltmeler uygulandi
+Kapsam: Mevcut Next.js uygulaması, auth akışı, middleware, setup, API route yetkilendirmesi
+Durum: Manuel kod incelemesi; kritik bulgular için düzeltmeler uygulandı
 
 ## Ozet
 
-Bu proje internete acik kullanilacaksa mevcut haliyle ozellikle session iptali, public setup akisi ve brute-force korumasi tarafinda guclendirilmeli.
+Bu proje internete açık kullanılacaksa session iptali, ilk kurulum akışı ve brute-force koruması dikkatle korunmalıdır.
 
-Uygulanan duzeltmeler:
+Uygulanan düzeltmeler:
 
 1. JWT session her istekte DB'deki guncel kullanici kaydiyla dogrulaniyor.
-2. Public `/api/setup` endpoint'i kaldirildi; ilk kurulum `npm run db:seed` ile yapiliyor.
+2. `/api/setup` endpoint'i sadece veritabanında hiç kullanıcı yoksa çalışacak şekilde sınırlandırıldı.
 3. Middleware token imzasini/suresini dogruluyor ve gecersiz cookie'yi siliyor.
 4. Login endpoint'ine IP + email bazli rate limit eklendi.
 5. Secret ve admin sifre minimumlari guclendirildi.
@@ -61,9 +61,9 @@ mevcut token suresi dolana kadar eski yetkileri kullanmaya devam edebilir.
 
 ---
 
-## 2. Public Setup Endpoint ve Otomatik Kurulum Tasarimi
+## 2. Setup Endpoint ve Otomatik Kurulum Tasarımı
 
-Durum: RESOLVED (cozuldu — public setup API kaldirildi)
+Durum: RESOLVED (çözüldü — setup API sadece kullanıcı yoksa çalışır)
 
 Ilgili dosyalar:
 
@@ -72,23 +72,23 @@ Ilgili dosyalar:
 
 ### Sorun
 
-Uygulamanin ilk kurulumu public erisilebilir HTTP endpoint uzerinden calisiyordu. Bu akış kaldirildi.
+Uygulamanın ilk kurulumu HTTP endpoint üzerinden yapılabilir, ancak endpoint yalnızca `User` tablosu boşsa işlem yapar.
 
 ### Etki
 
-- Ilk kurulum artik HTTP yuzeyinden tetiklenemez.
-- Kurulum `npm run db:seed` ile deploy/bootstrap asamasinda yapilir.
-- Public setup endpoint saldiri yuzeyi kaldirildi.
+- İlk kurulum yalnızca kullanıcı yokken yapılabilir.
+- Mevcut kullanıcı bulunan veritabanlarında setup endpoint 409 döner.
+- Docker başlangıcında veri sıfırlama veya otomatik schema push yapılmaz.
 
 ### Kanit
 
-- Setup API route'u silindi.
-- Middleware setup kontrolu yapmiyor.
-- Seed script `.env` degerlerini validate edip ilk sirket/admin kaydini idempotent sekilde olusturuyor.
+- Setup API route'u kullanıcı sayısını kontrol ediyor.
+- Middleware `/setup` yolunu oturumsuz erişime açıyor, ancak oturumlu kullanıcıları dashboard'a yönlendiriyor.
+- İlk şirket/admin bilgileri `.env` yerine kurulum formundan alınır.
 
 ### Oneri
 
-- Mevcut cozum korunmali: ilk kurulum sadece seed/bootstrap akisiyle yapilmali.
+- Mevcut çözüm korunmalı: setup işlemi sadece veritabanında hiç kullanıcı yoksa çalışmalıdır.
 
 ---
 

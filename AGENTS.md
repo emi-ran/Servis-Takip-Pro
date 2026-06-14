@@ -45,7 +45,7 @@ Self-hosted servis takip uygulaması. Teknisyenlerin müşteri, cihaz, servis ka
 - Form validation şeması (`zod`) API route'una yakın tanımlanır (örn. aynı dosyada).
 - `.env`'den okunan değerler `src/lib/env.ts`'de tek merkezden validate edilir.
 - `prisma/schema.prisma` tüm modelleri içerir, Phase'ler ekledikçe büyür.
-- İlk kurulum `npm run db:seed` ile `.env` değerlerinden şirket ve admin oluşturulur (manuel register sayfası yok).
+- İlk kurulum `/setup` ekranından yapılır; bu ekran ve API sadece veritabanında hiç kullanıcı yoksa çalışır.
 - Authenticated sayfalar `(app)` route group'u altında, login sayfası bunun dışında.
 
 ## Dizin Yapısı
@@ -56,8 +56,9 @@ src/
       globals.css                # Global stiller
       icon.svg                   # Favicon / app ikonu
       [locale]/                  # next-intl locale segment
-      layout.tsx               # Mantine + intl + QueryProvider
-      login/page.tsx           # Standalone login (AppShell yok)
+        layout.tsx               # Mantine + intl + QueryProvider
+        setup/page.tsx           # İlk kurulum ekranı
+        login/page.tsx           # Standalone login (AppShell yok)
       (app)/                   # Route group — AppShell'li sayfalar
         layout.tsx             # AppShell wrapper
         dashboard/page.tsx
@@ -84,6 +85,8 @@ src/
         logout/route.ts
         users/route.ts
         users/[id]/route.ts
+      setup/
+        route.ts
       customers/
         route.ts
         [id]/route.ts
@@ -175,7 +178,7 @@ src/
 
 - JWT access token (1 gün) httpOnly cookie'de saklanır.
 - Refresh token yok. Süre dolunca tekrar login.
-- İlk kurulum: `npm run db:seed` `.env` değerlerinden ilk şirketi ve admin kullanıcısını oluşturur; public setup API yoktur.
+- İlk kurulum: `/setup` ekranı ilk şirketi ve admin kullanıcısını oluşturur; setup API sadece `User` tablosu boşsa çalışır.
 - Admin ve Technician rolleri arasında sadece `role` enum farkı.
 - Admin her şeyi yapabilir. Technician müşteri/servis görebilir, düzenleyebilir ama kullanıcı yönetemez.
 

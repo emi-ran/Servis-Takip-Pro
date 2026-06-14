@@ -3,21 +3,26 @@ const bcrypt = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
-function requireEnv(name) {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} gerekli`);
-  }
-  return value;
+function optionalEnv(name) {
+  return process.env[name];
 }
 
 async function main() {
-  const adminEmail = requireEnv("ADMIN_EMAIL");
-  const adminPassword = requireEnv("ADMIN_PASSWORD");
-  const adminName = requireEnv("ADMIN_NAME");
-  const adminSurname = requireEnv("ADMIN_SURNAME");
-  const companyName = requireEnv("COMPANY_NAME");
-  const companySlug = requireEnv("COMPANY_SLUG");
+  const adminEmail = optionalEnv("ADMIN_EMAIL");
+  const adminPassword = optionalEnv("ADMIN_PASSWORD");
+  const adminName = optionalEnv("ADMIN_NAME");
+  const adminSurname = optionalEnv("ADMIN_SURNAME");
+  const companyName = optionalEnv("COMPANY_NAME");
+  const companySlug = optionalEnv("COMPANY_SLUG");
+
+  if (!adminEmail || !adminPassword || !adminName || !adminSurname || !companyName || !companySlug) {
+    console.log("Seed atlandı. İlk kurulumu web arayüzündeki /tr/setup ekranından tamamlayın.");
+    return;
+  }
+
+  if (adminPassword.length < 12) {
+    throw new Error("ADMIN_PASSWORD en az 12 karakter olmalıdır");
+  }
 
   const existingAdmin = await prisma.user.findFirst({
     where: { role: "ADMIN" },

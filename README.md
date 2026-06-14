@@ -86,14 +86,11 @@ npm install
 # 3. Veritabanı şemasını oluşturun
 npx prisma db push
 
-# 4. İlk şirket ve admin kullanıcısını oluşturun
-npm run db:seed
-
-# 5. Geliştirme sunucusunu başlatın
+# 4. Geliştirme sunucusunu başlatın
 npm run dev
 ```
 
-Seed komutu `.env`'deki admin bilgileriyle ilk kullanıcı ve şirket hesabını oluşturur. Tarayıcınızda `http://localhost:3000` adresine gidip giriş yapmanız yeterli.
+Veritabanı şeması hazırlandıktan sonra tarayıcınızda `http://localhost:3000` adresine gidin. Veritabanında kullanıcı yoksa ilk kurulum ekranı açılır ve şirket/yönetici bilgileri buradan oluşturulur.
 
 ### 📝 Ortam Değişkenleri
 
@@ -101,13 +98,8 @@ Seed komutu `.env`'deki admin bilgileriyle ilk kullanıcı ve şirket hesabını
 |---|---|---|
 | `DATABASE_URL` | PostgreSQL bağlantı adresi | ✅ |
 | `JWT_SECRET` | JWT imzalama anahtarı (en az 32 karakter) | ✅ |
-| `ADMIN_EMAIL` | Admin e-posta adresi | ✅ |
-| `ADMIN_PASSWORD` | Admin şifresi (en az 12 karakter) | ✅ |
-| `ADMIN_NAME` | Admin adı | ✅ |
-| `ADMIN_SURNAME` | Admin soyadı | ✅ |
-| `COMPANY_NAME` | Şirket adı | ✅ |
-| `COMPANY_SLUG` | Şirket URL kısayolu | ✅ |
-| `NEXT_PUBLIC_APP_URL` | Uygulama adresi | ✅ |
+| `PORT` | Uygulama portu | Hayır |
+| `NEXT_PUBLIC_APP_URL` | Uygulama adresi | Hayır |
 
 ---
 
@@ -121,7 +113,14 @@ docker build -t servis-takip .
 docker run -p 3000:3000 --env-file .env servis-takip
 ```
 
+Compose kullanımı:
+
+```bash
+docker compose up --build
+```
+
 > 💡 Mevcut PostgreSQL sunucunuza bağlanmak için `DATABASE_URL` değerini Docker ağına göre düzenleyin (örneğin `host.docker.internal` kullanarak).
+> ⚠️ Docker başlangıcında veritabanı sıfırlama veya otomatik schema push yapılmaz. Şema `npx prisma db push` ile bilinçli olarak uygulanmalıdır.
 
 ---
 
@@ -135,6 +134,7 @@ docker run -p 3000:3000 --env-file .env servis-takip
 │   └── tr.json                Türkçe UI metinleri
 ├── src/
 │   ├── app/
+│   │   ├── [locale]/setup/    İlk kurulum ekranı
 │   │   ├── [locale]/login/    Giriş sayfası
 │   │   ├── [locale]/(app)/    Ana uygulama
 │   │   │   ├── dashboard/     Genel görünüm
@@ -146,17 +146,27 @@ docker run -p 3000:3000 --env-file .env servis-takip
 │   │   │   └── staff/          Personel
 │   │   ├── globals.css           Global stiller
 │   │   ├── icon.svg              Favicon / app ikonu
-│   │   └── api/               API route'ları
+│   │       └── api/               API route'ları
+│   │           ├── setup/            İlk kurulum API'si
+│   │           ├── auth/             Kimlik doğrulama
+│   │           ├── customers/        Müşteri CRUD + bakiye
+│   │           ├── devices/          Cihaz CRUD + seçenekler
+│   │           ├── service-records/  Servis kaydı + durum + notlar
+│   │           ├── payments/         Ödeme CRUD
+│   │           ├── dashboard/        Dashboard istatistikleri
+│   │           └── scheduled-tasks/  Planlı iş CRUD
 │   ├── components/
 │   │   ├── providers/         Auth, Query sağlayıcıları
 │   │   ├── layout/            AppShell, Sidebar, Header
 │   │   └── ui/                Ortak bileşenler (logo-mark.tsx)
-│   ├── features/              Özellik bazlı bileşenler
-│   │   ├── customers/         Google Adres giriş bileşeni
+│   ├── features/              Özellik bazlı bileşen katalogları
+│   │   ├── customers/
 │   │   ├── dashboard/
 │   │   ├── devices/
 │   │   ├── scheduled-tasks/
 │   │   └── service-records/
+│   ├── components/features/   UI bileşenleri (presentational)
+│   │   └── customers/         Google Adres giriş bileşeni
 │   ├── lib/                   Yardımcı kütüphaneler
 │   │   ├── prisma.ts, auth.ts, api.ts, phone.ts
 │   │   ├── env.ts, i18n.ts, routing.ts, navigation.ts
@@ -188,7 +198,7 @@ docker run -p 3000:3000 --env-file .env servis-takip
 | `npm run typecheck` | TypeScript tip kontrolü |
 | `npm run db:push` | Prisma şemasını DB'ye uygula |
 | `npm run db:studio` | Prisma Studio (veritabanı görüntüleyici) |
-| `npm run db:seed` | Seed scriptini çalıştır |
+| `npm run db:seed` | Opsiyonel seed scriptini çalıştır |
 | `npm run db:mock` | Çok tehlikeli test verisi scripti (önce yedek sorar) |
 
 > ⚠️ `npm run db:mock` sadece geliştirme/test veritabanında çalıştırılmalıdır. Çalıştırmadan önce birkaç kez onay ister ve isteğe bağlı yedek alır (`pg_dump` gerektirir).
