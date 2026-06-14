@@ -13,7 +13,6 @@ import {
   Card,
   Group,
   Modal,
-  Pagination,
   Select,
   SimpleGrid,
   Skeleton,
@@ -25,6 +24,7 @@ import {
   Textarea,
   Title,
 } from "@mantine/core";
+import { Pagination } from "@/components/ui/pagination";
 import { DatePickerInput, DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -404,8 +404,13 @@ export default function ScheduledTasksPage() {
                   </Table.ScrollContainer>
                 </Card>
                 {totalPages > 1 && (
-                  <Group justify="center">
-                    <Pagination total={totalPages} value={page} onChange={setPage} />
+                  <Group justify="center" mt="md">
+                    <Pagination
+                      total={totalPages}
+                      value={page}
+                      onChange={setPage}
+                      radius="md"
+                    />
                   </Group>
                 )}
               </>

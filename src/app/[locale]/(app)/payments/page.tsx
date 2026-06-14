@@ -16,13 +16,13 @@ import {
   Select,
   Modal,
   NumberInput,
-  Pagination,
   Skeleton,
   Alert,
   Space,
   ActionIcon,
   Anchor,
 } from "@mantine/core";
+import { Pagination } from "@/components/ui/pagination";
 import { Link } from "@/lib/navigation";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -383,8 +383,13 @@ export default function PaymentsPage() {
           </Card>
 
           {totalPages > 1 && (
-            <Group justify="center">
-              <Pagination total={totalPages} value={page} onChange={setPage} radius="md" />
+            <Group justify="center" mt="md">
+              <Pagination
+                total={totalPages}
+                value={page}
+                onChange={setPage}
+                radius="md"
+              />
             </Group>
           )}
         </>

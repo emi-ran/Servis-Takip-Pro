@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useDisclosure, useDebouncedValue } from "@mantine/hooks";
+import { Pagination } from "@/components/ui/pagination";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import {
@@ -11,7 +12,6 @@ import {
   TextInput,
   Button,
   Table,
-  Pagination,
   Modal,
   Group,
   Stack,
@@ -349,7 +349,12 @@ export default function DevicesPage() {
 
             {totalPages > 1 && (
               <Group justify="center" mt="md">
-                <Pagination total={totalPages} value={page} onChange={setPage} radius="md" />
+                <Pagination
+                  total={totalPages}
+                  value={page}
+                  onChange={setPage}
+                  radius="md"
+                />
               </Group>
             )}
           </>
