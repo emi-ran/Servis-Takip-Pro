@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 import {
   ActionIcon,
   Alert,
@@ -367,7 +367,7 @@ export default function ScheduledTasksPage() {
                             </Table.Td>
                             <Table.Td>
                               <Stack gap={0}>
-                                <Anchor component={Link} href={`/customers/${task.customer.id}`} size="sm" fw={500}>
+                                <Anchor component={Link} href={`/customers/${task.customer.id}`} prefetch={false} size="sm" fw={500}>
                                   {task.customer.name} {task.customer.surname}
                                 </Anchor>
                                 <Text size="xs" c="dimmed">{formatPhone(task.customer.phone)}</Text>
@@ -444,7 +444,7 @@ export default function ScheduledTasksPage() {
                                   <Text size="sm" fw={600} lineClamp={1}>{task.title}</Text>
                                   <Text size="xs" c="dimmed">{new Date(task.date).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</Text>
                                 </Group>
-                                <Anchor component={Link} href={`/customers/${task.customer.id}`} size="xs" c="dimmed" lineClamp={1}>
+                                <Anchor component={Link} href={`/customers/${task.customer.id}`} prefetch={false} size="xs" c="dimmed" lineClamp={1}>
                                   {task.customer.name} {task.customer.surname}
                                 </Anchor>
                                 <Badge size="xs" variant="light" color={statusColors[task.status]}>{t(`status_label.${task.status}`)}</Badge>

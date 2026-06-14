@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 
 
 type RecentRecord = {
@@ -157,12 +157,12 @@ export default function DashboardPage() {
                       {data?.recentRecords?.map((record) => (
                         <Table.Tr key={record.id}>
                           <Table.Td>
-                            <Anchor component={Link} href={`/service-records/${record.id}`} size="sm">
+                            <Anchor component={Link} href={`/service-records/${record.id}`} size="sm" prefetch={false}>
                               #{record.trackingNo}
                             </Anchor>
                           </Table.Td>
                           <Table.Td>
-                            <Anchor component={Link} href={`/customers/${record.customer.id}`} size="sm">
+                            <Anchor component={Link} href={`/customers/${record.customer.id}`} size="sm" prefetch={false}>
                               {record.customer.name} {record.customer.surname}
                             </Anchor>
                           </Table.Td>

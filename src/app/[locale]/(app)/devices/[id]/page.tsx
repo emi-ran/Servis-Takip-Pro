@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 import {
   Title,
   Text,
@@ -119,6 +119,7 @@ export default function DeviceDetailPage() {
         <Button
           component={Link}
           href="/devices"
+          prefetch={false}
           variant="subtle"
           leftSection={<IconArrowLeft size={16} />}
           px={0}
@@ -165,6 +166,7 @@ export default function DeviceDetailPage() {
           <Anchor
             component={Link}
             href={`/customers/${customer.id}`}
+            prefetch={false}
             c="blue"
             fw={600}
           >
@@ -205,6 +207,7 @@ export default function DeviceDetailPage() {
                         <Anchor
                           component={Link}
                           href={`/service-records/${record.id}`}
+                          prefetch={false}
                           size="sm"
                           fw={600}
                         >

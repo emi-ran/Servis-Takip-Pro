@@ -27,7 +27,7 @@ import {
   Select,
   Autocomplete,
 } from "@mantine/core";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 import {
   IconSearch,
   IconPlus,
@@ -179,6 +179,7 @@ export default function DevicesPage() {
         <Text
           component={Link}
           href={`/devices/${device.id}`}
+          prefetch={false}
           c="blue"
           fw={600}
           size="sm"
@@ -199,6 +200,7 @@ export default function DevicesPage() {
         <Text
           component={Link}
           href={`/customers/${device.customer.id}`}
+          prefetch={false}
           size="sm"
           c="blue"
           style={{ textDecoration: "none", cursor: "pointer" }}

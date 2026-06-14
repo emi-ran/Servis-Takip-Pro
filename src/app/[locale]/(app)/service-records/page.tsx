@@ -23,7 +23,7 @@ import {
   Tooltip,
   Select,
 } from "@mantine/core";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 import {
   IconSearch,
   IconPlus,
@@ -121,6 +121,7 @@ export default function ServiceRecordsPage() {
         <Text
           component={Link}
           href={`/service-records/${record.id}`}
+          prefetch={false}
           c="blue"
           fw={700}
           size="sm"
@@ -133,6 +134,7 @@ export default function ServiceRecordsPage() {
         <Text
           component={Link}
           href={`/customers/${record.customer.id}`}
+          prefetch={false}
           size="sm"
           c="blue"
           style={{ textDecoration: "none", cursor: "pointer" }}
@@ -175,6 +177,7 @@ export default function ServiceRecordsPage() {
               color="gray"
               component={Link}
               href={`/service-records/${record.id}`}
+              prefetch={false}
             >
               <IconEdit size={16} stroke={1.5} />
             </ActionIcon>
@@ -208,7 +211,7 @@ export default function ServiceRecordsPage() {
               {t("pageDescription")}
             </Text>
           </Stack>
-          <Button leftSection={<IconPlus size={16} />} component={Link} href="/service-records/new">
+          <Button leftSection={<IconPlus size={16} />} component={Link} href="/service-records/new" prefetch={false}>
             {t("new")}
           </Button>
         </Group>
@@ -286,6 +289,7 @@ export default function ServiceRecordsPage() {
                 leftSection={<IconPlus size={16} />}
                 component={Link}
                 href="/service-records/new"
+                prefetch={false}
                 mt="xs"
               >
                 {t("new")}

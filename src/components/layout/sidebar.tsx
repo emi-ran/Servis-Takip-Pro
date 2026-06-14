@@ -12,9 +12,8 @@ import {
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { AppShell, NavLink, Stack, Box, Divider } from "@mantine/core";
-import { usePathname } from "@/lib/navigation";
+import { usePathname, Link as NextLink } from "@/lib/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
-import NextLink from "next/link";
 
 type NavItem = {
   labelKey: string;
@@ -59,6 +58,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                 key={item.href}
                 component={NextLink}
                 href={item.href}
+                prefetch={false}
                 label={t(item.labelKey)}
                 leftSection={<Icon size={20} stroke={1.5} />}
                 active={isActive}

@@ -26,7 +26,7 @@ import {
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { z } from "zod";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 import {
   IconSearch,
   IconPlus,
@@ -181,6 +181,7 @@ export default function CustomersPage() {
         <Text
           component={Link}
           href={`/customers/${customer.id}`}
+          prefetch={false}
           c="blue"
           fw={600}
           size="sm"

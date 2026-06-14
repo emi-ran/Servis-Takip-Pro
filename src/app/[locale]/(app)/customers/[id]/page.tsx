@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 import {
   Title,
   Text,
@@ -238,6 +238,7 @@ export default function CustomerDetailPage() {
         <Button
           component={Link}
           href="/customers"
+          prefetch={false}
           variant="subtle"
           leftSection={<IconArrowLeft size={16} />}
           px={0}
@@ -262,14 +263,14 @@ export default function CustomerDetailPage() {
             <SimpleGrid cols={{ base: 1, sm: 2 }}>
               <Group gap="xs">
                 <IconPhone size={16} stroke={1.5} opacity={0.5} />
-                <Anchor component={Link} href={`tel:${customer.phone}`} size="sm">
+                <Anchor component="a" href={`tel:${customer.phone}`} size="sm">
                   {formatPhone(customer.phone)}
                 </Anchor>
               </Group>
               {customer.email && (
                 <Group gap="xs">
                   <IconMail size={16} stroke={1.5} opacity={0.5} />
-                  <Anchor component={Link} href={`mailto:${customer.email}`} size="sm">
+                  <Anchor component="a" href={`mailto:${customer.email}`} size="sm">
                     {customer.email}
                   </Anchor>
                 </Group>
@@ -379,7 +380,7 @@ export default function CustomerDetailPage() {
                   {devices.map((device) => (
                     <Table.Tr key={device.id}>
                       <Table.Td>
-                        <Anchor component={Link} href={`/devices/${device.id}`} size="sm">
+                        <Anchor component={Link} href={`/devices/${device.id}`} prefetch={false} size="sm">
                           {device.brand} {device.model}
                         </Anchor>
                       </Table.Td>
@@ -424,7 +425,7 @@ export default function CustomerDetailPage() {
                   {serviceRecords.map((record) => (
                     <Table.Tr key={record.id}>
                       <Table.Td>
-                        <Anchor component={Link} href={`/service-records/${record.id}`} size="sm" fw={600}>
+                        <Anchor component={Link} href={`/service-records/${record.id}`} prefetch={false} size="sm" fw={600}>
                           {record.trackingNo}
                         </Anchor>
                       </Table.Td>
