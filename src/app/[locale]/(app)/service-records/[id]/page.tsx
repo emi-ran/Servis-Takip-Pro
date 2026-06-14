@@ -141,12 +141,29 @@ export default function ServiceRecordDetailPage() {
   const [paymentOpened, { open: openPayment, close: closePayment }] = useDisclosure(false);
   const [paymentType, setPaymentType] = useState<"BORC" | "TAHSILAT">("BORC");
 
+  const [paymentEditOpened, paymentEditHandlers] = useDisclosure(false);
+  const [paymentDeleteOpened, paymentDeleteHandlers] = useDisclosure(false);
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+
   const paymentForm = useForm({
     mode: "uncontrolled" as const,
     initialValues: {
       amount: 0,
       paymentMethod: "NAKIT" as string,
       date: new Date().toISOString().split("T")[0],
+      description: "",
+    },
+    validate: {
+      amount: (v: number) => (v > 0 ? null : pt("amountRequired")),
+    },
+  });
+
+  const paymentEditForm = useForm({
+    mode: "uncontrolled" as const,
+    initialValues: {
+      amount: 0,
+      paymentMethod: "NAKIT" as string,
+      date: new Date() as Date | string,
       description: "",
     },
     validate: {
@@ -162,6 +179,46 @@ export default function ServiceRecordDetailPage() {
       notifications.show({ title: ct("success"), message: pt("created"), color: "green" });
       paymentForm.reset();
       closePayment();
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
+
+  const paymentUpdateMutation = useMutation({
+    mutationFn: ({ paymentId, values }: { paymentId: string; values: Record<string, unknown> }) =>
+      apiClient(`/api/payments/${paymentId}`, {
+        method: "PUT",
+        body: {
+          ...values,
+          customerId: record!.customer.id,
+          type: selectedPayment!.type,
+          serviceRecordId: params.id,
+          deviceId: record!.device.id,
+        },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-record", params.id] });
+      notifications.show({ title: ct("success"), message: pt("updated"), color: "green" });
+      paymentEditForm.reset();
+      paymentEditHandlers.close();
+      setSelectedPayment(null);
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
+
+  const paymentDeleteMutation = useMutation({
+    mutationFn: (paymentId: string) =>
+      apiClient(`/api/payments/${paymentId}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-record", params.id] });
+      notifications.show({ title: ct("success"), message: pt("deleted"), color: "green" });
+      paymentDeleteHandlers.close();
+      setSelectedPayment(null);
     },
     onError: (err: Error) => {
       notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
@@ -576,6 +633,7 @@ export default function ServiceRecordDetailPage() {
                       <Table.Th>{pt("paymentMethod")}</Table.Th>
                       <Table.Th>{pt("date")}</Table.Th>
                       <Table.Th>{pt("description")}</Table.Th>
+                      <Table.Th>{ct("actions")}</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
                   <Table.Tbody>
@@ -612,6 +670,38 @@ export default function ServiceRecordDetailPage() {
                           <Text size="sm" lineClamp={1} maw={200}>
                             {p.description || "—"}
                           </Text>
+                        </Table.Td>
+                        <Table.Td>
+                          <Group gap={4} wrap="nowrap">
+                            <ActionIcon
+                              size="sm"
+                              variant="subtle"
+                              color="gray"
+                              onClick={() => {
+                                setSelectedPayment(p);
+                                paymentEditForm.setValues({
+                                  amount: Number(p.amount),
+                                  paymentMethod: p.paymentMethod,
+                                  date: new Date(p.date),
+                                  description: p.description || "",
+                                });
+                                paymentEditHandlers.open();
+                              }}
+                            >
+                              <IconEdit size={14} />
+                            </ActionIcon>
+                            <ActionIcon
+                              size="sm"
+                              variant="subtle"
+                              color="red"
+                              onClick={() => {
+                                setSelectedPayment(p);
+                                paymentDeleteHandlers.open();
+                              }}
+                            >
+                              <IconTrash size={14} />
+                            </ActionIcon>
+                          </Group>
                         </Table.Td>
                       </Table.Tr>
                     ))}
@@ -1069,6 +1159,133 @@ export default function ServiceRecordDetailPage() {
             </Group>
           </Stack>
         </form>
+      </Modal>
+
+      <Modal
+        opened={paymentEditOpened}
+        onClose={() => { paymentEditForm.reset(); setSelectedPayment(null); paymentEditHandlers.close(); }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {selectedPayment?.type === "BORC" ? pt("editDebt") : pt("editCollection")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {pt("editDescription")}
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+        transitionProps={{ transition: "fade", duration: 150 }}
+      >
+        <form
+          autoComplete="nope"
+          onSubmit={paymentEditForm.onSubmit((values) => {
+            if (selectedPayment) {
+              paymentUpdateMutation.mutate({ paymentId: selectedPayment.id, values });
+            }
+          })}
+        >
+          <Stack gap="md">
+            <TextInput
+              label={pt("customer")}
+              value={`${record.customer.name} ${record.customer.surname}`}
+              disabled
+              readOnly
+            />
+            <TextInput
+              label={pt("device")}
+              value={`${record.device.brand} ${record.device.model}`}
+              disabled
+              readOnly
+            />
+            <NumberInput
+              label={pt("amount")}
+              placeholder="0.00"
+              decimalScale={2}
+              fixedDecimalScale
+              prefix="₺ "
+              thousandSeparator="."
+              decimalSeparator=","
+              min={0}
+              key={paymentEditForm.key("amount")}
+              {...paymentEditForm.getInputProps("amount")}
+              required
+            />
+            <Group grow>
+              {selectedPayment?.type === "TAHSILAT" && (
+                <Select
+                  label={pt("paymentMethod")}
+                  data={[
+                    { value: "NAKIT", label: pt("method_label.NAKIT") },
+                    { value: "KART", label: pt("method_label.KART") },
+                    { value: "EFT", label: pt("method_label.EFT") },
+                    { value: "DIGER", label: pt("method_label.DIGER") },
+                  ]}
+                  key={paymentEditForm.key("paymentMethod")}
+                  {...paymentEditForm.getInputProps("paymentMethod")}
+                />
+              )}
+              <DatePickerInput
+                label={pt("date")}
+                valueFormat="DD.MM.YYYY"
+                key={paymentEditForm.key("date")}
+                {...paymentEditForm.getInputProps("date")}
+                required
+              />
+            </Group>
+            <TextInput
+              label={pt("description")}
+              placeholder={
+                selectedPayment?.type === "BORC" ? pt("debtPlaceholder") : pt("collectionPlaceholder")
+              }
+              key={paymentEditForm.key("description")}
+              {...paymentEditForm.getInputProps("description")}
+            />
+            <Group justify="flex-end">
+              <Button variant="default" onClick={() => { paymentEditForm.reset(); setSelectedPayment(null); paymentEditHandlers.close(); }}>
+                {ct("cancel")}
+              </Button>
+              <Button
+                type="submit"
+                loading={paymentUpdateMutation.isPending}
+                px="xl"
+                color={selectedPayment?.type === "BORC" ? "red" : "green"}
+              >
+                {ct("save")}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Modal
+        opened={paymentDeleteOpened}
+        onClose={() => { setSelectedPayment(null); paymentDeleteHandlers.close(); }}
+        title={<Text fw={700} size="md">{pt("deleteConfirm")}</Text>}
+        radius="md"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+      >
+        <Group justify="flex-end" mt="lg">
+          <Button variant="default" onClick={() => { setSelectedPayment(null); paymentDeleteHandlers.close(); }}>
+            {ct("cancel")}
+          </Button>
+          <Button
+            color="red"
+            loading={paymentDeleteMutation.isPending}
+            onClick={() => {
+              if (selectedPayment) {
+                paymentDeleteMutation.mutate(selectedPayment.id);
+              }
+            }}
+            px="xl"
+          >
+            {ct("delete")}
+          </Button>
+        </Group>
       </Modal>
     </>
   );

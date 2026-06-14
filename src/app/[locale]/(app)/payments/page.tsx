@@ -20,7 +20,10 @@ import {
   Skeleton,
   Alert,
   Space,
+  ActionIcon,
+  Anchor,
 } from "@mantine/core";
+import { Link } from "@/lib/navigation";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { DatePickerInput } from "@mantine/dates";
@@ -30,6 +33,8 @@ import {
   IconPlus,
   IconCurrencyDollar,
   IconSearch,
+  IconTrash,
+  IconEdit,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { formatPhone } from "@/lib/phone";
@@ -149,13 +154,30 @@ export default function PaymentsPage() {
     },
   });
 
-  const createMutation = useMutation({
-    mutationFn: (values: Record<string, unknown>) =>
-      apiClient("/api/payments", { method: "POST", body: values }),
+  const [editingPayment, setEditingPayment] = useState<Payment | null>(null);
+
+  const saveMutation = useMutation({
+    mutationFn: (values: Record<string, unknown>) => {
+      if (editingPayment) {
+        return apiClient(`/api/payments/${editingPayment.id}`, {
+          method: "PUT",
+          body: {
+            ...values,
+            type: editingPayment.type,
+          },
+        });
+      }
+      return apiClient("/api/payments", { method: "POST", body: { ...values, type: modalType } });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payments"] });
-      notifications.show({ title: ct("success"), message: t("created"), color: "green" });
+      notifications.show({
+        title: ct("success"),
+        message: editingPayment ? t("updated") : t("created"),
+        color: "green",
+      });
       form.reset();
+      setEditingPayment(null);
       close();
     },
     onError: (err: Error) => {
@@ -178,9 +200,26 @@ export default function PaymentsPage() {
   });
 
   function openModal(type: "BORC" | "TAHSILAT") {
+    setEditingPayment(null);
     setModalType(type);
     setSelectedCustomerId("");
     form.reset();
+    open();
+  }
+
+  function openEditModal(payment: Payment) {
+    setEditingPayment(payment);
+    setModalType(payment.type);
+    setSelectedCustomerId(payment.customer.id);
+    form.setValues({
+      customerId: payment.customer.id,
+      amount: Number(payment.amount),
+      paymentMethod: payment.paymentMethod,
+      date: new Date(payment.date) as any,
+      description: payment.description || "",
+      serviceRecordId: payment.serviceRecord?.id || "",
+      deviceId: payment.device?.id || "",
+    });
     open();
   }
 
@@ -284,9 +323,9 @@ export default function PaymentsPage() {
                         </Badge>
                       </Table.Td>
                       <Table.Td>
-                        <Text size="sm">
+                        <Anchor component={Link} href={`/customers/${payment.customer.id}`} size="sm" fw={600}>
                           {payment.customer.name} {payment.customer.surname}
-                        </Text>
+                        </Anchor>
                       </Table.Td>
                       <Table.Td>
                         <Text size="sm">
@@ -317,14 +356,24 @@ export default function PaymentsPage() {
                         </Text>
                       </Table.Td>
                       <Table.Td>
-                        <Button
-                          variant="subtle"
-                          color="red"
-                          size="xs"
-                          onClick={() => { setDeleteId(payment.id); openDelete(); }}
-                        >
-                          {ct("delete")}
-                        </Button>
+                        <Group gap={4} wrap="nowrap">
+                          <ActionIcon
+                            variant="subtle"
+                            color="gray"
+                            size="sm"
+                            onClick={() => openEditModal(payment)}
+                          >
+                            <IconEdit size={16} />
+                          </ActionIcon>
+                          <ActionIcon
+                            variant="subtle"
+                            color="red"
+                            size="sm"
+                            onClick={() => { setDeleteId(payment.id); openDelete(); }}
+                          >
+                            <IconTrash size={16} />
+                          </ActionIcon>
+                        </Group>
                       </Table.Td>
                     </Table.Tr>
                   ))}
@@ -343,14 +392,18 @@ export default function PaymentsPage() {
 
       <Modal
         opened={opened}
-        onClose={() => { form.reset(); setSelectedCustomerId(""); close(); }}
+        onClose={() => { form.reset(); setEditingPayment(null); setSelectedCustomerId(""); close(); }}
         title={
           <Stack gap={2}>
             <Text fw={700} size="lg">
-              {modalType === "BORC" ? t("newDebt") : t("newCollection")}
+              {editingPayment
+                ? (modalType === "BORC" ? t("editDebt") : t("editCollection"))
+                : (modalType === "BORC" ? t("newDebt") : t("newCollection"))}
             </Text>
             <Text size="xs" c="dimmed">
-              {modalType === "BORC" ? t("addDebtDescription") : t("addCollectionDescription")}
+              {editingPayment
+                ? t("editDescription")
+                : (modalType === "BORC" ? t("addDebtDescription") : t("addCollectionDescription"))}
             </Text>
           </Stack>
         }
@@ -363,11 +416,11 @@ export default function PaymentsPage() {
         <form
           autoComplete="nope"
           onSubmit={form.onSubmit((values) => {
-            const payload: Record<string, unknown> = { ...values, type: modalType };
+            const payload: Record<string, unknown> = { ...values };
             if (modalType === "BORC") {
               delete payload.paymentMethod;
             }
-            createMutation.mutate(payload);
+            saveMutation.mutate(payload);
           })}
         >
           <Stack gap="md">
@@ -465,12 +518,12 @@ export default function PaymentsPage() {
             )}
             <Space />
             <Group justify="flex-end">
-              <Button variant="default" onClick={() => { form.reset(); close(); }}>
+              <Button variant="default" onClick={() => { form.reset(); setEditingPayment(null); close(); }}>
                 {ct("cancel")}
               </Button>
               <Button
                 type="submit"
-                loading={createMutation.isPending}
+                loading={saveMutation.isPending}
                 px="xl"
                 color={modalType === "BORC" ? "red" : "green"}
               >

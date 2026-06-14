@@ -3,6 +3,11 @@
 ## 2026-06-14 (İyileştirmeler & Hata Düzeltmeleri)
 
 ### Eklenen
+- Tahsilat ve Borç (Payment) kayıtlarını güncellemek üzere `/api/payments/[id]` endpoint'ine `PUT` metodu desteği eklendi.
+- Servis Kaydı Detay sayfasındaki "Ödemeler ve Borçlar" tablosuna düzenleme ve silme butonları ile bunlara ait onay ve düzenleme modalleri eklendi.
+- Müşteri Detay sayfasındaki "Tahsilatlar" tablosuna düzenleme ve silme butonları ile onay ve düzenleme modalleri entegre edildi.
+- Ana "Tahsilatlar" sayfasına tahsilat/borç düzenleme butonu ve modalı entegre edilerek tüm listeleme yerlerinde tam düzenleme yeteneği sağlandı.
+- Ana "Tahsilatlar" sayfasındaki müşteri isimleri tıklanabilir hale getirilerek ilgili müşterinin detay kartına hızlı yönlendirme sağlandı.
 - Servis notlarına "Düzenle" ve "Sil" aksiyonları ile Mantine modal arayüzleri entegre edildi.
 - Not yönetimi için yeni `/api/service-records/[id]/notes/[noteId]` endpoint'i (PUT/DELETE) eklendi.
 
