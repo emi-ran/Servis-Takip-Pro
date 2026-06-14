@@ -21,7 +21,6 @@ import {
   Badge,
   Tooltip,
   SimpleGrid,
-  Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -38,11 +37,11 @@ import {
   IconTool,
   IconPhone,
   IconMail,
-  IconMapPin,
   IconUser,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { normalizePhone, isValidPhone } from "@/lib/phone";
+import { GoogleAddressInput } from "@/components/features/customers/google-address-input";
 
 type Customer = {
   id: string;
@@ -443,15 +442,10 @@ export default function CustomersPage() {
               />
             </SimpleGrid>
 
-            <Textarea
+            <GoogleAddressInput
+              key={createForm.key("address")}
               label={t("address")}
               placeholder={t("addressPlaceholder")}
-              minRows={3}
-              maxRows={5}
-              autoComplete="nope"
-              leftSection={<IconMapPin size={16} stroke={1.5} style={{ alignSelf: "flex-start", marginTop: "10px" }} />}
-              leftSectionPointerEvents="none"
-              key={createForm.key("address")}
               {...createForm.getInputProps("address")}
             />
 
@@ -552,14 +546,10 @@ export default function CustomersPage() {
               />
             </SimpleGrid>
 
-            <Textarea
-              label={t("address")}
-              minRows={3}
-              maxRows={5}
-              autoComplete="nope"
-              leftSection={<IconMapPin size={16} stroke={1.5} style={{ alignSelf: "flex-start", marginTop: "10px" }} />}
-              leftSectionPointerEvents="none"
+            <GoogleAddressInput
               key={editForm.key("address")}
+              label={t("address")}
+              placeholder={t("addressPlaceholder")}
               {...editForm.getInputProps("address")}
             />
 

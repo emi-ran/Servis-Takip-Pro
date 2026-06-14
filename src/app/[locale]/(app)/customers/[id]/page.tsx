@@ -280,9 +280,18 @@ export default function CustomerDetailPage() {
                 </Group>
               )}
               {customer.address && (
-                <Group gap="xs" style={{ gridColumn: "span 2" }}>
-                  <IconMapPin size={16} stroke={1.5} opacity={0.5} />
-                  <Text size="sm">{customer.address}</Text>
+                <Group gap="xs" style={{ gridColumn: "span 2" }} wrap="nowrap">
+                  <IconMapPin size={16} stroke={1.5} opacity={0.5} style={{ flexShrink: 0 }} />
+                  <Anchor
+                    component="a"
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(customer.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    size="sm"
+                    style={{ flex: 1, textDecoration: "none" }}
+                  >
+                    {customer.address}
+                  </Anchor>
                 </Group>
               )}
             </SimpleGrid>
