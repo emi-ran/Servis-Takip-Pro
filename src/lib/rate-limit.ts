@@ -7,6 +7,14 @@ const attempts = new Map<string, RateLimitEntry>();
 
 export function checkRateLimit(key: string, limit: number, windowMs: number) {
   const now = Date.now();
+
+  // Clean up expired entries to prevent memory leaks
+  for (const [k, e] of attempts.entries()) {
+    if (e.resetAt <= now) {
+      attempts.delete(k);
+    }
+  }
+
   const entry = attempts.get(key);
 
   if (!entry || entry.resetAt <= now) {

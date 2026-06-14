@@ -26,6 +26,7 @@ import {
   SimpleGrid,
   ThemeIcon,
   Timeline,
+  ActionIcon,
 } from "@mantine/core";
 import { Link, useRouter } from "@/lib/navigation";
 import {
@@ -40,6 +41,7 @@ import {
   IconHistory,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
+import { useAuth } from "@/components/providers/auth-provider";
 import { formatPhone } from "@/lib/phone";
 
 type ServiceRecord = {
@@ -112,9 +114,13 @@ export default function ServiceRecordDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuth();
 
   const [editOpened, editHandlers] = useDisclosure(false);
   const [deleteOpened, deleteHandlers] = useDisclosure(false);
+  const [noteEditOpened, noteEditHandlers] = useDisclosure(false);
+  const [noteDeleteOpened, noteDeleteHandlers] = useDisclosure(false);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   const { data, isLoading, isError, error } = useQuery<{ serviceRecord: ServiceRecord }>({
     queryKey: ["service-record", params.id],
@@ -216,7 +222,56 @@ export default function ServiceRecordDetailPage() {
     },
   });
 
-  const transitions = record ? validTransitions[record.status] || [] : [];
+  const noteEditForm = useForm({
+    mode: "uncontrolled" as const,
+    initialValues: { content: "", isCustomerVisible: false },
+    validate: {
+      content: (v: string) => (v.length < 1 ? t("contentRequired") : null),
+    },
+  });
+
+  const noteDeleteMutation = useMutation({
+    mutationFn: (noteId: string) =>
+      apiClient(`/api/service-records/${params.id}/notes/${noteId}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-record", params.id] });
+      notifications.show({ title: ct("success"), message: ct("deleteSuccess"), color: "green" });
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
+
+  const noteUpdateMutation = useMutation({
+    mutationFn: ({ noteId, values }: { noteId: string; values: typeof noteEditForm.values }) =>
+      apiClient(`/api/service-records/${params.id}/notes/${noteId}`, {
+        method: "PUT",
+        body: values,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-record", params.id] });
+      notifications.show({ title: ct("success"), message: ct("saveSuccess"), color: "green" });
+      noteEditHandlers.close();
+      setSelectedNote(null);
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
+
+  const allStatuses = [
+    "KAYIT_ACILDI",
+    "TAMIRATTA",
+    "FIYAT_TEKLIFI_VERILDI",
+    "MUSTERI_REDDETTI",
+    "HAZIR",
+    "ODEME_BEKLIYOR",
+    "TESLIM_EDILDI",
+    "IPTAL_EDILDI",
+  ];
+  const transitions = record ? allStatuses.filter((s) => s !== record.status) : [];
 
   if (isLoading) {
     return (
@@ -508,7 +563,39 @@ export default function ServiceRecordDetailPage() {
               <Stack gap="sm">
                 {record.notes.map((note) => (
                   <Card key={note.id} withBorder p="sm" radius="md">
-                    <Text size="sm">{note.content}</Text>
+                    <Group justify="space-between" align="flex-start" wrap="nowrap">
+                      <Text size="sm" style={{ flexGrow: 1, whiteSpace: "pre-line" }}>{note.content}</Text>
+                      {(currentUser?.role === "ADMIN" || currentUser?.id === note.author.id) && (
+                        <Group gap={4} wrap="nowrap">
+                          <ActionIcon
+                            size="sm"
+                            variant="subtle"
+                            color="gray"
+                            onClick={() => {
+                              setSelectedNote(note);
+                              noteEditForm.setValues({
+                                content: note.content,
+                                isCustomerVisible: note.isCustomerVisible,
+                              });
+                              noteEditHandlers.open();
+                            }}
+                          >
+                            <IconEdit size={14} />
+                          </ActionIcon>
+                          <ActionIcon
+                            size="sm"
+                            variant="subtle"
+                            color="red"
+                            onClick={() => {
+                              setSelectedNote(note);
+                              noteDeleteHandlers.open();
+                            }}
+                          >
+                            <IconTrash size={14} />
+                          </ActionIcon>
+                        </Group>
+                      )}
+                    </Group>
                     <Group gap="xs" mt="xs">
                       <Text size="xs" c="dimmed">
                         {note.author.name} {note.author.surname}
@@ -622,6 +709,99 @@ export default function ServiceRecordDetailPage() {
             color="red"
             loading={deleteMutation.isPending}
             onClick={() => deleteMutation.mutate()}
+            px="xl"
+          >
+            {ct("delete")}
+          </Button>
+        </Group>
+      </Modal>
+
+      <Modal
+        opened={noteEditOpened}
+        onClose={() => {
+          noteEditHandlers.close();
+          setSelectedNote(null);
+        }}
+        title={<Text fw={700} size="md">{t("edit")}</Text>}
+        radius="md"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+      >
+        <form
+          autoComplete="nope"
+          onSubmit={noteEditForm.onSubmit((values) => {
+            if (selectedNote) {
+              noteUpdateMutation.mutate({ noteId: selectedNote.id, values });
+            }
+          })}
+        >
+          <Stack gap="md">
+            <Textarea
+              placeholder={t("faultPlaceholder")}
+              minRows={3}
+              maxRows={6}
+              autosize
+              autoComplete="nope"
+              key={noteEditForm.key("content")}
+              {...noteEditForm.getInputProps("content")}
+            />
+            <Checkbox
+              label={t("customerVisible")}
+              key={noteEditForm.key("isCustomerVisible")}
+              {...noteEditForm.getInputProps("isCustomerVisible", { type: "checkbox" })}
+            />
+            <Group justify="flex-end" mt="lg">
+              <Button
+                variant="default"
+                onClick={() => {
+                  noteEditHandlers.close();
+                  setSelectedNote(null);
+                }}
+              >
+                {ct("cancel")}
+              </Button>
+              <Button type="submit" loading={noteUpdateMutation.isPending} px="xl">
+                {ct("save")}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Modal
+        opened={noteDeleteOpened}
+        onClose={() => {
+          noteDeleteHandlers.close();
+          setSelectedNote(null);
+        }}
+        title={<Text fw={700} size="md">{t("deleteConfirm")}</Text>}
+        radius="md"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+      >
+        <Group justify="flex-end" mt="lg">
+          <Button
+            variant="default"
+            onClick={() => {
+              noteDeleteHandlers.close();
+              setSelectedNote(null);
+            }}
+          >
+            {ct("cancel")}
+          </Button>
+          <Button
+            color="red"
+            loading={noteDeleteMutation.isPending}
+            onClick={() => {
+              if (selectedNote) {
+                noteDeleteMutation.mutate(selectedNote.id, {
+                  onSuccess: () => {
+                    noteDeleteHandlers.close();
+                    setSelectedNote(null);
+                  }
+                });
+              }
+            }}
             px="xl"
           >
             {ct("delete")}

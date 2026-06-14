@@ -49,10 +49,9 @@ export async function POST(
     const body = await request.json();
     const { status: newStatus } = statusTransitionSchema.parse(body);
 
-    const allowed = validTransitions[record.status];
-    if (!allowed || !allowed.includes(newStatus)) {
+    if (record.status === newStatus) {
       return NextResponse.json(
-        { message: `"${record.status}" durumundan "${newStatus}" durumuna geçilemez` },
+        { message: "Servis kaydı zaten bu durumda" },
         { status: 400 }
       );
     }

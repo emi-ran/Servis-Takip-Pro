@@ -52,10 +52,9 @@ export async function verifySession(): Promise<SessionPayload | null> {
       return null;
     }
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: {
         id: session.userId,
-        companyId: session.companyId,
       },
       select: {
         id: true,
@@ -65,7 +64,7 @@ export async function verifySession(): Promise<SessionPayload | null> {
       },
     });
 
-    if (!user) return null;
+    if (!user || user.companyId !== session.companyId) return null;
 
     if (user.updatedAt.toISOString() !== session.userUpdatedAt) {
       cookieStore.delete(COOKIE_NAME);

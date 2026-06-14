@@ -31,7 +31,8 @@ export default async function middleware(request: NextRequest) {
     try {
       await jwtVerify(sessionCookie.value, JWT_SECRET);
     } catch {
-      const response = isLoginPath
+      const isPublicPath = isLoginPath || isSetupPath || isRootPath;
+      const response = isPublicPath
         ? intlMiddleware(request)
         : NextResponse.redirect(new URL("/tr/login", request.url));
       response.cookies.delete("session");
