@@ -48,19 +48,37 @@ export async function GET(request: NextRequest) {
   }
 
   if (query) {
+    const words = query.trim().split(/\s+/).filter(Boolean);
     const trackingNo = parseInt(query);
-    where.OR = [
-      ...(!isNaN(trackingNo) ? [{ trackingNo: trackingNo }] : []),
-      { faultDescription: { contains: query, mode: "insensitive" as const } },
-      {
-        customer: {
-          OR: [
-            { name: { contains: query, mode: "insensitive" as const } },
-            { surname: { contains: query, mode: "insensitive" as const } },
-          ],
+    if (words.length > 0) {
+      where.OR = [
+        ...(!isNaN(trackingNo) ? [{ trackingNo: trackingNo }] : []),
+        {
+          AND: words.map((word) => ({
+            OR: [
+              { faultDescription: { contains: word, mode: "insensitive" as const } },
+              {
+                customer: {
+                  OR: [
+                    { name: { contains: word, mode: "insensitive" as const } },
+                    { surname: { contains: word, mode: "insensitive" as const } },
+                  ],
+                },
+              },
+              {
+                device: {
+                  OR: [
+                    { brand: { contains: word, mode: "insensitive" as const } },
+                    { model: { contains: word, mode: "insensitive" as const } },
+                    { serialNo: { contains: word, mode: "insensitive" as const } },
+                  ],
+                },
+              },
+            ],
+          })),
         },
-      },
-    ];
+      ];
+    }
   }
 
   const [serviceRecords, total] = await Promise.all([

@@ -29,21 +29,28 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get("pageSize") || "20")));
 
-  const where = {
+  const where: Record<string, any> = {
     companyId: session.companyId,
-    ...(query
-      ? {
-          OR: [
-            { name: { contains: query, mode: "insensitive" as const } },
-            { surname: { contains: query, mode: "insensitive" as const } },
-            { nickname: { contains: query, mode: "insensitive" as const } },
-            { phone: { contains: query } },
-            ...(normalizedQueryPhone !== query ? [{ phone: { contains: normalizedQueryPhone } }] : []),
-            { email: { contains: query, mode: "insensitive" as const } },
-          ],
-        }
-      : {}),
   };
+
+  if (query) {
+    const words = query.trim().split(/\s+/).filter(Boolean);
+    if (words.length > 0) {
+      where.AND = words.map((word) => {
+        const normalizedWordPhone = normalizePhone(word);
+        return {
+          OR: [
+            { name: { contains: word, mode: "insensitive" as const } },
+            { surname: { contains: word, mode: "insensitive" as const } },
+            { nickname: { contains: word, mode: "insensitive" as const } },
+            { phone: { contains: word } },
+            ...(normalizedWordPhone ? [{ phone: { contains: normalizedWordPhone } }] : []),
+            { email: { contains: word, mode: "insensitive" as const } },
+          ],
+        };
+      });
+    }
+  }
 
   const [customers, total] = await Promise.all([
     prisma.customer.findMany({

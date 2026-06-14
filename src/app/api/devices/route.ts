@@ -34,20 +34,25 @@ export async function GET(request: NextRequest) {
   }
 
   if (query) {
-    where.OR = [
-      { brand: { contains: query, mode: "insensitive" as const } },
-      { model: { contains: query, mode: "insensitive" as const } },
-      { serialNo: { contains: query } },
-      { category: { contains: query, mode: "insensitive" as const } },
-      {
-        customer: {
-          OR: [
-            { name: { contains: query, mode: "insensitive" as const } },
-            { surname: { contains: query, mode: "insensitive" as const } },
-          ],
-        },
-      },
-    ];
+    const words = query.trim().split(/\s+/).filter(Boolean);
+    if (words.length > 0) {
+      where.AND = words.map((word) => ({
+        OR: [
+          { brand: { contains: word, mode: "insensitive" as const } },
+          { model: { contains: word, mode: "insensitive" as const } },
+          { serialNo: { contains: word, mode: "insensitive" as const } },
+          { category: { contains: word, mode: "insensitive" as const } },
+          {
+            customer: {
+              OR: [
+                { name: { contains: word, mode: "insensitive" as const } },
+                { surname: { contains: word, mode: "insensitive" as const } },
+              ],
+            },
+          },
+        ],
+      }));
+    }
   }
 
   const [devices, total] = await Promise.all([
