@@ -4,60 +4,60 @@ Tarih: 2026-06-14
 Kapsam: Mevcut Next.js uygulaması, auth akışı, middleware, setup, API route yetkilendirmesi
 Durum: Manuel kod incelemesi; kritik bulgular için düzeltmeler uygulandı
 
-## Ozet
+## Özet
 
 Bu proje internete açık kullanılacaksa session iptali, ilk kurulum akışı ve brute-force koruması dikkatle korunmalıdır.
 
 Uygulanan düzeltmeler:
 
-1. JWT session her istekte DB'deki guncel kullanici kaydiyla dogrulaniyor.
+1. JWT session her istekte DB'deki güncel kullanıcı kaydıyla doğrulanıyor.
 2. `/api/setup` endpoint'i sadece veritabanında hiç kullanıcı yoksa çalışacak şekilde sınırlandırıldı.
-3. Middleware token imzasini/suresini dogruluyor ve gecersiz cookie'yi siliyor.
-4. Login endpoint'ine IP + email bazli rate limit eklendi.
-5. Secret ve admin sifre minimumlari guclendirildi.
+3. Middleware token imzasını/süresini doğruluyor ve geçersiz cookie'yi siliyor.
+4. Login endpoint'ine IP + email bazlı rate limit eklendi.
+5. Secret ve admin şifre minimumları güçlendirildi.
 
 ---
 
-## 1. Session Revocation Eksikligi
+## 1. Session Revocation Eksikliği
 
-Durum: RESOLVED (cozuldu)
+Durum: RESOLVED (çözüldü)
 
-Ilgili dosyalar:
+İlgili dosyalar:
 
 - `src/lib/auth.ts`
 - `src/app/api/auth/me/route.ts`
 - `src/app/api/auth/users/route.ts`
 - `src/app/api/auth/users/[id]/route.ts`
-- Session'a guvenen diger API route'lari
+- Session'a güvenen diğer API route'ları
 
 ### Sorun
 
-JWT token icinde `userId`, `companyId`, `role` tutuluyor. `verifySession()` token imzasini dogruladiktan sonra payload'i dogrudan guvenilir kabul ediyor. Kullanici daha sonra:
+JWT token içinde `userId`, `companyId`, `role` tutuluyor. `verifySession()` token imzasını doğruladıktan sonra payload'ı doğrudan güvenilir kabul ediyor. Kullanıcı daha sonra:
 
 - silinirse
-- rolu `ADMIN`'den `TECHNICIAN`'a dusurulurse
-- farkli sirket baglantisina gecirilirse
+- rolü `ADMIN`'den `TECHNICIAN`'a düşürülürse
+- farklı şirket bağlantısına geçirilirse
 
-mevcut token suresi dolana kadar eski yetkileri kullanmaya devam edebilir.
+mevcut token süresi dolana kadar eski yetkileri kullanmaya devam edebilir.
 
 ### Etki
 
-- Yetkisi kaldirilan admin bir sure daha admin endpoint'lerini kullanabilir.
-- Silinmis kullanici aktif token ile islem yapmaya devam edebilir.
-- Internete acik sistemde bu kabul edilemeyecek kadar zayif bir yetki iptal modelidir.
+- Yetkisi kaldırılan admin bir süre daha admin endpoint'lerini kullanabilir.
+- Silinmiş kullanıcı aktif token ile işlem yapmaya devam edebilir.
+- İnternete açık sistemde bu kabul edilemeyecek kadar zayıf bir yetki iptal modelidir.
 
-### Kanit
+### Kanıt
 
-- `src/lib/auth.ts` icindeki `verifySession()` sadece cookie'den token okuyup `jwtVerify()` ile dogruluyor.
-- Cok sayida API route karar verirken sadece `session.role` ve `session.companyId` kullaniyor.
-- Her istekte DB'den guncel kullanici durumu cekilmiyor.
+- `src/lib/auth.ts` içindeki `verifySession()` sadece cookie'den token okuyup `jwtVerify()` ile doğruluyor.
+- Çok sayıda API route karar verirken sadece `session.role` ve `session.companyId` kullanıyor.
+- Her istekte DB'den güncel kullanıcı durumu çekilmiyor.
 
-### Oneri
+### Öneri
 
-- `verifySession()` sonrasi kullaniciyi DB'den tekrar cekin.
-- Yetki kritik route'larda guncel kullanici kaydi uzerinden karar verin.
-- Alternatif olarak session version / token invalidation mekanizmasi ekleyin.
-- Minimum hedef: `userId`, `companyId`, `role` her istekte DB ile dogrulansin.
+- `verifySession()` sonrası kullanıcıyı DB'den tekrar çekin.
+- Yetki kritik route'larda güncel kullanıcı kaydı üzerinden karar verin.
+- Alternatif olarak session version / token invalidation mekanizması ekleyin.
+- Minimum hedef: `userId`, `companyId`, `role` her istekte DB ile doğrulansın.
 
 ---
 
@@ -65,7 +65,7 @@ mevcut token suresi dolana kadar eski yetkileri kullanmaya devam edebilir.
 
 Durum: RESOLVED (çözüldü — setup API sadece kullanıcı yoksa çalışır)
 
-Ilgili dosyalar:
+İlgili dosyalar:
 
 - `src/middleware.ts`
 - `prisma/seed.js`
@@ -80,125 +80,125 @@ Uygulamanın ilk kurulumu HTTP endpoint üzerinden yapılabilir, ancak endpoint 
 - Mevcut kullanıcı bulunan veritabanlarında setup endpoint 409 döner.
 - Docker başlangıcında veri sıfırlama veya otomatik schema push yapılmaz.
 
-### Kanit
+### Kanıt
 
 - Setup API route'u kullanıcı sayısını kontrol ediyor.
 - Middleware `/setup` yolunu oturumsuz erişime açıyor, ancak oturumlu kullanıcıları dashboard'a yönlendiriyor.
 - İlk şirket/admin bilgileri `.env` yerine kurulum formundan alınır.
 
-### Oneri
+### Öneri
 
 - Mevcut çözüm korunmalı: setup işlemi sadece veritabanında hiç kullanıcı yoksa çalışmalıdır.
 
 ---
 
-## 3. Middleware Cookie Varligina Bakarak Auth Karari Veriyor
+## 3. Middleware Cookie Varlığına Bakarak Auth Kararı Veriyor
 
-Durum: RESOLVED (cozuldu — token dogrulamasi eklendi)
+Durum: RESOLVED (çözüldü — token doğrulaması eklendi)
 
-Ilgili dosya:
+İlgili dosya:
 
 - `src/middleware.ts`
 
 ### Sorun
 
-Middleware sadece `session` cookie'sinin varligina bakiyor; token'in gecerliligini, suresini veya imzasini dogrulamiyor.
+Middleware sadece `session` cookie'sinin varlığına bakıyor; token'in geçerliliğini, süresini veya imzasını doğrulamıyor.
 
 ### Etki
 
-- Gecersiz veya suresi dolmus token tasiyan kullanici middleware'den gecebilir.
-- Sonrasinda sayfa veya API seviyesinde 401/404 gibi daginik hatalar gorulebilir.
-- Auth akisi tutarsizlasir.
+- Geçersiz veya süresi dolmuş token taşıyan kullanıcı middleware'den geçebilir.
+- Sonrasında sayfa veya API seviyesinde 401/404 gibi dağınık hatalar görülebilir.
+- Auth akışı tutarsızlaşır.
 
-### Kanit
+### Kanıt
 
-- `src/middleware.ts` icinde `request.cookies.get("session")` disinda verification yok.
+- `src/middleware.ts` içinde `request.cookies.get("session")` dışında verification yok.
 
-### Oneri
+### Öneri
 
-- Middleware icinde token dogrulamasi yapin.
-- Gecersiz token varsa cookie'yi temizleyip login'e yonlendirin.
+- Middleware içinde token doğrulaması yapın.
+- Geçersiz token varsa cookie'yi temizleyip login'e yönlendirin.
 
 ---
 
-## 4. Zayif Secret ve Admin Sifre Politikasi
+## 4. Zayıf Secret ve Admin Şifre Politikası
 
-Durum: RESOLVED (cozuldu — minimumlar guclendirildi)
+Durum: RESOLVED (çözüldü — minimumlar güçlendirildi)
 
-Ilgili dosya:
+İlgili dosya:
 
 - `src/lib/env.ts`
 
 ### Sorun
 
-`JWT_SECRET` icin minimum 8 karakter, `ADMIN_PASSWORD` icin minimum 4 karakter zorunlulugu var.
+`JWT_SECRET` için minimum 8 karakter, `ADMIN_PASSWORD` için minimum 4 karakter zorunluluğu var.
 
 ### Etki
 
-- Uretim ortaminda zayif secret kullanimi daha olasi olur.
-- Admin hesabi kaba kuvvet saldirilarina karsi daha zayif kalir.
+- Üretim ortamında zayıf secret kullanımı daha olası olur.
+- Admin hesabı kaba kuvvet saldırılarına karşı daha zayıf kalır.
 
-### Kanit
+### Kanıt
 
-- `src/lib/env.ts` zod kurallari bunu acikca gosteriyor.
+- `src/lib/env.ts` zod kuralları bunu açıkça gösteriyor.
 
-### Oneri
+### Öneri
 
 - `JWT_SECRET`: minimum 32 karakter
 - `ADMIN_PASSWORD`: minimum 8 veya tercihen 12 karakter
-- Mumkunse complexity yerine uzunluk odakli kural kullanin.
+- Mümkünse complexity yerine uzunluk odaklı kural kullanın.
 
 ---
 
 ## 5. Login Endpoint'te Rate Limit Yok
 
-Durum: RESOLVED (cozuldu — rate limit eklendi)
+Durum: RESOLVED (çözüldü — rate limit eklendi)
 
-Ilgili dosya:
+İlgili dosya:
 
 - `src/app/api/auth/login/route.ts`
 
 ### Sorun
 
-Basarisiz giris denemeleri icin hiz sinirlama veya gecici bloklama bulunmuyor.
+Başarısız giriş denemeleri için hız sınırlama veya geçici bloklama bulunmuyor.
 
 ### Etki
 
-- Internete acik kullanimda brute-force denemelerine acik kalir.
-- Ozellikle zayif sifrelerle birlesince risk artar.
+- İnternete açık kullanımda brute-force denemelerine açık kalır.
+- Özellikle zayıf şifrelerle birleşince risk artar.
 
-### Kanit
+### Kanıt
 
-- Endpoint sadece credential kontrolu yapiyor; deneme sayisi / IP / email bazli sinirlama yok.
+- Endpoint sadece credential kontrolü yapıyor; deneme sayısı / IP / email bazlı sınırlama yok.
 
-### Oneri
+### Öneri
 
-- IP + email bazli rate limit ekleyin.
-- Reverse proxy seviyesinde ek koruma dusunun.
-- Tekrarlayan basarisiz denemeler icin gecici yavaslatma veya bloklama uygulayin.
+- IP + email bazlı rate limit ekleyin.
+- Reverse proxy seviyesinde ek koruma düşünün.
+- Tekrarlayan başarısız denemeler için geçici yavaşlatma veya bloklama uygulayın.
 
 ---
 
 ## Pozitif Noktalar
 
-- API route'larin buyuk cogunlugunda `companyId` izolasyonu uygulanmis.
-- Admin-only kullanici yonetimi API tarafinda da korunuyor.
-- Sifreler hash'leniyor, plain text saklanmiyor.
+- API route'ların büyük çoğunluğunda `companyId` izolasyonu uygulanmış.
+- Admin-only kullanıcı yönetimi API tarafında da korunuyor.
+- Şifreler hash'leniyor, plain text saklanmıyor.
 - Session cookie `httpOnly` ve `sameSite=lax`.
-- Bircok endpoint input validation icin `zod` kullaniyor.
+- Birçok endpoint input validation için `zod` kullanıyor.
 
 ---
 
-## Oncelik Sirasi
+## Öncelik Sırası
 
-1. Session revocation / guncel kullanici dogrulamasi
-2. Public setup akisinin kaldirilmasi veya sert sekilde korunmasi
+1. Session revocation / güncel kullanıcı doğrulaması
+2. Public setup akışının kaldırılması veya sert şekilde korunması
 3. Login rate limiting
 4. Middleware token verification
-5. Secret ve parola politikasi sertlestirme
+5. Secret ve parola politikası sertleştirme
 
 ---
 
 ## Not
 
-Bu dosya manuel kod incelemesine dayanir. Dinamik penetration test, dependency taramasi ve production reverse proxy/infra ayarlari bu kapsamin disindadir.
+Bu dosya manuel kod incelemesine dayanır. Dinamik penetration test, dependency taraması ve production reverse proxy/infra ayarları bu kapsamın dışındadır.
