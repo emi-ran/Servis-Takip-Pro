@@ -58,50 +58,27 @@ Servis Takip, teknik servis operasyonlarınızı tek bir panoda toplar. Müşter
 
 ## 🐳 Docker ile Dağıtım
 
-Servis Takip uygulamasını Docker ve Docker Compose kullanarak tek bir komutla kolayca çalıştırabilirsiniz.
+Servis Takip uygulamasını Docker ve Docker Compose kullanarak kendi sunucunuzda kolayca çalıştırabilirsiniz.
 
 ### Docker Compose ile Kurulum
 
-Aşağıdaki `docker-compose.yml` örneğini kullanarak veritabanı ile birlikte ayağa kaldırabilirsiniz:
+Proje kök dizinindeki `docker-compose.yml` dosyasını kullanarak uygulamayı yerel veritabanınıza bağlı şekilde derleyip başlatabilirsiniz:
 
 ```yaml
 services:
   app:
-    image: [SANSURLENDI]/servis-takip:latest # veya local derlediğiniz image
     build: .
     ports:
       - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres_password@db:5400/servistakip?schema=public
-      - JWT_SECRET=en_az_32_karakterlik_guvenli_bir_key
-      - PORT=3000
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: postgres:16-alpine
-    ports:
-      - "5400:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres_password
-      - POSTGRES_DB=servistakip
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  pgdata:
+    env_file: .env
+    restart: unless-stopped
 ```
 
-Projeyi başlatmak için:
+1. Önce `.env` dosyanızı oluşturup gerekli değişkenleri (`DATABASE_URL`, `JWT_SECRET`) tanımlayın.
+2. Ardından aşağıdaki komutla konteyneri derleyip arka planda başlatın:
+
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
 
 ---
