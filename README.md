@@ -22,6 +22,18 @@ Servis Takip, teknik servis operasyonlarınızı tek bir panoda toplar. Müşter
 
 ---
 
+## 📸 Ekran Görüntüleri
+
+| ![Dashboard](assets/dashboard.png) | ![Müşteri Detayı](assets/customer_details.png) |
+| :---: | :---: |
+| **Ana Kontrol Paneli (Dashboard)** | **Müşteri Detay Sayfası** |
+
+| ![Servis Kaydı Detayı](assets/service_details.png) | ![Planlanan İşler (Ajanda)](assets/calendar.png) |
+| :---: | :---: |
+| **Servis Kaydı Detayı & Zaman Tüneli** | **Planlanan İşler (Ajanda)** |
+
+---
+
 ## ✨ Özellikler
 
 ### 👥 Müşteri Yönetimi
