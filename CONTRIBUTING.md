@@ -62,12 +62,12 @@ Geliştirme sürecinde kullanabileceğiniz NPM scriptleri şunlardır:
 
 Proje genel olarak Next.js App Router standartlarına ve bileşen bazlı mimariye uygun tasarlanmıştır:
 
-*   [`prisma/`](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/prisma): Veritabanı modelleri (`schema.prisma`) ve mock/seed scriptleri.
-*   [`messages/`](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/messages): Dil çeviri dosyaları (next-intl için `tr.json`).
-*   [`src/app/`](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/src/app): Next.js sayfaları ve API route'ları (`api/`).
-*   [`src/components/`](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/src/components): Ortak UI bileşenleri, layout elemanları ve provider'lar.
-*   [`src/lib/`](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/src/lib): Yardımcı kütüphaneler, auth helpers, rate limit ve prisma client singleton'ı.
-*   [`src/types/`](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/src/types): Global TypeScript tipleri.
+*   [`prisma/`](prisma): Veritabanı modelleri (`schema.prisma`) ve mock/seed scriptleri.
+*   [`messages/`](messages): Dil çeviri dosyaları (next-intl için `tr.json`).
+*   [`src/app/`](src/app): Next.js sayfaları ve API route'ları (`api/`).
+*   [`src/components/`](src/components): Ortak UI bileşenleri, layout elemanları ve provider'lar.
+*   [`src/lib/`](src/lib): Yardımcı kütüphaneler, auth helpers, rate limit ve prisma client singleton'ı.
+*   [`src/types/`](src/types): Global TypeScript tipleri.
 
 ---
 
@@ -92,4 +92,4 @@ Format: `{phase}: {eylem} — {kısa açıklama}`
 
 *   *Örnek:* `phase-8: dökümantasyon — geliştirici kılavuzu oluşturuldu`
 
-Detaylı proje kuralları ve anayasası için [`AGENTS.md`](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/AGENTS.md) dosyasını inceleyebilirsiniz.
+Detaylı proje kuralları ve anayasası için [`AGENTS.md`](AGENTS.md) dosyasını inceleyebilirsiniz.

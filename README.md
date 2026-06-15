@@ -108,7 +108,7 @@ Uygulama başarıyla başlatıldıktan sonra tarayıcınızdan `http://localhost
 
 ## 💻 Geliştirme ve Katkı
 
-Projeyi yerel bilgisayarınızda çalıştırmak, kod yapısını incelemek ve katkıda bulunmak için lütfen [**CONTRIBUTING.md**](file:///c:/Users/[SANSURLENDI]/Desktop/Servis%20Takip/CONTRIBUTING.md) dosyasını inceleyin.
+Projeyi yerel bilgisayarınızda çalıştırmak, kod yapısını incelemek ve katkıda bulunmak için lütfen [**CONTRIBUTING.md**](CONTRIBUTING.md) dosyasını inceleyin.
 
 ---
 
