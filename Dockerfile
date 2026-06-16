@@ -6,7 +6,7 @@ COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --prefer-offline --no-audit --no-fund
 COPY . .
 RUN npx prisma generate
-RUN SKIP_ENV_VALIDATION=1 npm run build
+RUN SKIP_ENV_VALIDATION=1 npx next build --webpack
 RUN npm prune --omit=dev
 
 FROM base AS runner
