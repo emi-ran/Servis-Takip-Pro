@@ -3,11 +3,11 @@ FROM node:22-alpine AS base
 FROM base AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci --prefer-offline --no-audit --no-fund
 COPY . .
 RUN npx prisma generate
 RUN SKIP_ENV_VALIDATION=1 npm run build
-RUN npm prune --production
+RUN npm prune --omit=dev
 
 FROM base AS runner
 WORKDIR /app

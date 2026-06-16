@@ -24,7 +24,7 @@ export async function GET() {
   ]);
 
   return NextResponse.json({
-    brands: brands.map((b) => b.brand),
-    categories: categories.map((c) => c.category),
+    brands: brands.map((b: { brand: string | null }) => b.brand),
+    categories: categories.map((c: { category: string | null }) => c.category),
   });
 }

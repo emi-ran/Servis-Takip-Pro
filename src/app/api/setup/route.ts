@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createSession, hashPassword } from "@/lib/auth";
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const data = setupSchema.parse(await request.json());
     const passwordHash = await hashPassword(data.adminPassword);
 
-    const company = await prisma.$transaction(async (tx) => {
+    const company = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const userCount = await tx.user.count();
 
       if (userCount > 0) {
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
         },
         include: { users: true },
       });
-    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    });
     const user = company.users[0];
 
     await createSession({

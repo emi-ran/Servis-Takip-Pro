@@ -39,7 +39,6 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.4.0",
-    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
