@@ -38,8 +38,11 @@ async function main() {
 
   if (tableCount === 0) {
     console.log("No tables found. Running prisma db push...");
-    await run("npx", ["prisma", "db", "push"]);
+  } else {
+    console.log("Existing database found. Syncing schema with prisma db push...");
   }
+
+  await run("npx", ["prisma", "db", "push"]);
 
   await run("node", ["server.js"]);
 }
