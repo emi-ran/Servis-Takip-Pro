@@ -16,6 +16,8 @@
     "db:mock": "node scripts/mock-data.js"
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
     "@mantine/core": "^9.3.1",
     "@mantine/dates": "^9.3.1",
     "@mantine/form": "^9.3.1",
@@ -36,6 +38,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.4.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -123,6 +123,10 @@
   font-weight: 800;
 }
 
+.mobileHeader {
+  display: none;
+}
+
 @media (max-width: 820px) {
   .shell {
     align-items: flex-start;
@@ -134,16 +138,37 @@
   }
 
   .brandSide {
-    min-height: auto;
-    padding: 30px 26px;
-  }
-
-  .brandSide::after {
     display: none;
   }
 
   .formSide {
-    padding: 30px 26px 34px;
+    padding: 40px 24px;
+  }
+
+  .mobileHeader {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid light-dark(var(--mantine-color-gray-2), rgba(255, 255, 255, 0.06));
+  }
+
+  .mobileLogoWrap {
+    background: var(--mantine-color-blue-filled);
+    padding: 6px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .mobileTitle {
+    font-size: 1.35rem;
+    font-weight: 850;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
   }
 }
 

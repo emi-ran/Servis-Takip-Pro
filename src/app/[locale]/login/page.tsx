@@ -127,6 +127,18 @@ export default function LoginPage() {
           </Box>
 
           <Box className={classes.formSide}>
+            <Box className={classes.mobileHeader}>
+              <Box className={classes.mobileLogoWrap}>
+                <LogoMark size={32} />
+              </Box>
+              <Box>
+                <Title order={1} className={classes.mobileTitle}>
+                  {tc("appName")}
+                </Title>
+                <Text size="xs" c="dimmed">{t("subtitle")}</Text>
+              </Box>
+            </Box>
+
             <Stack gap="xs" mb="xl">
               <Text className={classes.eyebrow}>{t("formEyebrow")}</Text>
               <Title order={2} className={classes.formTitle}>{t("formTitle")}</Title>

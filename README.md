@@ -118,6 +118,12 @@ Uygulama başarıyla başlatıldıktan sonra tarayıcınızdan `http://localhost
 
 ---
 
+## 📱 Android Uygulaması (Mobil)
+
+Servis Takip, saha teknisyenlerinin mobil cihazlar üzerinden hızlıca işlem yapabilmesi için Capacitor entegrasyonu ile Android platformuna derlenebilmektedir. Mobil uygulamanın derlenmesi, cihaz testleri, paket ayarları ve geliştirme ortamı hazırlıkları hakkında detaylı yönergeler için lütfen [**Android Geliştirme ve Dağıtım Rehberi**](docs/android-rehberi.md) dosyasını inceleyin.
+
+---
+
 ## 💻 Geliştirme ve Katkı
 
 Projeyi yerel bilgisayarınızda çalıştırmak, kod yapısını incelemek ve katkıda bulunmak için lütfen [**CONTRIBUTING.md**](CONTRIBUTING.md) dosyasını inceleyin.

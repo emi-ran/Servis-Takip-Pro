@@ -8,9 +8,14 @@
 - `scripts/docker-entrypoint.js` — CommonJS modülü olduğu için `require()` kullanımı lint hatası verir, çalışmayı etkilemez.
 - `scripts/mock-data.js` — CommonJS modülü olduğu için `require()` kullanımı lint hatası verir, çalışmayı etkilemez.
 
-## Uyarılar
+## Android & Mobil Geliştirme Sorunları ve Çözümleri
 
-- Next.js middleware uyarısı: `"middleware" file convention is deprecated. Please use "proxy" instead.` — İşlevsel etkisi yok, Next.js 16'daki yeni yönlendirme. Gelecekte `src/proxy.ts`'ye geçiş yapılabilir.
+- **JDK 21 Derleme Hatası (Windows):** Windows üzerinde Capacitor 6 build işlemi çalıştırıldığında JDK 21 bulunamadığı veya eski bir sürüm olduğu için Gradle derlemesi patlamaktadır.
+  - *Çözüm:* PowerShell terminalinde `JAVA_HOME` değişkenini Android Studio ile gelen JBR'a yönlendirin: `$env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"`
+- **ADB Bağlantı Koptu / Yükleniyor Spinner'ında Kalma:** Kablolu cihaz bağlı olmasına rağmen uygulamanın "Bağlantı Kurulamadı" ekranında spinner ile takılı kalması.
+  - *Çözüm:* ADB sunucusu yeniden başladığında veya kablo söküldüğünde port yönlendirmeleri silinmektedir. Port eşlemesini yenilemek için: `adb reverse tcp:3000 tcp:3000`
+- **WebView CORS / Dosya Erişim Hatası:** `error.html` gibi yerel asset dosyalarından (`file:///`) `http://localhost:3000` adresine atılan fetch isteklerinin güvenlik gerekçesiyle engellenmesi.
+  - *Çözüm:* `MainActivity.java` dosyası üzerinde Android WebView ayarlarına `setAllowFileAccess(true)`, `setAllowFileAccessFromFileURLs(true)` ve `setAllowUniversalAccessFromFileURLs(true)` izinleri eklenerek yerel dosyaların dış sunucu istekleri yapabilmesi sağlanmıştır.
 
 ## Düzeltilen Hatalar
 

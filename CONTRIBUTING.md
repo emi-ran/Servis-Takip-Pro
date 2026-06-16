@@ -38,6 +38,10 @@ Yerel geliştirme ortamını kurmak için aşağıdaki adımları izleyin.
     ```
     Uygulama `http://localhost:3000` adresinde çalışacaktır. İlk girişte veritabanı boş olacağından `/setup` sayfasına yönlendirileceksiniz. Buradan ilk şirket ve yönetici hesabını oluşturabilirsiniz.
 
+### 📱 Mobil (Android) Geliştirme Ortamı
+
+Android uygulamasını yerel ortamda çalıştırmak ve test etmek istiyorsanız, ek ön gereksinimleri (Android Studio, JDK 21 vb.) kurmanız ve derleme adımlarını izlemeniz gerekmektedir. Ayrıntılı adımlar için lütfen [**Android Geliştirme ve Dağıtım Rehberi**](docs/android-rehberi.md) dosyasını inceleyin.
+
 ---
 
 ## ⚙️ Geliştirme Komutları

@@ -1,5 +1,17 @@
 # Değişiklik Günlüğü
 
+## 2026-06-16 (Android Entegrasyonu & Çevrimdışı Mod)
+
+### Eklenen
+- Capacitor 6 entegrasyonu ile Android platformu (`android/` projesi) eklendi.
+- Bağlantı hatalarında devreye giren otomatik yeniden bağlantı spinner'ı ve ekranı (`public/error.html`) eklendi.
+- Çevrimdışı durumda yerel dosyadan sunucuya ping atılarak bağlantı düzeldiğinde uygulamaya otomatik yönlendiren auto-reconnect mekanizması eklendi.
+- Android için kapsamlı kurulum, derleme ve sorun giderme adımlarını içeren `docs/android-rehberi.md` rehber dosyası oluşturuldu.
+
+### Değişen
+- Android uygulamasının varsayılan paket kimliği (App ID) `com.emiran.servistakip` yerine `com.cettek.servistakip` olarak güncellendi ve tüm Java sınıf/paket referansları taşındı.
+- `MainActivity.java` üzerinde WebView hata yakalayıcısı ve yerel asset dosyalarına CORS/file access izni veren WebView ayarları yapılandırıldı.
+
 ## 2026-06-14 (İyileştirmeler & Hata Düzeltmeleri)
 
 ### Eklenen

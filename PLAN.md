@@ -131,6 +131,19 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ---
 
+## Phase 9: Mobil Entegrasyon (Capacitor) ✅
+
+- [x] Capacitor core, CLI ve Android bağımlılıklarının eklenmesi
+- [x] Capacitor projesinin ilklendirilmesi (`npx cap init`) ve konfigüre edilmesi (`capacitor.config.ts`)
+- [x] Android platformunun eklenmesi (`npx cap add android`)
+- [x] Android Manifest (`AndroidManifest.xml`) izinlerinin ve Cleartext ayarlarının yapılması
+- [x] Android Paket Adının değiştirilmesi (`com.emiran.servistakip` → `com.cettek.servistakip` ve MainActivity Java package güncellemeleri)
+- [x] Bağlantı kesintilerinde otomatik devreye giren çevrimdışı hata sayfası (`public/error.html`) tasarımı ve statik export'a dahil edilmesi
+- [x] Android native WebView hatasını yakalayan, yerel hata sayfasını açan ve güvenlik izinlerini (`AllowFileAccess` vb.) düzenleyen `MainActivity.java` geliştirmeleri
+- [x] Cihaz bağlantısı ve mobil platform üzerinde test edilmesi (`npx cap run android`)
+
+---
+
 ## Veritabanı Şeması
 
 ```
