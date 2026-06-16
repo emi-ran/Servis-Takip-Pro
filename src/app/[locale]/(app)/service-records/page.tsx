@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useDisclosure, useDebouncedValue } from "@mantine/hooks";
 import { Pagination } from "@/components/ui/pagination";
 import { notifications } from "@mantine/notifications";
+import { z } from "zod";
 import {
   Title,
   TextInput,
@@ -23,6 +24,8 @@ import {
   Tooltip,
   Select,
   Textarea,
+  SimpleGrid,
+  Autocomplete,
 } from "@mantine/core";
 import { Link, useRouter } from "@/lib/navigation";
 import { useForm } from "@mantine/form";
@@ -34,9 +37,11 @@ import {
   IconClipboardList,
   IconEdit,
   IconDeviceFloppy,
+  IconUserPlus,
+  IconDeviceLaptop,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
-import { formatPhone } from "@/lib/phone";
+import { normalizePhone, isValidPhone, formatPhone, formatPhoneInput } from "@/lib/phone";
 
 type ServiceRecord = {
   id: string;
@@ -77,6 +82,9 @@ const priorityColors: Record<string, string> = {
 
 type Customer = { id: string; name: string; surname: string; nickname: string | null; phone: string };
 type Device = { id: string; brand: string; model: string; category: string; serialNo: string };
+type Technician = { id: string; name: string; surname: string; role: "ADMIN" | "TECHNICIAN" };
+type CustomerCreateResponse = { customer: Customer };
+type DeviceCreateResponse = { device: Device };
 
 export default function ServiceRecordsPage() {
   const t = useTranslations("serviceRecords");
@@ -85,15 +93,56 @@ export default function ServiceRecordsPage() {
   const router = useRouter();
 
   const [createOpened, createHandlers] = useDisclosure(false);
+  const [quickCustomerOpened, quickCustomerHandlers] = useDisclosure(false);
+  const [quickDeviceOpened, quickDeviceHandlers] = useDisclosure(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
+  const [quickCustomerPhoneValue, setQuickCustomerPhoneValue] = useState("");
 
   const form = useForm({
     mode: "uncontrolled" as const,
-    initialValues: { customerId: "", deviceId: "", faultDescription: "", priority: "NORMAL" },
+    initialValues: {
+      customerId: "",
+      deviceId: "",
+      assignedUserId: "",
+      faultDescription: "",
+      priority: "NORMAL",
+    },
     validate: {
       customerId: (v: string) => (v.length < 1 ? t("customerRequired") : null),
       deviceId: (v: string) => (v.length < 1 ? t("deviceRequired") : null),
       faultDescription: (v: string) => (v.length < 1 ? t("faultRequired") : null),
+    },
+  });
+
+  const phoneValidate = (v: string) => {
+    if (v.length < 1) return t("quickCustomerPhoneRequired");
+    if (!isValidPhone(normalizePhone(v))) return t("quickCustomerPhoneInvalid");
+    return null;
+  };
+
+  const quickCustomerForm = useForm({
+    mode: "uncontrolled" as const,
+    initialValues: { name: "", surname: "", phone: "", email: "", address: "", nickname: "" },
+    validate: {
+      name: (v: string) => (v.length < 1 ? t("quickCustomerNameRequired") : null),
+      surname: (v: string) => (v.length < 1 ? t("quickCustomerSurnameRequired") : null),
+      phone: phoneValidate,
+      email: (v: string) => {
+        const trimmed = v.trim();
+        return trimmed && !z.string().email().safeParse(trimmed).success
+          ? t("quickCustomerEmailInvalid")
+          : null;
+      },
+    },
+  });
+
+  const quickDeviceForm = useForm({
+    mode: "uncontrolled" as const,
+    initialValues: { customerId: "", category: "", brand: "", model: "", serialNo: "", notes: "" },
+    validate: {
+      category: (v: string) => (v.length < 1 ? t("quickDeviceCategoryRequired") : null),
+      brand: (v: string) => (v.length < 1 ? t("quickDeviceBrandRequired") : null),
+      model: (v: string) => (v.length < 1 ? t("quickDeviceModelRequired") : null),
     },
   });
 
@@ -113,6 +162,17 @@ export default function ServiceRecordsPage() {
     enabled: selectedCustomerId.length > 0,
   });
 
+  const { data: optionsData } = useQuery<{ brands: string[]; categories: string[] }>({
+    queryKey: ["device-options"],
+    queryFn: () => apiClient("/api/devices/options"),
+    staleTime: 30000,
+  });
+
+  const { data: techniciansData } = useQuery<{ technicians: Technician[] }>({
+    queryKey: ["technicians"],
+    queryFn: () => apiClient("/api/technicians"),
+  });
+
   const customerOptions = (customersData?.customers ?? []).map((c) => ({
     value: c.id,
     label: `${c.name} ${c.surname}${c.nickname ? ` (${c.nickname})` : ""} — ${formatPhone(c.phone)}`,
@@ -121,6 +181,11 @@ export default function ServiceRecordsPage() {
   const deviceOptions = (devicesData?.devices ?? []).map((d) => ({
     value: d.id,
     label: `${d.brand} ${d.model} — ${d.category}${d.serialNo ? ` (${d.serialNo})` : ""}`,
+  }));
+
+  const technicianOptions = (techniciansData?.technicians ?? []).map((u) => ({
+    value: u.id,
+    label: `${u.name} ${u.surname} - ${t(`role_label.${u.role}`)}`,
   }));
 
   const createMutation = useMutation({
@@ -136,6 +201,48 @@ export default function ServiceRecordsPage() {
       setSelectedCustomerId("");
       createHandlers.close();
       router.push(`/service-records/${data.serviceRecord.id}`);
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
+
+  const quickCustomerMutation = useMutation({
+    mutationFn: (values: typeof quickCustomerForm.values) =>
+      apiClient<CustomerCreateResponse>("/api/customers", {
+        method: "POST",
+        body: { ...values, phone: normalizePhone(values.phone) },
+      }),
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ["customers-for-service"] });
+      form.setFieldValue("customerId", data.customer.id);
+      form.setFieldValue("deviceId", "");
+      quickDeviceForm.setFieldValue("customerId", data.customer.id);
+      setSelectedCustomerId(data.customer.id);
+      setQuickCustomerPhoneValue("");
+      quickCustomerForm.reset();
+      quickCustomerHandlers.close();
+      notifications.show({ title: ct("success"), message: t("quickCustomerCreated"), color: "green" });
+    },
+    onError: (err: Error) => {
+      notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
+    },
+  });
+
+  const quickDeviceMutation = useMutation({
+    mutationFn: (values: typeof quickDeviceForm.values) =>
+      apiClient<DeviceCreateResponse>("/api/devices", {
+        method: "POST",
+        body: { ...values, customerId: selectedCustomerId },
+      }),
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ["devices-for-service", selectedCustomerId] });
+      await queryClient.invalidateQueries({ queryKey: ["device-options"] });
+      form.setFieldValue("deviceId", data.device.id);
+      quickDeviceForm.reset();
+      quickDeviceForm.setFieldValue("customerId", selectedCustomerId);
+      quickDeviceHandlers.close();
+      notifications.show({ title: ct("success"), message: t("quickDeviceCreated"), color: "green" });
     },
     onError: (err: Error) => {
       notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
@@ -437,9 +544,21 @@ export default function ServiceRecordsPage() {
               onChange={(value) => {
                 form.setFieldValue("customerId", value || "");
                 form.setFieldValue("deviceId", "");
+                quickDeviceForm.setFieldValue("customerId", value || "");
                 setSelectedCustomerId(value || "");
               }}
             />
+
+            <Group justify="flex-end" mt={-8}>
+              <Button
+                variant="subtle"
+                size="xs"
+                leftSection={<IconUserPlus size={14} />}
+                onClick={quickCustomerHandlers.open}
+              >
+                {t("quickAddCustomer")}
+              </Button>
+            </Group>
 
             <Select
               label={t("device")}
@@ -454,6 +573,21 @@ export default function ServiceRecordsPage() {
               {...form.getInputProps("deviceId")}
             />
 
+            <Group justify="flex-end" mt={-8}>
+              <Button
+                variant="subtle"
+                size="xs"
+                leftSection={<IconDeviceLaptop size={14} />}
+                disabled={!selectedCustomerId}
+                onClick={() => {
+                  quickDeviceForm.setFieldValue("customerId", selectedCustomerId);
+                  quickDeviceHandlers.open();
+                }}
+              >
+                {t("quickAddDevice")}
+              </Button>
+            </Group>
+
             <Textarea
               label={t("faultDescription")}
               placeholder={t("faultPlaceholder")}
@@ -464,6 +598,18 @@ export default function ServiceRecordsPage() {
               autoComplete="nope"
               key={form.key("faultDescription")}
               {...form.getInputProps("faultDescription")}
+            />
+
+            <Select
+              label={t("assignedUser")}
+              placeholder={t("assignedUserPlaceholder")}
+              clearable
+              searchable
+              data={technicianOptions}
+              limit={5}
+              autoComplete="nope"
+              key={form.key("assignedUserId")}
+              {...form.getInputProps("assignedUserId")}
             />
 
             <Select
@@ -496,6 +642,216 @@ export default function ServiceRecordsPage() {
                 leftSection={<IconDeviceFloppy size={16} />}
                 px="xl"
               >
+                {ct("save")}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Modal
+        opened={quickCustomerOpened}
+        onClose={() => {
+          quickCustomerForm.reset();
+          setQuickCustomerPhoneValue("");
+          quickCustomerHandlers.close();
+        }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {t("quickCustomerTitle")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {t("quickCustomerDescription")}
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+        transitionProps={{ transition: "fade", duration: 150 }}
+      >
+        <form
+          autoComplete="nope"
+          onSubmit={quickCustomerForm.onSubmit((values) => quickCustomerMutation.mutate(values))}
+          style={{ paddingTop: "8px" }}
+        >
+          <Stack gap="md">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <TextInput
+                label={t("quickCustomerName")}
+                placeholder={t("quickCustomerNamePlaceholder")}
+                required
+                autoComplete="nope"
+                key={quickCustomerForm.key("name")}
+                {...quickCustomerForm.getInputProps("name")}
+              />
+              <TextInput
+                label={t("quickCustomerSurname")}
+                placeholder={t("quickCustomerSurnamePlaceholder")}
+                required
+                autoComplete="nope"
+                key={quickCustomerForm.key("surname")}
+                {...quickCustomerForm.getInputProps("surname")}
+              />
+              <TextInput
+                label={t("quickCustomerPhone")}
+                placeholder={t("quickCustomerPhonePlaceholder")}
+                required
+                autoComplete="nope"
+                value={quickCustomerPhoneValue}
+                error={quickCustomerForm.errors.phone}
+                onChange={(e) => {
+                  const formatted = formatPhoneInput(e.currentTarget.value);
+                  setQuickCustomerPhoneValue(formatted);
+                  quickCustomerForm.setFieldValue("phone", formatted);
+                }}
+                onFocus={(e) => {
+                  if (!e.currentTarget.value) {
+                    setQuickCustomerPhoneValue("0");
+                    quickCustomerForm.setFieldValue("phone", "0");
+                  }
+                }}
+                onBlur={(e) => {
+                  const formatted = formatPhoneInput(e.currentTarget.value);
+                  setQuickCustomerPhoneValue(formatted);
+                  quickCustomerForm.setFieldValue("phone", formatted);
+                }}
+              />
+              <TextInput
+                label={t("quickCustomerEmail")}
+                placeholder={t("quickCustomerEmailPlaceholder")}
+                autoComplete="nope"
+                key={quickCustomerForm.key("email")}
+                {...quickCustomerForm.getInputProps("email")}
+              />
+              <TextInput
+                label={t("quickCustomerNickname")}
+                placeholder={t("quickCustomerNicknamePlaceholder")}
+                autoComplete="nope"
+                key={quickCustomerForm.key("nickname")}
+                {...quickCustomerForm.getInputProps("nickname")}
+              />
+            </SimpleGrid>
+
+            <Textarea
+              label={t("quickCustomerAddress")}
+              placeholder={t("quickCustomerAddressPlaceholder")}
+              minRows={2}
+              maxRows={4}
+              autosize
+              autoComplete="nope"
+              key={quickCustomerForm.key("address")}
+              {...quickCustomerForm.getInputProps("address")}
+            />
+
+            <Group justify="flex-end" mt="lg">
+              <Button
+                variant="default"
+                onClick={() => {
+                  quickCustomerForm.reset();
+                  setQuickCustomerPhoneValue("");
+                  quickCustomerHandlers.close();
+                }}
+              >
+                {ct("cancel")}
+              </Button>
+              <Button type="submit" loading={quickCustomerMutation.isPending} px="xl">
+                {ct("save")}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Modal
+        opened={quickDeviceOpened}
+        onClose={() => {
+          quickDeviceForm.reset();
+          quickDeviceHandlers.close();
+        }}
+        title={
+          <Stack gap={2}>
+            <Text fw={700} size="lg">
+              {t("quickDeviceTitle")}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {t("quickDeviceDescription")}
+            </Text>
+          </Stack>
+        }
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+        transitionProps={{ transition: "fade", duration: 150 }}
+      >
+        <form
+          autoComplete="nope"
+          onSubmit={quickDeviceForm.onSubmit((values) => quickDeviceMutation.mutate(values))}
+          style={{ paddingTop: "8px" }}
+        >
+          <Stack gap="md">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <Autocomplete
+                label={t("quickDeviceBrand")}
+                placeholder={t("quickDeviceBrandPlaceholder")}
+                required
+                data={optionsData?.brands ?? []}
+                limit={5}
+                autoComplete="nope"
+                key={quickDeviceForm.key("brand")}
+                {...quickDeviceForm.getInputProps("brand")}
+              />
+              <TextInput
+                label={t("quickDeviceModel")}
+                placeholder={t("quickDeviceModelPlaceholder")}
+                required
+                autoComplete="nope"
+                key={quickDeviceForm.key("model")}
+                {...quickDeviceForm.getInputProps("model")}
+              />
+              <Autocomplete
+                label={t("quickDeviceCategory")}
+                placeholder={t("quickDeviceCategoryPlaceholder")}
+                required
+                data={optionsData?.categories ?? []}
+                limit={5}
+                autoComplete="nope"
+                key={quickDeviceForm.key("category")}
+                {...quickDeviceForm.getInputProps("category")}
+              />
+              <TextInput
+                label={t("quickDeviceSerialNo")}
+                placeholder={t("quickDeviceSerialNoPlaceholder")}
+                autoComplete="nope"
+                key={quickDeviceForm.key("serialNo")}
+                {...quickDeviceForm.getInputProps("serialNo")}
+              />
+            </SimpleGrid>
+
+            <Textarea
+              label={t("quickDeviceNotes")}
+              placeholder={t("quickDeviceNotesPlaceholder")}
+              minRows={3}
+              maxRows={5}
+              autoComplete="nope"
+              key={quickDeviceForm.key("notes")}
+              {...quickDeviceForm.getInputProps("notes")}
+            />
+
+            <Group justify="flex-end" mt="lg">
+              <Button
+                variant="default"
+                onClick={() => {
+                  quickDeviceForm.reset();
+                  quickDeviceHandlers.close();
+                }}
+              >
+                {ct("cancel")}
+              </Button>
+              <Button type="submit" loading={quickDeviceMutation.isPending} px="xl">
                 {ct("save")}
               </Button>
             </Group>

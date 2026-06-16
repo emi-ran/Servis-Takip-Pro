@@ -75,6 +75,18 @@ export async function PUT(
     const updateData: Record<string, unknown> = {};
     if (data.faultDescription !== undefined) updateData.faultDescription = data.faultDescription;
     if (data.priority !== undefined) updateData.priority = data.priority;
+    if (data.assignedUserId) {
+      const assignedUser = await prisma.user.findFirst({
+        where: {
+          id: data.assignedUserId,
+          companyId: session.companyId,
+          role: { in: ["ADMIN", "TECHNICIAN"] },
+        },
+      });
+      if (!assignedUser) {
+        return NextResponse.json({ message: "Teknisyen bulunamadı" }, { status: 404 });
+      }
+    }
     if (data.assignedUserId !== undefined) updateData.assignedUserId = data.assignedUserId || null;
     if (data.pricing !== undefined) updateData.pricing = data.pricing;
 

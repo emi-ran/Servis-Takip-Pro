@@ -92,7 +92,7 @@ type Payment = {
   createdAt: string;
 };
 
-type User = { id: string; name: string; surname: string; role: string };
+type User = { id: string; name: string; surname: string; role: "ADMIN" | "TECHNICIAN" };
 
 const statusColors: Record<string, string> = {
   KAYIT_ACILDI: "blue",
@@ -230,15 +230,15 @@ export default function ServiceRecordDetailPage() {
     queryFn: () => apiClient(`/api/service-records/${params.id}`),
   });
 
-  const { data: usersData } = useQuery<{ users: User[] }>({
-    queryKey: ["users"],
-    queryFn: () => apiClient("/api/auth/users"),
+  const { data: techniciansData } = useQuery<{ technicians: User[] }>({
+    queryKey: ["technicians"],
+    queryFn: () => apiClient("/api/technicians"),
   });
 
   const record = data?.serviceRecord;
-  const userOptions = (usersData?.users ?? []).map((u) => ({
+  const userOptions = (techniciansData?.technicians ?? []).map((u) => ({
     value: u.id,
-    label: `${u.name} ${u.surname}`,
+    label: `${u.name} ${u.surname} - ${t(`role_label.${u.role}`)}`,
   }));
 
   const statusMutation = useMutation({

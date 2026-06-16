@@ -123,6 +123,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Müşteri bulunamadı" }, { status: 404 });
     }
 
+    if (data.assignedUserId) {
+      const assignedUser = await prisma.user.findFirst({
+        where: {
+          id: data.assignedUserId,
+          companyId: session.companyId,
+          role: { in: ["ADMIN", "TECHNICIAN"] },
+        },
+      });
+      if (!assignedUser) {
+        return NextResponse.json({ message: "Teknisyen bulunamadı" }, { status: 404 });
+      }
+    }
+
     const serviceRecord = await prisma.serviceRecord.create({
       data: {
         companyId: session.companyId,
