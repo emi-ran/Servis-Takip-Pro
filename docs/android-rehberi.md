@@ -1,6 +1,6 @@
 # 📱 Android Geliştirme ve Dağıtım Rehberi
 
-Bu rehber, Servis Takip uygulamasının Capacitor kullanılarak Android platformuna nasıl derleneceğini, yerel geliştirme ortamının nasıl kurulacağını ve karşılaşılan yaygın sorunların çözümlerini açıklamaktadır.
+Bu rehber, Servis Takip uygulamasının Capacitor 8 kullanılarak Android platformuna nasıl derleneceğini, yerel geliştirme ortamının nasıl kurulacağını ve karşılaşılan yaygın sorunların çözümlerini açıklamaktadır.
 
 ---
 
@@ -9,7 +9,7 @@ Bu rehber, Servis Takip uygulamasının Capacitor kullanılarak Android platform
 Mobil uygulamayı derlemek ve yerel ortamda test etmek için bilgisayarınızda aşağıdaki araçların kurulu olması gerekir:
 
 1.  **Android Studio:** Güncel sürüm.
-2.  **JDK 21:** Windows üzerinde Capacitor 6 derleme işlemleri için JDK 21 gereklidir. Android Studio ile birlikte gelen JBR (JetBrains Runtime) kullanılması önerilir.
+2.  **JDK 21:** Windows üzerinde Capacitor 8 derleme işlemleri için JDK 21 gereklidir. Android Studio ile birlikte gelen JBR (JetBrains Runtime) kullanılması önerilir.
 3.  **Android SDK ve Sanal/Fiziksel Cihaz:** Android API level 34+ SDK kurulu olmalıdır.
 
 ---
@@ -18,7 +18,7 @@ Mobil uygulamayı derlemek ve yerel ortamda test etmek için bilgisayarınızda 
 
 Uygulamanın Android tarafındaki paket ve kimlik ayarları şu şekildedir:
 *   **Paket Adı (App ID):** `com.cettek.servistakip`
-*   **Uygulama Adı:** `Servis Takip Pro`
+*   **Uygulama Adı:** `ÇetTek Servis`
 *   **Geliştirme Sunucusu Adresi:** `http://localhost:3000`
 *   **Dosya Konfigürasyonu:** [capacitor.config.ts](file:///c:/Users/emiran/Desktop/Servis%20Takip/capacitor.config.ts)
 
@@ -33,7 +33,7 @@ Capacitor, uygulamanın statik dosyalarını (`out/` klasörü) paketler. Bu ned
 ```powershell
 npm run build
 ```
-*(Not: `next.config.ts` dosyasında `output: 'export'` ayarı yapılandırılmıştır. Statik dosyalar projenin kök dizinindeki `out/` klasörüne yazılır.)*
+*(Not: Statik dosyalar projenin kök dizinindeki `out/` klasörüne yazılır. Build öncesinde `next.config.ts` dosyasındaki `output` değeri `'standalone'` yerine geçici olarak `'export'` olarak değiştirilmelidir. Build tamamlandıktan sonra tekrar `'standalone'` yapmayı unutmayın.)*
 
 ### 2. Capacitor Eşitlemesini Yapın
 Derlenen statik dosyaları Android projesine kopyalamak ve bağımlılıkları senkronize etmek için:

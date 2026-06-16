@@ -93,7 +93,7 @@ Self-hosted servis takip uygulaması. Docker + PostgreSQL + Next.js full-stack.
 
 ## Phase 6: Tahsilat & Borç Yönetimi ✅
 
-- [x] Ödeme API: `GET/POST /api/payments`, `DELETE /api/payments/[id]`, `GET /api/customers/[id]/balance`
+- [x] Ödeme API: `GET/POST /api/payments`, `GET/PUT/DELETE /api/payments/[id]`, `GET /api/customers/[id]/balance`
 - [x] `GET /api/dashboard` — günlük tahsilat, bekleyen borç, servis ve cihaz istatistikleri
 - [x] Müşteri detayında güncel bakiye (borç - tahsilat farkı)
 - [x] Müşteri detayındaki balance card'dan doğrudan borç/tahsilat ekleme
@@ -267,11 +267,14 @@ servis-takip/
       index.ts
     middleware.ts
     theme.ts
-  scripts/
-    mock-data.js             Test verisi oluşturma scripti
-  public/
-    maps.html                Google Maps iframe sayfası
-  backups/                   Otomatik yedekler (pg_dump)
+    scripts/
+      mock-data.js             Test verisi oluşturma scripti
+      update-admin.js          Admin hesabı güncelleme scripti
+      docker-entrypoint.js     Docker başlangıç scripti
+    public/
+      error.html               Çevrimdışı / bağlantı hatası sayfası
+      maps.html                Google Maps iframe sayfası
+    backups/                   Otomatik yedekler (pg_dump)
   Dockerfile
   .env.example
   next.config.ts

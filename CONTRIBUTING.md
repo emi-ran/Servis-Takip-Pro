@@ -55,6 +55,7 @@ Geliştirme sürecinde kullanabileceğiniz NPM scriptleri şunlardır:
 | `npm run start` | Derlenmiş production sunucusunu başlatır. |
 | `npm run lint` | ESLint ile kod standartlarını kontrol eder. |
 | `npm run typecheck` | TypeScript derleme ve tip kontrollerini çalıştırır. |
+| `npm run admin:update` | Admin e-posta veya şifresini komut satırından günceller. |
 | `npm run db:push` | `schema.prisma` dosyasındaki değişiklikleri doğrudan veritabanına yansıtır. |
 | `npm run db:studio` | Prisma Studio'yu açarak veritabanı verilerini arayüz üzerinden görmenizi sağlar. |
 | `npm run db:seed` | Seed scriptini çalıştırarak temel/sabit verileri yükler. |

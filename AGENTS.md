@@ -109,12 +109,15 @@ src/
         scheduled-tasks/
           route.ts
           [id]/route.ts
+        technicians/
+          route.ts
+  hooks/                       # Özel React hook'lar (şimdilik boş)
   components/
     providers/                 # Auth, Query provider
       auth-provider.tsx
       query-provider.tsx
     layout/                    # AppShell, Sidebar, Header, ThemeToggle
-    ui/                        # Ortak UI (logo-mark.tsx)
+    ui/                        # Ortak UI (logo-mark.tsx, pagination.tsx)
     features/                  # Presentational UI bileşenleri
       customers/
         google-address-input.tsx
