@@ -265,14 +265,14 @@ export default function PaymentsPage() {
 
   return (
     <Stack gap="lg">
-      <Group justify="space-between" wrap="wrap">
+      <Group justify="space-between" align="flex-start" wrap="wrap">
         <Stack gap={2}>
           <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
             {t("title")}
           </Title>
           <Text size="sm" c="dimmed">{t("pageDescription")}</Text>
         </Stack>
-        <Group>
+        <Group w={{ base: "100%", sm: "auto" }} grow preventGrowOverflow={false}>
           <Button
             leftSection={<IconPlus size={16} />}
             variant="light"
@@ -292,12 +292,13 @@ export default function PaymentsPage() {
         </Group>
       </Group>
 
-      <Group wrap="wrap">
+      <Group wrap="wrap" align="flex-start">
         <TextInput
           placeholder={t("searchByCustomer")}
           leftSection={<IconSearch size={16} stroke={1.5} />}
           value={query}
           onChange={(e) => { setQuery(e.currentTarget.value); setPage(1); }}
+          w={{ base: "100%", sm: "auto" }}
           style={{ flex: 1, minWidth: 200 }}
         />
         <Select
@@ -310,21 +311,21 @@ export default function PaymentsPage() {
           value={typeFilter}
           onChange={(v) => { setTypeFilter(v); setPage(1); }}
           clearable
-          w={180}
+          w={{ base: "100%", sm: 180 }}
         />
         <DatePickerInput
           placeholder={t("dateFrom")}
           value={dateFrom}
           onChange={(value) => { setDateFrom(value); setPage(1); }}
           clearable
-          w={170}
+          w={{ base: "100%", sm: 170 }}
         />
         <DatePickerInput
           placeholder={t("dateTo")}
           value={dateTo}
           onChange={(value) => { setDateTo(value); setPage(1); }}
           clearable
-          w={170}
+          w={{ base: "100%", sm: 170 }}
         />
       </Group>
 
@@ -347,7 +348,84 @@ export default function PaymentsPage() {
         </Card>
       ) : (
         <>
-          <Card withBorder radius="md" p={0}>
+          <Stack gap="sm" hiddenFrom="sm">
+            {data.payments.map((payment) => (
+              <Card key={payment.id} withBorder radius="md" p="md">
+                <Stack gap="sm">
+                  <Group justify="space-between" align="flex-start" wrap="nowrap">
+                    <Stack gap={4} style={{ minWidth: 0 }}>
+                      <Badge
+                        size="sm"
+                        variant="light"
+                        color={typeColors[payment.type] || "gray"}
+                        w="fit-content"
+                      >
+                        {t(`type_label.${payment.type}`)}
+                      </Badge>
+                      <Anchor component={Link} href={`/customers/${payment.customer.id}`} size="sm" fw={700}>
+                        {payment.customer.name} {payment.customer.surname}
+                      </Anchor>
+                    </Stack>
+                    <Text fw={800} size="sm" ta="right">
+                      {payment.amount.toLocaleString("tr-TR", {
+                        style: "currency",
+                        currency: "TRY",
+                      })}
+                    </Text>
+                  </Group>
+
+                  <Stack gap={4}>
+                    <Group justify="space-between" gap="xs" wrap="nowrap">
+                      <Text size="xs" c="dimmed">{t("device")}</Text>
+                      <Text size="xs" fw={500} ta="right" lineClamp={1}>
+                        {payment.device ? `${payment.device.brand} ${payment.device.model}` : "—"}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" gap="xs" wrap="nowrap">
+                      <Text size="xs" c="dimmed">{t("paymentMethod")}</Text>
+                      <Badge size="xs" variant="outline" color="gray">
+                        {t(methodLabels[payment.paymentMethod] || "method_label.DIGER")}
+                      </Badge>
+                    </Group>
+                    <Group justify="space-between" gap="xs" wrap="nowrap">
+                      <Text size="xs" c="dimmed">{t("date")}</Text>
+                      <Text size="xs" fw={500}>
+                        {new Date(payment.date).toLocaleDateString("tr-TR")}
+                      </Text>
+                    </Group>
+                    {payment.description && (
+                      <Text size="xs" c="dimmed" lineClamp={2}>
+                        {payment.description}
+                      </Text>
+                    )}
+                  </Stack>
+
+                  <Group justify="flex-end" gap="xs">
+                    <ActionIcon
+                      variant="subtle"
+                      color="gray"
+                      size="lg"
+                      onClick={() => openEditModal(payment)}
+                      aria-label={ct("edit")}
+                    >
+                      <IconEdit size={16} />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="subtle"
+                      color="red"
+                      size="lg"
+                      onClick={() => { setDeleteId(payment.id); openDelete(); }}
+                      aria-label={ct("delete")}
+                    >
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  </Group>
+                </Stack>
+              </Card>
+            ))}
+          </Stack>
+
+          <Card withBorder radius="md" p={0} visibleFrom="sm">
             <Table.ScrollContainer minWidth={700}>
               <Table striped>
                 <Table.Thead>

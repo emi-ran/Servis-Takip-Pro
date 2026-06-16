@@ -442,7 +442,7 @@ export default function ServiceRecordsPage() {
   return (
     <>
       <Stack gap="lg">
-        <Group justify="space-between" align="center">
+        <Group justify="space-between" align="flex-start" wrap="wrap">
           <Stack gap={4}>
             <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
               {t("title")}
@@ -451,7 +451,7 @@ export default function ServiceRecordsPage() {
               {t("pageDescription")}
             </Text>
           </Stack>
-          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
+          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open} w={{ base: "100%", sm: "auto" }}>
             {t("new")}
           </Button>
         </Group>
@@ -466,6 +466,7 @@ export default function ServiceRecordsPage() {
               setSearchValue(e.currentTarget.value);
               setPage(1);
             }}
+            w={{ base: "100%", sm: "auto" }}
             style={{ flex: 1, minWidth: 240 }}
           />
           <Select
@@ -478,7 +479,7 @@ export default function ServiceRecordsPage() {
             }}
             clearable
             autoComplete="nope"
-            maw={220}
+            w={{ base: "100%", sm: 220 }}
           />
           <Select
             placeholder={t("filterByServiceMode")}
@@ -490,21 +491,21 @@ export default function ServiceRecordsPage() {
             }}
             clearable
             autoComplete="nope"
-            maw={220}
+            w={{ base: "100%", sm: 220 }}
           />
           <DatePickerInput
             placeholder={t("dateFrom")}
             value={dateFrom}
             onChange={(value) => { setDateFrom(value); setPage(1); }}
             clearable
-            w={170}
+            w={{ base: "100%", sm: 170 }}
           />
           <DatePickerInput
             placeholder={t("dateTo")}
             value={dateTo}
             onChange={(value) => { setDateTo(value); setPage(1); }}
             clearable
-            w={170}
+            w={{ base: "100%", sm: 170 }}
           />
         </Group>
 
@@ -564,7 +565,105 @@ export default function ServiceRecordsPage() {
           </Card>
         ) : (
           <>
-            <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }}>
+            <Stack gap="sm" hiddenFrom="sm">
+              {data?.serviceRecords.map((record) => (
+                <Card key={record.id} withBorder radius="md" p="md">
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start" wrap="nowrap">
+                      <Stack gap={4} style={{ minWidth: 0 }}>
+                        <Text
+                          component={Link}
+                          href={`/service-records/${record.id}`}
+                          prefetch={false}
+                          c="blue"
+                          fw={800}
+                          size="sm"
+                          style={{ textDecoration: "none", cursor: "pointer" }}
+                        >
+                          #{record.trackingNo}
+                        </Text>
+                        <Text
+                          component={Link}
+                          href={`/customers/${record.customer.id}`}
+                          prefetch={false}
+                          size="sm"
+                          c="blue"
+                          fw={600}
+                          lineClamp={1}
+                          style={{ textDecoration: "none", cursor: "pointer" }}
+                        >
+                          {record.customer.name} {record.customer.surname}
+                        </Text>
+                      </Stack>
+                      <Badge size="xs" variant="light" color={statusColors[record.status] || "gray"}>
+                        {t(`status_change.${record.status}`)}
+                      </Badge>
+                    </Group>
+
+                    <Stack gap={4}>
+                      <Group justify="space-between" gap="xs" wrap="nowrap">
+                        <Text size="xs" c="dimmed">{t("device")}</Text>
+                        <Text size="xs" fw={500} ta="right" lineClamp={1}>
+                          {record.device.brand} {record.device.model}
+                        </Text>
+                      </Group>
+                      <Group justify="space-between" gap="xs" wrap="nowrap">
+                        <Text size="xs" c="dimmed">{t("serviceMode")}</Text>
+                        <Badge size="xs" variant="light" color="indigo">
+                          {t(`serviceMode_label.${record.serviceMode || "SERVISTE"}`)}
+                        </Badge>
+                      </Group>
+                      <Group justify="space-between" gap="xs" wrap="nowrap">
+                        <Text size="xs" c="dimmed">{t("priority")}</Text>
+                        <Badge size="xs" variant="outline" color={priorityColors[record.priority] || "gray"}>
+                          {t(`priority_label.${record.priority}`)}
+                        </Badge>
+                      </Group>
+                      <Group justify="space-between" gap="xs" wrap="nowrap">
+                        <Text size="xs" c="dimmed">{t("assignedUser")}</Text>
+                        <Text size="xs" fw={500} ta="right" lineClamp={1}>
+                          {record.assignedUser
+                            ? `${record.assignedUser.name} ${record.assignedUser.surname}`
+                            : "—"}
+                        </Text>
+                      </Group>
+                      <Group justify="space-between" gap="xs" wrap="nowrap">
+                        <Text size="xs" c="dimmed">{t("date")}</Text>
+                        <Text size="xs" fw={500}>{new Date(record.createdAt).toLocaleDateString("tr-TR")}</Text>
+                      </Group>
+                    </Stack>
+
+                    <Group justify="flex-end" gap="xs">
+                      <ActionIcon
+                        variant="subtle"
+                        color="gray"
+                        component={Link}
+                        href={`/service-records/${record.id}`}
+                        prefetch={false}
+                        size="lg"
+                        aria-label={ct("edit")}
+                      >
+                        <IconEdit size={16} stroke={1.5} />
+                      </ActionIcon>
+                      <ActionIcon
+                        variant="subtle"
+                        color="red"
+                        size="lg"
+                        onClick={() => {
+                          setDeletingId(record.id);
+                          deleteHandlers.open();
+                        }}
+                        aria-label={ct("delete")}
+                      >
+                        <IconTrash size={16} stroke={1.5} />
+                      </ActionIcon>
+                    </Group>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+
+            <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }} visibleFrom="sm">
               <Table.ScrollContainer minWidth={800}>
                 <Table striped highlightOnHover>
                   <Table.Thead>

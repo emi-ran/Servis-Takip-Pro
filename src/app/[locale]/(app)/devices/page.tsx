@@ -39,7 +39,6 @@ import {
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { formatPhone } from "@/lib/phone";
-import { z } from "zod";
 
 type Device = {
   id: string;
@@ -255,7 +254,7 @@ export default function DevicesPage() {
   return (
     <>
       <Stack gap="lg">
-        <Group justify="space-between" align="center">
+        <Group justify="space-between" align="flex-start" wrap="wrap">
           <Stack gap={4}>
             <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
               {t("title")}
@@ -264,7 +263,7 @@ export default function DevicesPage() {
               {t("pageDescription")}
             </Text>
           </Stack>
-          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
+          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open} w={{ base: "100%", sm: "auto" }}>
             {t("new")}
           </Button>
         </Group>
@@ -278,7 +277,7 @@ export default function DevicesPage() {
             setSearchValue(e.currentTarget.value);
             setPage(1);
           }}
-          maw={400}
+          w={{ base: "100%", sm: 400 }}
         />
 
         {isLoading ? (
@@ -329,7 +328,95 @@ export default function DevicesPage() {
           </Card>
         ) : (
           <>
-            <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }}>
+            <Stack gap="sm" hiddenFrom="sm">
+              {(data?.devices ?? []).map((device) => (
+                <Card key={device.id} withBorder radius="md" p="md">
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start" wrap="nowrap">
+                      <Stack gap={4} style={{ minWidth: 0 }}>
+                        <Text
+                          component={Link}
+                          href={`/devices/${device.id}`}
+                          prefetch={false}
+                          c="blue"
+                          fw={700}
+                          size="sm"
+                          lineClamp={1}
+                          style={{ textDecoration: "none", cursor: "pointer" }}
+                        >
+                          {device.brand} {device.model}
+                        </Text>
+                        <Badge size="sm" variant="light" color="gray" w="fit-content">
+                          {device.category}
+                        </Badge>
+                      </Stack>
+                      <Group gap={4} wrap="nowrap">
+                        <ActionIcon
+                          variant="subtle"
+                          color="gray"
+                          size="lg"
+                          onClick={() => {
+                            setEditingDevice(device);
+                            editForm.setValues({
+                              customerId: device.customerId,
+                              category: device.category,
+                              brand: device.brand,
+                              model: device.model,
+                              serialNo: device.serialNo || "",
+                              notes: device.notes || "",
+                            });
+                            editHandlers.open();
+                          }}
+                          aria-label={ct("edit")}
+                        >
+                          <IconEdit size={16} stroke={1.5} />
+                        </ActionIcon>
+                        <ActionIcon
+                          variant="subtle"
+                          color="red"
+                          size="lg"
+                          onClick={() => {
+                            setDeletingId(device.id);
+                            deleteHandlers.open();
+                          }}
+                          aria-label={ct("delete")}
+                        >
+                          <IconTrash size={16} stroke={1.5} />
+                        </ActionIcon>
+                      </Group>
+                    </Group>
+
+                    <Stack gap={4}>
+                      <Group justify="space-between" gap="xs" wrap="nowrap">
+                        <Text size="xs" c="dimmed">{t("serialNo")}</Text>
+                        <Text size="xs" fw={500} ta="right" lineClamp={1}>{device.serialNo || "—"}</Text>
+                      </Group>
+                      <Group justify="space-between" gap="xs" wrap="nowrap">
+                        <Text size="xs" c="dimmed">{t("owner")}</Text>
+                        <Text
+                          component={Link}
+                          href={`/customers/${device.customer.id}`}
+                          prefetch={false}
+                          size="xs"
+                          c="blue"
+                          fw={600}
+                          lineClamp={1}
+                          style={{ textDecoration: "none", cursor: "pointer" }}
+                        >
+                          {device.customer.name} {device.customer.surname}
+                        </Text>
+                      </Group>
+                    </Stack>
+
+                    <Badge size="sm" variant="light" color="teal" leftSection={<IconTool size={12} stroke={1.5} />} w="fit-content">
+                      {device._count.serviceRecords}
+                    </Badge>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+
+            <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }} visibleFrom="sm">
               <Table.ScrollContainer minWidth={700}>
                 <Table striped highlightOnHover>
                   <Table.Thead>
@@ -401,7 +488,7 @@ export default function DevicesPage() {
               {...form.getInputProps("customerId")}
             />
 
-            <SimpleGrid cols={2} spacing="md">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
               <Autocomplete
                 label={t("brand")}
                 placeholder={t("brandPlaceholder")}
@@ -422,7 +509,7 @@ export default function DevicesPage() {
               />
             </SimpleGrid>
 
-            <SimpleGrid cols={2} spacing="md">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
               <Autocomplete
                 label={t("category")}
                 placeholder={t("categoryPlaceholder")}
@@ -506,7 +593,7 @@ export default function DevicesPage() {
               {...editForm.getInputProps("customerId")}
             />
 
-            <SimpleGrid cols={2} spacing="md">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
               <Autocomplete
                 label={t("brand")}
                 required
@@ -525,7 +612,7 @@ export default function DevicesPage() {
               />
             </SimpleGrid>
 
-            <SimpleGrid cols={2} spacing="md">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
               <Autocomplete
                 label={t("category")}
                 required

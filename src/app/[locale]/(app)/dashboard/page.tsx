@@ -13,6 +13,7 @@ import {
   Table,
   Badge,
   Anchor,
+  Group,
 } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
@@ -142,7 +143,36 @@ export default function DashboardPage() {
               {(data?.recentRecords?.length ?? 0) === 0 ? (
                 <Text c="dimmed" size="sm">{t("serviceRecords.noRecords")}</Text>
               ) : (
-                <Table.ScrollContainer minWidth={500}>
+                <>
+                <Stack gap="sm" hiddenFrom="sm">
+                  {data?.recentRecords?.map((record) => (
+                    <Card key={record.id} withBorder radius="md" p="sm">
+                      <Stack gap="xs">
+                        <Group justify="space-between" align="flex-start" wrap="nowrap">
+                          <Stack gap={2} style={{ minWidth: 0 }}>
+                            <Anchor component={Link} href={`/service-records/${record.id}`} size="sm" fw={700} prefetch={false}>
+                              #{record.trackingNo}
+                            </Anchor>
+                            <Anchor component={Link} href={`/customers/${record.customer.id}`} size="sm" prefetch={false} lineClamp={1}>
+                              {record.customer.name} {record.customer.surname}
+                            </Anchor>
+                          </Stack>
+                          <Badge color={statusColor[record.status] ?? "gray"} size="xs" variant="light">
+                            {t(`serviceRecords.status_change.${record.status}`)}
+                          </Badge>
+                        </Group>
+                        <Group justify="space-between" gap="xs" wrap="nowrap">
+                          <Text size="xs" c="dimmed" lineClamp={1}>{record.device.brand} {record.device.model}</Text>
+                          <Text size="xs" c="dimmed">
+                            {new Date(record.createdAt).toLocaleDateString("tr-TR")}
+                          </Text>
+                        </Group>
+                      </Stack>
+                    </Card>
+                  ))}
+                </Stack>
+
+                <Table.ScrollContainer minWidth={500} visibleFrom="sm">
                   <Table>
                     <Table.Thead>
                       <Table.Tr>
@@ -184,6 +214,7 @@ export default function DashboardPage() {
                     </Table.Tbody>
                   </Table>
                 </Table.ScrollContainer>
+                </>
               )}
             </Stack>
           </Card>

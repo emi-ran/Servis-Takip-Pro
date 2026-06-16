@@ -272,12 +272,12 @@ export default function ScheduledTasksPage() {
 
   return (
     <Stack gap="lg">
-      <Group justify="space-between" wrap="wrap">
+      <Group justify="space-between" align="flex-start" wrap="wrap">
         <Stack gap={2}>
           <Title order={2} fw={800}>{t("title")}</Title>
           <Text size="sm" c="dimmed">{t("pageDescription")}</Text>
         </Stack>
-        <Button leftSection={<IconPlus size={16} />} onClick={openCreateModal}>
+        <Button leftSection={<IconPlus size={16} />} onClick={openCreateModal} w={{ base: "100%", sm: "auto" }}>
           {t("new")}
         </Button>
       </Group>
@@ -290,13 +290,14 @@ export default function ScheduledTasksPage() {
 
         <Tabs.Panel value="list" pt="md">
           <Stack gap="md">
-            <Group wrap="wrap">
+            <Group wrap="wrap" align="flex-start">
               <TextInput
                 placeholder={t("searchPlaceholder")}
                 leftSection={<IconSearch size={16} stroke={1.5} />}
                 value={query}
                 onChange={(event) => { setQuery(event.currentTarget.value); setPage(1); }}
-                miw={240}
+                w={{ base: "100%", sm: "auto" }}
+                miw={{ sm: 240 }}
                 flex={1}
               />
               <Select
@@ -305,7 +306,7 @@ export default function ScheduledTasksPage() {
                 value={typeFilter}
                 onChange={(value) => { setTypeFilter(value); setPage(1); }}
                 clearable
-                w={190}
+                w={{ base: "100%", sm: 190 }}
               />
               <Select
                 placeholder={t("filterByStatus")}
@@ -313,7 +314,7 @@ export default function ScheduledTasksPage() {
                 value={statusFilter}
                 onChange={(value) => { setStatusFilter(value); setPage(1); }}
                 clearable
-                w={180}
+                w={{ base: "100%", sm: 180 }}
               />
             </Group>
 
@@ -339,7 +340,63 @@ export default function ScheduledTasksPage() {
               </Card>
             ) : (
               <>
-                <Card withBorder radius="md" p={0}>
+                <Stack gap="sm" hiddenFrom="sm">
+                  {data.scheduledTasks.map((task) => (
+                    <Card key={task.id} withBorder radius="md" p="md">
+                      <Stack gap="sm">
+                        <Group justify="space-between" align="flex-start" wrap="nowrap">
+                          <Stack gap={4} style={{ minWidth: 0 }}>
+                            <Text size="xs" c="dimmed" fw={600}>
+                              {new Date(task.date).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" })}
+                            </Text>
+                            <Text size="sm" fw={700} lineClamp={1}>{task.title}</Text>
+                            {task.description && <Text size="xs" c="dimmed" lineClamp={2}>{task.description}</Text>}
+                          </Stack>
+                          <Badge size="xs" variant="light" color={statusColors[task.status]}>
+                            {t(`status_label.${task.status}`)}
+                          </Badge>
+                        </Group>
+
+                        <Stack gap={4}>
+                          <Group justify="space-between" gap="xs" wrap="nowrap">
+                            <Text size="xs" c="dimmed">{t("customer")}</Text>
+                            <Anchor component={Link} href={`/customers/${task.customer.id}`} prefetch={false} size="xs" fw={600} lineClamp={1}>
+                              {task.customer.name} {task.customer.surname}
+                            </Anchor>
+                          </Group>
+                          <Group justify="space-between" gap="xs" wrap="nowrap">
+                            <Text size="xs" c="dimmed">{t("taskType")}</Text>
+                            <Badge size="xs" variant="light" color={taskTypeColors[task.taskType]}>{t(`type_label.${task.taskType}`)}</Badge>
+                          </Group>
+                          <Group justify="space-between" gap="xs" wrap="nowrap">
+                            <Text size="xs" c="dimmed">{t("assignedUser")}</Text>
+                            <Text size="xs" fw={500} ta="right" lineClamp={1}>
+                              {task.assignedUser ? `${task.assignedUser.name} ${task.assignedUser.surname}` : "—"}
+                            </Text>
+                          </Group>
+                          <Text size="xs" c="dimmed">{formatPhone(task.customer.phone)}</Text>
+                        </Stack>
+
+                        <Group justify="flex-end" gap="xs">
+                          <ActionIcon variant="subtle" color="blue" size="lg" onClick={() => openEditModal(task)} aria-label={ct("edit")}>
+                            <IconEdit size={16} />
+                          </ActionIcon>
+                          <ActionIcon
+                            variant="subtle"
+                            color="red"
+                            size="lg"
+                            onClick={() => { setDeleteId(task.id); openDelete(); }}
+                            aria-label={ct("delete")}
+                          >
+                            <IconTrash size={16} />
+                          </ActionIcon>
+                        </Group>
+                      </Stack>
+                    </Card>
+                  ))}
+                </Stack>
+
+                <Card withBorder radius="md" p={0} visibleFrom="sm">
                   <Table.ScrollContainer minWidth={900}>
                     <Table striped>
                       <Table.Thead>
@@ -426,7 +483,7 @@ export default function ScheduledTasksPage() {
               value={calendarMonth}
               onChange={(value) => { if (value) setCalendarMonth(value.slice(0, 7)); }}
               valueFormat="MMMM YYYY"
-              w={260}
+              w={{ base: "100%", sm: 260 }}
             />
             <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }}>
               {getMonthDays(calendarMonth).map((day) => {

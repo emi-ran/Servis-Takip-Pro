@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useDisclosure, useDebouncedValue } from "@mantine/hooks";
@@ -261,7 +261,7 @@ export default function CustomersPage() {
   return (
     <>
       <Stack gap="lg">
-        <Group justify="space-between" align="center">
+        <Group justify="space-between" align="flex-start" wrap="wrap">
           <Stack gap={4}>
             <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
               {t("title")}
@@ -270,7 +270,7 @@ export default function CustomersPage() {
               {t("pageDescription")}
             </Text>
           </Stack>
-          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open}>
+          <Button leftSection={<IconPlus size={16} />} onClick={createHandlers.open} w={{ base: "100%", sm: "auto" }}>
             {t("new")}
           </Button>
         </Group>
@@ -284,7 +284,7 @@ export default function CustomersPage() {
             setSearchValue(e.currentTarget.value);
             setPage(1);
           }}
-          maw={400}
+          w={{ base: "100%", sm: 400 }}
         />
 
         {isLoading ? (
@@ -333,7 +333,96 @@ export default function CustomersPage() {
           </Card>
         ) : (
           <>
-            <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }}>
+            <Stack gap="sm" hiddenFrom="sm">
+              {(data?.customers ?? []).map((customer) => (
+                <Card key={customer.id} withBorder radius="md" p="md">
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start" wrap="nowrap">
+                      <Stack gap={4} style={{ minWidth: 0 }}>
+                        <Text
+                          component={Link}
+                          href={`/customers/${customer.id}`}
+                          prefetch={false}
+                          c="blue"
+                          fw={700}
+                          size="sm"
+                          style={{ textDecoration: "none", cursor: "pointer" }}
+                        >
+                          {customer.name} {customer.surname}
+                        </Text>
+                        <Group gap={6} wrap="nowrap">
+                          <IconPhone size={14} stroke={1.5} />
+                          <Text size="xs">{formatPhone(customer.phone)}</Text>
+                        </Group>
+                      </Stack>
+                      <Group gap={4} wrap="nowrap">
+                        <ActionIcon
+                          variant="subtle"
+                          color="gray"
+                          size="lg"
+                          onClick={() => {
+                            setEditingCustomer(customer);
+                            editForm.setValues({
+                              name: customer.name,
+                              surname: customer.surname,
+                              phone: formatPhoneInput(customer.phone),
+                              email: customer.email || "",
+                              address: customer.address || "",
+                              nickname: customer.nickname || "",
+                            });
+                            setEditPhoneValue(formatPhoneInput(customer.phone));
+                            editHandlers.open();
+                          }}
+                          aria-label={ct("edit")}
+                        >
+                          <IconEdit size={16} stroke={1.5} />
+                        </ActionIcon>
+                        <ActionIcon
+                          variant="subtle"
+                          color="red"
+                          size="lg"
+                          onClick={() => {
+                            setDeletingId(customer.id);
+                            deleteHandlers.open();
+                          }}
+                          aria-label={ct("delete")}
+                        >
+                          <IconTrash size={16} stroke={1.5} />
+                        </ActionIcon>
+                      </Group>
+                    </Group>
+
+                    <Group gap={6} wrap="nowrap">
+                      <IconMail size={14} stroke={1.5} />
+                      <Text size="xs" c={customer.email ? undefined : "dimmed"} lineClamp={1} style={{ minWidth: 0 }}>
+                        {customer.email || "—"}
+                      </Text>
+                    </Group>
+
+                    <Group gap="xs">
+                      <Badge
+                        size="sm"
+                        variant="light"
+                        color="blue"
+                        leftSection={<IconDeviceLaptop size={12} stroke={1.5} />}
+                      >
+                        {customer._count.devices}
+                      </Badge>
+                      <Badge
+                        size="sm"
+                        variant="light"
+                        color="teal"
+                        leftSection={<IconTool size={12} stroke={1.5} />}
+                      >
+                        {customer._count.serviceRecords}
+                      </Badge>
+                    </Group>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+
+            <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }} visibleFrom="sm">
               <Table.ScrollContainer minWidth={600}>
                 <Table striped highlightOnHover>
                   <Table.Thead>
