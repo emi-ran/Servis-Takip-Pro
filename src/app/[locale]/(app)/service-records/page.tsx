@@ -26,9 +26,11 @@ import {
   Textarea,
   SimpleGrid,
   Autocomplete,
+  UnstyledButton,
 } from "@mantine/core";
 import { Link, useRouter } from "@/lib/navigation";
 import { useForm } from "@mantine/form";
+import { DatePickerInput } from "@mantine/dates";
 import {
   IconSearch,
   IconPlus,
@@ -39,6 +41,9 @@ import {
   IconDeviceFloppy,
   IconUserPlus,
   IconDeviceLaptop,
+  IconArrowsSort,
+  IconSortAscending,
+  IconSortDescending,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { normalizePhone, isValidPhone, formatPhone, formatPhoneInput } from "@/lib/phone";
@@ -48,6 +53,7 @@ type ServiceRecord = {
   trackingNo: number;
   status: string;
   priority: string;
+  serviceMode: ServiceMode;
   faultDescription: string;
   createdAt: string;
   customer: { id: string; name: string; surname: string; phone: string };
@@ -83,6 +89,7 @@ const priorityColors: Record<string, string> = {
 type Customer = { id: string; name: string; surname: string; nickname: string | null; phone: string };
 type Device = { id: string; brand: string; model: string; category: string; serialNo: string };
 type Technician = { id: string; name: string; surname: string; role: "ADMIN" | "TECHNICIAN" };
+type ServiceMode = "SERVISTE" | "YERINDE" | "CIHAZ_ALINACAK" | "CIHAZ_BIRAKILACAK" | "BAKIM" | "KURULUM";
 type CustomerCreateResponse = { customer: Customer };
 type DeviceCreateResponse = { device: Device };
 
@@ -96,6 +103,7 @@ export default function ServiceRecordsPage() {
   const [quickCustomerOpened, quickCustomerHandlers] = useDisclosure(false);
   const [quickDeviceOpened, quickDeviceHandlers] = useDisclosure(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
+  const [selectedServiceMode, setSelectedServiceMode] = useState<ServiceMode>("SERVISTE");
   const [quickCustomerPhoneValue, setQuickCustomerPhoneValue] = useState("");
 
   const form = useForm({
@@ -104,6 +112,8 @@ export default function ServiceRecordsPage() {
       customerId: "",
       deviceId: "",
       assignedUserId: "",
+      serviceMode: "SERVISTE" as ServiceMode,
+      scheduledAt: "",
       faultDescription: "",
       priority: "NORMAL",
     },
@@ -111,6 +121,8 @@ export default function ServiceRecordsPage() {
       customerId: (v: string) => (v.length < 1 ? t("customerRequired") : null),
       deviceId: (v: string) => (v.length < 1 ? t("deviceRequired") : null),
       faultDescription: (v: string) => (v.length < 1 ? t("faultRequired") : null),
+      scheduledAt: (v: string, values) =>
+        values.serviceMode !== "SERVISTE" && v.length < 1 ? t("scheduledAtRequired") : null,
     },
   });
 
@@ -188,17 +200,31 @@ export default function ServiceRecordsPage() {
     label: `${u.name} ${u.surname} - ${t(`role_label.${u.role}`)}`,
   }));
 
+  const serviceModeOptions = [
+    { value: "SERVISTE", label: t("serviceMode_label.SERVISTE") },
+    { value: "YERINDE", label: t("serviceMode_label.YERINDE") },
+    { value: "CIHAZ_ALINACAK", label: t("serviceMode_label.CIHAZ_ALINACAK") },
+    { value: "CIHAZ_BIRAKILACAK", label: t("serviceMode_label.CIHAZ_BIRAKILACAK") },
+    { value: "BAKIM", label: t("serviceMode_label.BAKIM") },
+    { value: "KURULUM", label: t("serviceMode_label.KURULUM") },
+  ];
+
   const createMutation = useMutation({
     mutationFn: (values: typeof form.values) =>
       apiClient<{ serviceRecord: { id: string } }>("/api/service-records", {
         method: "POST",
-        body: values,
+        body: {
+          ...values,
+          scheduledAt:
+            values.serviceMode === "SERVISTE" ? "" : new Date(values.scheduledAt).toISOString(),
+        },
       }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["service-records"] });
       notifications.show({ title: ct("success"), message: t("created"), color: "green" });
       form.reset();
       setSelectedCustomerId("");
+      setSelectedServiceMode("SERVISTE");
       createHandlers.close();
       router.push(`/service-records/${data.serviceRecord.id}`);
     },
@@ -253,6 +279,11 @@ export default function ServiceRecordsPage() {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearch] = useDebouncedValue(searchValue, 300);
   const [statusFilter, setStatusFilter] = useState<string>("");
+  const [serviceModeFilter, setServiceModeFilter] = useState<string>("");
+  const [dateFrom, setDateFrom] = useState<string | null>(null);
+  const [dateTo, setDateTo] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
   const [deleteOpened, deleteHandlers] = useDisclosure(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -260,9 +291,14 @@ export default function ServiceRecordsPage() {
   const params: Record<string, string> = { page: String(page), pageSize: "20" };
   if (debouncedSearch) params.query = debouncedSearch;
   if (statusFilter) params.status = statusFilter;
+  if (serviceModeFilter) params.serviceMode = serviceModeFilter;
+  if (dateFrom) params.dateFrom = dateFrom;
+  if (dateTo) params.dateTo = dateTo;
+  params.sortBy = sortBy;
+  params.sortDir = sortDir;
 
   const { data, isLoading, isError, error } = useQuery<ServiceRecordsResponse>({
-    queryKey: ["service-records", page, debouncedSearch, statusFilter],
+    queryKey: ["service-records", page, debouncedSearch, statusFilter, serviceModeFilter, dateFrom, dateTo, sortBy, sortDir],
     queryFn: () => apiClient("/api/service-records", { params }),
   });
 
@@ -287,6 +323,32 @@ export default function ServiceRecordsPage() {
       ([value, label]) => ({ value, label })
     ),
   ];
+
+  function toggleSort(nextSortBy: string) {
+    if (sortBy === nextSortBy) {
+      setSortDir((current) => (current === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(nextSortBy);
+      setSortDir("asc");
+    }
+    setPage(1);
+  }
+
+  function sortableHeader(label: string, value: string) {
+    const active = sortBy === value;
+    return (
+      <UnstyledButton onClick={() => toggleSort(value)}>
+        <Group gap={4} wrap="nowrap">
+          <Text size="sm" fw={600}>{label}</Text>
+          {active ? (
+            sortDir === "asc" ? <IconSortAscending size={14} /> : <IconSortDescending size={14} />
+          ) : (
+            <IconArrowsSort size={14} opacity={0.45} />
+          )}
+        </Group>
+      </UnstyledButton>
+    );
+  }
 
   const rows = (data?.serviceRecords ?? []).map((record) => (
     <Table.Tr key={record.id}>
@@ -319,6 +381,11 @@ export default function ServiceRecordsPage() {
         <Text size="sm">
           {record.device.brand} {record.device.model}
         </Text>
+      </Table.Td>
+      <Table.Td>
+        <Badge size="sm" variant="light" color="indigo">
+          {t(`serviceMode_label.${record.serviceMode || "SERVISTE"}`)}
+        </Badge>
       </Table.Td>
       <Table.Td>
         <Badge size="sm" variant="light" color={statusColors[record.status] || "gray"}>
@@ -389,7 +456,7 @@ export default function ServiceRecordsPage() {
           </Button>
         </Group>
 
-        <Group gap="sm" wrap="nowrap">
+        <Group gap="sm" wrap="wrap">
           <TextInput
             placeholder={t("searchByTracking")}
             leftSection={<IconSearch size={16} stroke={1.5} />}
@@ -399,7 +466,7 @@ export default function ServiceRecordsPage() {
               setSearchValue(e.currentTarget.value);
               setPage(1);
             }}
-            style={{ flex: 1 }}
+            style={{ flex: 1, minWidth: 240 }}
           />
           <Select
             placeholder={t("filterByStatus")}
@@ -413,6 +480,32 @@ export default function ServiceRecordsPage() {
             autoComplete="nope"
             maw={220}
           />
+          <Select
+            placeholder={t("filterByServiceMode")}
+            data={serviceModeOptions}
+            value={serviceModeFilter}
+            onChange={(v) => {
+              setServiceModeFilter(v || "");
+              setPage(1);
+            }}
+            clearable
+            autoComplete="nope"
+            maw={220}
+          />
+          <DatePickerInput
+            placeholder={t("dateFrom")}
+            value={dateFrom}
+            onChange={(value) => { setDateFrom(value); setPage(1); }}
+            clearable
+            w={170}
+          />
+          <DatePickerInput
+            placeholder={t("dateTo")}
+            value={dateTo}
+            onChange={(value) => { setDateTo(value); setPage(1); }}
+            clearable
+            w={170}
+          />
         </Group>
 
         {isLoading ? (
@@ -421,11 +514,12 @@ export default function ServiceRecordsPage() {
               <Table striped highlightOnHover>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>{t("trackingNo")}</Table.Th>
-                    <Table.Th>{t("customer")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("trackingNo"), "trackingNo")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("customer"), "customer")}</Table.Th>
                     <Table.Th>{t("device")}</Table.Th>
-                    <Table.Th>{t("status")}</Table.Th>
-                    <Table.Th>{t("priority")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("serviceMode"), "serviceMode")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("status"), "status")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("priority"), "priority")}</Table.Th>
                     <Table.Th>{t("assignedUser")}</Table.Th>
                     <Table.Th>{ct("actions")}</Table.Th>
                   </Table.Tr>
@@ -433,6 +527,7 @@ export default function ServiceRecordsPage() {
                 <Table.Tbody>
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Table.Tr key={i}>
+                      <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
                       <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
                       <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
                       <Table.Td><Skeleton height={20} radius="xs" /></Table.Td>
@@ -474,11 +569,12 @@ export default function ServiceRecordsPage() {
                 <Table striped highlightOnHover>
                   <Table.Thead>
                     <Table.Tr>
-                      <Table.Th>{t("trackingNo")}</Table.Th>
-                      <Table.Th>{t("customer")}</Table.Th>
+                      <Table.Th>{sortableHeader(t("trackingNo"), "trackingNo")}</Table.Th>
+                      <Table.Th>{sortableHeader(t("customer"), "customer")}</Table.Th>
                       <Table.Th>{t("device")}</Table.Th>
-                      <Table.Th>{t("status")}</Table.Th>
-                      <Table.Th>{t("priority")}</Table.Th>
+                      <Table.Th>{sortableHeader(t("serviceMode"), "serviceMode")}</Table.Th>
+                      <Table.Th>{sortableHeader(t("status"), "status")}</Table.Th>
+                      <Table.Th>{sortableHeader(t("priority"), "priority")}</Table.Th>
                       <Table.Th>{t("assignedUser")}</Table.Th>
                       <Table.Th>{ct("actions")}</Table.Th>
                     </Table.Tr>
@@ -507,6 +603,7 @@ export default function ServiceRecordsPage() {
         onClose={() => {
           form.reset();
           setSelectedCustomerId("");
+          setSelectedServiceMode("SERVISTE");
           createHandlers.close();
         }}
         title={
@@ -601,6 +698,36 @@ export default function ServiceRecordsPage() {
             />
 
             <Select
+              label={t("serviceMode")}
+              placeholder={t("serviceModePlaceholder")}
+              data={serviceModeOptions}
+              autoComplete="nope"
+              required
+              key={form.key("serviceMode")}
+              {...form.getInputProps("serviceMode")}
+              onChange={(value) => {
+                const mode = (value || "SERVISTE") as ServiceMode;
+                form.setFieldValue("serviceMode", mode);
+                setSelectedServiceMode(mode);
+                if (mode === "SERVISTE") {
+                  form.setFieldValue("scheduledAt", "");
+                }
+              }}
+            />
+
+            {selectedServiceMode !== "SERVISTE" && (
+              <TextInput
+                label={t("scheduledAt")}
+                placeholder={t("scheduledAtPlaceholder")}
+                type="datetime-local"
+                autoComplete="nope"
+                required
+                key={form.key("scheduledAt")}
+                {...form.getInputProps("scheduledAt")}
+              />
+            )}
+
+            <Select
               label={t("assignedUser")}
               placeholder={t("assignedUserPlaceholder")}
               clearable
@@ -631,6 +758,7 @@ export default function ServiceRecordsPage() {
                 onClick={() => {
                   form.reset();
                   setSelectedCustomerId("");
+                  setSelectedServiceMode("SERVISTE");
                   createHandlers.close();
                 }}
               >

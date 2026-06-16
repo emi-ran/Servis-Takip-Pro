@@ -9,6 +9,8 @@ const createServiceRecordSchema = z.object({
   faultDescription: z.string().min(1, "Arıza açıklaması zorunlu"),
   priority: z.enum(["DUSUK", "NORMAL", "YUKSEK", "ACIL"]).default("NORMAL"),
   assignedUserId: z.string().optional().or(z.literal("")),
+  serviceMode: z.enum(["SERVISTE", "YERINDE", "CIHAZ_ALINACAK", "CIHAZ_BIRAKILACAK", "BAKIM", "KURULUM"]).default("SERVISTE"),
+  scheduledAt: z.string().optional().or(z.literal("")),
 });
 
 export async function GET(request: NextRequest) {
@@ -20,6 +22,9 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query") || "";
   const status = searchParams.get("status") || "";
+  const serviceMode = searchParams.get("serviceMode") || "";
+  const sortBy = searchParams.get("sortBy") || "createdAt";
+  const sortDir: "asc" | "desc" = searchParams.get("sortDir") === "asc" ? "asc" : "desc";
   const dateFrom = searchParams.get("dateFrom") || "";
   const dateTo = searchParams.get("dateTo") || "";
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
@@ -34,6 +39,10 @@ export async function GET(request: NextRequest) {
 
   if (status) {
     where.status = status;
+  }
+
+  if (serviceMode) {
+    where.serviceMode = serviceMode;
   }
 
   if (dateFrom || dateTo) {
@@ -81,12 +90,21 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  const orderBy = (() => {
+    if (sortBy === "trackingNo") return { trackingNo: sortDir };
+    if (sortBy === "customer") return { customer: { name: sortDir } };
+    if (sortBy === "serviceMode") return { serviceMode: sortDir };
+    if (sortBy === "status") return { status: sortDir };
+    if (sortBy === "priority") return { priority: sortDir };
+    return { createdAt: sortDir };
+  })();
+
   const [serviceRecords, total] = await Promise.all([
     prisma.serviceRecord.findMany({
       where,
       skip: (page - 1) * pageSize,
       take: pageSize,
-      orderBy: { createdAt: "desc" },
+      orderBy,
       include: {
         customer: { select: { id: true, name: true, surname: true, phone: true } },
         device: { select: { id: true, brand: true, model: true, category: true, serialNo: true } },
@@ -136,6 +154,17 @@ export async function POST(request: Request) {
       }
     }
 
+    let scheduledAt: Date | null = null;
+    if (data.serviceMode !== "SERVISTE") {
+      if (!data.scheduledAt) {
+        return NextResponse.json({ message: "Planlanan tarih zorunlu" }, { status: 400 });
+      }
+      scheduledAt = new Date(data.scheduledAt);
+      if (Number.isNaN(scheduledAt.getTime())) {
+        return NextResponse.json({ message: "Planlanan tarih geçersiz" }, { status: 400 });
+      }
+    }
+
     const serviceRecord = await prisma.serviceRecord.create({
       data: {
         companyId: session.companyId,
@@ -143,6 +172,7 @@ export async function POST(request: Request) {
         deviceId: data.deviceId,
         faultDescription: data.faultDescription,
         priority: data.priority,
+        serviceMode: data.serviceMode,
         assignedUserId: data.assignedUserId || null,
         statusHistory: {
           create: {
@@ -157,6 +187,34 @@ export async function POST(request: Request) {
         device: { select: { id: true, brand: true, model: true } },
       },
     });
+
+    if (data.serviceMode !== "SERVISTE") {
+      if (!scheduledAt) {
+        return NextResponse.json({ message: "Planlanan tarih zorunlu" }, { status: 400 });
+      }
+
+      const taskTypeMap: Record<string, "CIHAZ_ALINACAK" | "CIHAZ_BIRAKILACAK" | "BAKIM" | "KURULUM"> = {
+        YERINDE: "BAKIM",
+        CIHAZ_ALINACAK: "CIHAZ_ALINACAK",
+        CIHAZ_BIRAKILACAK: "CIHAZ_BIRAKILACAK",
+        BAKIM: "BAKIM",
+        KURULUM: "KURULUM",
+      };
+
+      await prisma.scheduledTask.create({
+        data: {
+          companyId: session.companyId,
+          customerId: data.customerId,
+          serviceRecordId: serviceRecord.id,
+          title: `${serviceRecord.device.brand} ${serviceRecord.device.model}`,
+          description: data.faultDescription,
+          taskType: taskTypeMap[data.serviceMode],
+          date: scheduledAt,
+          status: "PLANLANDI",
+          assignedUserId: data.assignedUserId || null,
+        },
+      });
+    }
 
     return NextResponse.json({ serviceRecord }, { status: 201 });
   } catch (error) {

@@ -7,6 +7,7 @@ const updateServiceRecordSchema = z.object({
   faultDescription: z.string().min(1, "Arıza açıklaması zorunlu").optional(),
   priority: z.enum(["DUSUK", "NORMAL", "YUKSEK", "ACIL"]).optional(),
   assignedUserId: z.string().optional().nullable(),
+  serviceMode: z.enum(["SERVISTE", "YERINDE", "CIHAZ_ALINACAK", "CIHAZ_BIRAKILACAK", "BAKIM", "KURULUM"]).optional(),
   pricing: z.number().positive("Ücret pozitif olmalı").optional().nullable(),
 });
 
@@ -88,6 +89,7 @@ export async function PUT(
       }
     }
     if (data.assignedUserId !== undefined) updateData.assignedUserId = data.assignedUserId || null;
+    if (data.serviceMode !== undefined) updateData.serviceMode = data.serviceMode;
     if (data.pricing !== undefined) updateData.pricing = data.pricing;
 
     const record = await prisma.serviceRecord.update({

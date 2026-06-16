@@ -91,7 +91,7 @@ export async function POST(request: Request) {
 
     if (data.assignedUserId) {
       const user = await prisma.user.findFirst({
-        where: { id: data.assignedUserId, companyId: session.companyId },
+        where: { id: data.assignedUserId, companyId: session.companyId, role: { in: ["ADMIN", "TECHNICIAN"] } },
       });
       if (!user) {
         return NextResponse.json({ message: "Teknisyen bulunamadı" }, { status: 404 });
@@ -108,6 +108,7 @@ export async function POST(request: Request) {
         date: new Date(data.date),
         status: data.status || "PLANLANDI",
         assignedUserId: data.assignedUserId || null,
+        serviceRecordId: null,
       },
       include: {
         customer: { select: { id: true, name: true, surname: true, phone: true, address: true } },

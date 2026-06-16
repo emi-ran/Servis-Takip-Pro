@@ -26,6 +26,9 @@ export async function GET(request: NextRequest) {
   const dateFrom = searchParams.get("dateFrom") || "";
   const dateTo = searchParams.get("dateTo") || "";
   const customerId = searchParams.get("customerId") || "";
+  const paymentMethod = searchParams.get("paymentMethod") || "";
+  const sortBy = searchParams.get("sortBy") || "date";
+  const sortDir: "asc" | "desc" = searchParams.get("sortDir") === "asc" ? "asc" : "desc";
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get("pageSize") || "20")));
 
@@ -37,6 +40,10 @@ export async function GET(request: NextRequest) {
 
   if (customerId) {
     where.customerId = customerId;
+  }
+
+  if (paymentMethod) {
+    where.paymentMethod = paymentMethod;
   }
 
   if (dateFrom || dateTo) {
@@ -59,12 +66,20 @@ export async function GET(request: NextRequest) {
     };
   }
 
+  const orderBy = (() => {
+    if (sortBy === "type") return { type: sortDir };
+    if (sortBy === "customer") return { customer: { name: sortDir } };
+    if (sortBy === "amount") return { amount: sortDir };
+    if (sortBy === "paymentMethod") return { paymentMethod: sortDir };
+    return { date: sortDir };
+  })();
+
   const [payments, total] = await Promise.all([
     prisma.payment.findMany({
       where,
       skip: (page - 1) * pageSize,
       take: pageSize,
-      orderBy: { date: "desc" },
+      orderBy,
       include: {
         customer: { select: { id: true, name: true, surname: true } },
         serviceRecord: { select: { id: true, trackingNo: true } },

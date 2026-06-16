@@ -30,6 +30,15 @@ enum ServicePriority {
   ACIL
 }
 
+enum ServiceMode {
+  SERVISTE
+  YERINDE
+  CIHAZ_ALINACAK
+  CIHAZ_BIRAKILACAK
+  BAKIM
+  KURULUM
+}
+
 enum PaymentType {
   BORC
   TAHSILAT
@@ -144,6 +153,7 @@ model ServiceRecord {
   trackingNo       Int           @default(autoincrement())
   status           ServiceStatus @default(KAYIT_ACILDI)
   priority         ServicePriority @default(NORMAL)
+  serviceMode      ServiceMode   @default(SERVISTE)
   faultDescription String
   assignedUserId   String?
   pricing          Decimal?      @db.Decimal(10, 2)
@@ -157,6 +167,7 @@ model ServiceRecord {
   statusHistory ServiceStatusHistory[]
   notes         ServiceNote[]
   payments      Payment[]
+  scheduledTasks ScheduledTask[]
 
   @@unique([companyId, trackingNo])
   @@index([companyId])
@@ -164,6 +175,7 @@ model ServiceRecord {
   @@index([deviceId])
   @@index([assignedUserId])
   @@index([status])
+  @@index([serviceMode])
   @@index([companyId, status])
 }
 
@@ -224,6 +236,7 @@ model ScheduledTask {
   id          String     @id @default(cuid())
   companyId   String
   customerId  String
+  serviceRecordId String?
   title       String
   description String?
   taskType    TaskType
@@ -235,10 +248,12 @@ model ScheduledTask {
 
   company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  serviceRecord ServiceRecord? @relation(fields: [serviceRecordId], references: [id], onDelete: Cascade)
   assignedUser User?    @relation("AssignedUser", fields: [assignedUserId], references: [id])
 
   @@index([companyId])
   @@index([customerId])
+  @@index([serviceRecordId])
   @@index([date])
   @@index([assignedUserId])
 }

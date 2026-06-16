@@ -53,6 +53,7 @@ type ServiceRecord = {
   trackingNo: number;
   status: string;
   priority: string;
+  serviceMode: string;
   faultDescription: string;
   pricing: number | null;
   assignedUserId: string | null;
@@ -262,6 +263,7 @@ export default function ServiceRecordDetailPage() {
       faultDescription: "",
       priority: "NORMAL" as string,
       assignedUserId: "" as string,
+      serviceMode: "SERVISTE" as string,
       pricing: "" as string,
     },
     validate: {
@@ -277,6 +279,7 @@ export default function ServiceRecordDetailPage() {
           faultDescription: values.faultDescription,
           priority: values.priority,
           assignedUserId: values.assignedUserId || null,
+          serviceMode: values.serviceMode,
           pricing: values.pricing ? parseFloat(values.pricing) : null,
         },
       }),
@@ -425,6 +428,7 @@ export default function ServiceRecordDetailPage() {
                   faultDescription: record.faultDescription,
                   priority: record.priority,
                   assignedUserId: record.assignedUser?.id || "",
+                  serviceMode: record.serviceMode || "SERVISTE",
                   pricing: record.pricing?.toString() || "",
                 });
                 editHandlers.open();
@@ -467,6 +471,11 @@ export default function ServiceRecordDetailPage() {
                   </Group>
                 </>
               )}
+              <Divider />
+              <Text size="sm" c="dimmed">{t("serviceMode")}</Text>
+              <Badge size="sm" variant="light" color="indigo">
+                {t(`serviceMode_label.${record.serviceMode || "SERVISTE"}`)}
+              </Badge>
               {record.pricing != null && (
                 <>
                   <Divider />
@@ -916,6 +925,20 @@ export default function ServiceRecordDetailPage() {
               autoComplete="nope"
               key={editForm.key("assignedUserId")}
               {...editForm.getInputProps("assignedUserId")}
+            />
+            <Select
+              label={t("serviceMode")}
+              placeholder={t("serviceModePlaceholder")}
+              data={[
+                { value: "SERVISTE", label: t("serviceMode_label.SERVISTE") },
+                { value: "YERINDE", label: t("serviceMode_label.YERINDE") },
+                { value: "CIHAZ_ALINACAK", label: t("serviceMode_label.CIHAZ_ALINACAK") },
+                { value: "CIHAZ_BIRAKILACAK", label: t("serviceMode_label.CIHAZ_BIRAKILACAK") },
+                { value: "BAKIM", label: t("serviceMode_label.BAKIM") },
+                { value: "KURULUM", label: t("serviceMode_label.KURULUM") },
+              ]}
+              key={editForm.key("serviceMode")}
+              {...editForm.getInputProps("serviceMode")}
             />
             <TextInput
               label={t("pricing")}

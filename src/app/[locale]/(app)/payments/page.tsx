@@ -21,6 +21,7 @@ import {
   Space,
   ActionIcon,
   Anchor,
+  UnstyledButton,
 } from "@mantine/core";
 import { Pagination } from "@/components/ui/pagination";
 import { Link } from "@/lib/navigation";
@@ -35,6 +36,9 @@ import {
   IconSearch,
   IconTrash,
   IconEdit,
+  IconArrowsSort,
+  IconSortAscending,
+  IconSortDescending,
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { formatPhone } from "@/lib/phone";
@@ -89,6 +93,10 @@ export default function PaymentsPage() {
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  const [dateFrom, setDateFrom] = useState<string | null>(null);
+  const [dateTo, setDateTo] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState("date");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [opened, { open, close }] = useDisclosure(false);
   const [modalType, setModalType] = useState<"BORC" | "TAHSILAT">("BORC");
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -99,6 +107,36 @@ export default function PaymentsPage() {
   const params: Record<string, string> = { page: String(page), pageSize: "20" };
   if (query) params.query = query;
   if (typeFilter) params.type = typeFilter;
+  if (dateFrom) params.dateFrom = dateFrom;
+  if (dateTo) params.dateTo = dateTo;
+  params.sortBy = sortBy;
+  params.sortDir = sortDir;
+
+  function toggleSort(nextSortBy: string) {
+    if (sortBy === nextSortBy) {
+      setSortDir((current) => (current === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(nextSortBy);
+      setSortDir("asc");
+    }
+    setPage(1);
+  }
+
+  function sortableHeader(label: string, value: string) {
+    const active = sortBy === value;
+    return (
+      <UnstyledButton onClick={() => toggleSort(value)}>
+        <Group gap={4} wrap="nowrap">
+          <Text size="sm" fw={600}>{label}</Text>
+          {active ? (
+            sortDir === "asc" ? <IconSortAscending size={14} /> : <IconSortDescending size={14} />
+          ) : (
+            <IconArrowsSort size={14} opacity={0.45} />
+          )}
+        </Group>
+      </UnstyledButton>
+    );
+  }
 
   const { data, isLoading, isError, error } = useQuery<ListResponse>({
     queryKey: ["payments", params],
@@ -215,7 +253,7 @@ export default function PaymentsPage() {
       customerId: payment.customer.id,
       amount: Number(payment.amount),
       paymentMethod: payment.paymentMethod,
-      date: new Date(payment.date) as any,
+      date: payment.date.slice(0, 10),
       description: payment.description || "",
       serviceRecordId: payment.serviceRecord?.id || "",
       deviceId: payment.device?.id || "",
@@ -274,6 +312,20 @@ export default function PaymentsPage() {
           clearable
           w={180}
         />
+        <DatePickerInput
+          placeholder={t("dateFrom")}
+          value={dateFrom}
+          onChange={(value) => { setDateFrom(value); setPage(1); }}
+          clearable
+          w={170}
+        />
+        <DatePickerInput
+          placeholder={t("dateTo")}
+          value={dateTo}
+          onChange={(value) => { setDateTo(value); setPage(1); }}
+          clearable
+          w={170}
+        />
       </Group>
 
       {isLoading ? (
@@ -300,12 +352,12 @@ export default function PaymentsPage() {
               <Table striped>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>{t("type")}</Table.Th>
-                    <Table.Th>{t("customer")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("type"), "type")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("customer"), "customer")}</Table.Th>
                     <Table.Th>{t("device")}</Table.Th>
-                    <Table.Th>{t("amount")}</Table.Th>
-                    <Table.Th>{t("paymentMethod")}</Table.Th>
-                    <Table.Th>{t("date")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("amount"), "amount")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("paymentMethod"), "paymentMethod")}</Table.Th>
+                    <Table.Th>{sortableHeader(t("date"), "date")}</Table.Th>
                     <Table.Th>{t("description")}</Table.Th>
                     <Table.Th>{ct("actions")}</Table.Th>
                   </Table.Tr>
