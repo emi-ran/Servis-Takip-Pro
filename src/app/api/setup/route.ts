@@ -8,7 +8,7 @@ const setupSchema = z.object({
   companyName: z.string().trim().min(1).max(100),
   companySlug: z.string().trim().min(1).max(80).regex(/^[a-z0-9-]+$/),
   adminEmail: z.string().trim().email().max(255),
-  adminPassword: z.string().min(12).max(128),
+  adminPassword: z.string().min(8).max(128),
   adminName: z.string().trim().min(1).max(80),
   adminSurname: z.string().trim().min(1).max(80),
 });

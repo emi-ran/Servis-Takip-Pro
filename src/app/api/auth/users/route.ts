@@ -7,7 +7,7 @@ const createUserSchema = z.object({
   name: z.string().min(1, "Ad zorunlu"),
   surname: z.string().min(1, "Soyad zorunlu"),
   email: z.string().email("Geçersiz e-posta"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
+  password: z.string().min(8, "Şifre en az 8 karakter olmalı"),
   role: z.enum(["ADMIN", "TECHNICIAN"]),
 });
 

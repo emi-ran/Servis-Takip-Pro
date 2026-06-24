@@ -56,7 +56,7 @@ export function SetupForm() {
         return slug.length > 0 && /^[a-z0-9-]+$/.test(slug) ? null : t("companySlugInvalid");
       },
       adminEmail: (value) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? null : t("emailInvalid")),
-      adminPassword: (value) => (value.length < 12 ? t("passwordInvalid") : null),
+      adminPassword: (value) => (value.length < 8 ? t("passwordInvalid") : null),
       adminName: (value) => (value.trim().length < 1 ? t("adminNameRequired") : null),
       adminSurname: (value) => (value.trim().length < 1 ? t("adminSurnameRequired") : null),
     },

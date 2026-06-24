@@ -8,7 +8,7 @@ const updateUserSchema = z.object({
   surname: z.string().min(1, "Soyad zorunlu"),
   email: z.string().email("Geçersiz e-posta"),
   role: z.enum(["ADMIN", "TECHNICIAN"]),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı").optional(),
+  password: z.string().min(8, "Şifre en az 8 karakter olmalı").optional(),
 });
 
 export async function PUT(
