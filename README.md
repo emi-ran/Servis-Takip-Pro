@@ -93,6 +93,29 @@ services:
 docker compose up --build -d
 ```
 
+### Docker/Dokploy veritabanı migrasyonları
+
+Uygulama konteyneri başlangıçta bekleyen Prisma migrasyonlarını uygular, sonra üretim sunucusunu başlatır:
+
+```bash
+prisma migrate deploy
+node server.js
+```
+
+Bu yüzden Docker imajı production runtime içinde Prisma CLI içerir. Yeni dağıtım için normal akış:
+
+```bash
+docker compose up --build -d
+```
+
+Var olan veritabanı daha önce `prisma db push` ile oluşturulduysa ilk migrasyon doğrudan uygulanmaya çalışıldığında tablolar zaten var olduğu için hata verebilir. Bu durumda önce veritabanı yedeği alınmalı, mevcut şema elle kontrol edilmeli ve başlangıç migrasyonu veritabanında uygulanmış kabul edilmelidir:
+
+```bash
+prisma migrate resolve --applied 20260624000000_initial
+```
+
+Bu baseline işlemini sadece yedek aldıktan ve mevcut tabloların `prisma/schema.prisma` ile zaten uyumlu olduğundan emin olduktan sonra çalıştırın. Boş veritabanlarında baseline gerekmez; konteyner başlangıcındaki `prisma migrate deploy` migrasyonu uygular.
+
 ---
 
 ## 📝 Ortam Değişkenleri

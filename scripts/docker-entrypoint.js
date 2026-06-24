@@ -1,53 +1,45 @@
 const { spawn } = require("child_process");
-const { Client } = require("pg");
+const { existsSync } = require("fs");
+const { join } = require("path");
 
-function run(command, args) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { stdio: "inherit", shell: false });
-    child.on("error", reject);
-    child.on("exit", (code) => {
-      if (code === 0) {
-        resolve();
-        return;
-      }
-      reject(new Error(`${command} ${args.join(" ")} exited with code ${code}`));
-    });
-  });
+const prismaBin = join(__dirname, "..", "node_modules", ".bin", process.platform === "win32" ? "prisma.cmd" : "prisma");
+
+if (!existsSync(prismaBin)) {
+  console.error("Prisma CLI bulunamadı. Veritabanı migrasyonları uygulanamadı.");
+  process.exit(1);
 }
 
-async function getTableCount() {
-  const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) {
-    throw new Error("DATABASE_URL is not set");
-  }
+const migrate = spawn(prismaBin, ["migrate", "deploy"], { stdio: "inherit", shell: false });
 
-  const client = new Client({ connectionString: databaseUrl });
-  await client.connect();
-  try {
-    const result = await client.query(
-      "select count(*)::int as count from information_schema.tables where table_schema = 'public' and table_type = 'BASE TABLE'"
-    );
-    return result.rows[0]?.count ?? 0;
-  } finally {
-    await client.end();
-  }
-}
-
-async function main() {
-  const tableCount = await getTableCount();
-
-  if (tableCount === 0) {
-    console.log("No tables found. Running prisma db push...");
-  } else {
-    console.log("Existing database found. Syncing schema with prisma db push...");
-  }
-
-  await run("npx", ["prisma", "db", "push"]);
-
-  await run("node", ["server.js"]);
-}
-
-main().catch((error) => {
+migrate.on("error", (error) => {
   console.error(error.message || error);
   process.exit(1);
+});
+
+migrate.on("exit", (code, signal) => {
+  if (signal) {
+    process.kill(process.pid, signal);
+    return;
+  }
+
+  if (code !== 0) {
+    process.exit(code ?? 1);
+    return;
+  }
+
+  const server = spawn("node", ["server.js"], { stdio: "inherit", shell: false });
+
+  server.on("error", (error) => {
+    console.error(error.message || error);
+    process.exit(1);
+  });
+
+  server.on("exit", (serverCode, serverSignal) => {
+    if (serverSignal) {
+      process.kill(process.pid, serverSignal);
+      return;
+    }
+
+    process.exit(serverCode ?? 1);
+  });
 });

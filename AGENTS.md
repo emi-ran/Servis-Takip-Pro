@@ -189,8 +189,8 @@ src/
 - `id` alanları `cuid()` ile oluşturulur.
 - `createdAt` ve `updatedAt` her modelde olur.
 - Soft delete yok, hard delete kullanılır.
-- Şema değişiklikleri `prisma db push` ile uygulanır (geliştirme aşaması).
-- Şema değişiklikleri için `prisma db push` yeterli (geliştirme aşaması).
+- Şema değişiklikleri Prisma Migrate ile uygulanır.
+- Üretim konteyneri başlangıçta `prisma migrate deploy` çalıştırır.
 
 ## Auth
 

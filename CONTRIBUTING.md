@@ -26,10 +26,10 @@ Yerel geliştirme ortamını kurmak için aşağıdaki adımları izleyin.
     cp .env.example .env
     ```
 
-3.  **Veritabanı Şemasını Uygulayın:**
-    Prisma şemasını veritabanına uygulayarak tabloları oluşturun:
+3.  **Veritabanı Migrasyonlarını Uygulayın:**
+    Prisma migrasyonlarını veritabanına uygulayarak tabloları oluşturun:
     ```bash
-    npx prisma db push
+    npm run db:migrate
     ```
 
 4.  **Uygulamayı Geliştirme Modunda Başlatın:**
@@ -56,7 +56,8 @@ Geliştirme sürecinde kullanabileceğiniz NPM scriptleri şunlardır:
 | `npm run lint` | ESLint ile kod standartlarını kontrol eder. |
 | `npm run typecheck` | TypeScript derleme ve tip kontrollerini çalıştırır. |
 | `npm run admin:update` | Admin e-posta veya şifresini komut satırından günceller. |
-| `npm run db:push` | `schema.prisma` dosyasındaki değişiklikleri doğrudan veritabanına yansıtır. |
+| `npm run db:migrate` | Geliştirme ortamında Prisma migrasyonu oluşturur ve uygular. |
+| `npm run db:deploy` | Üretim ortamında bekleyen Prisma migrasyonlarını uygular. |
 | `npm run db:studio` | Prisma Studio'yu açarak veritabanı verilerini arayüz üzerinden görmenizi sağlar. |
 | `npm run db:seed` | Seed scriptini çalıştırarak temel/sabit verileri yükler. |
 | `npm run db:mock` | **Tehlikeli:** Test ve geliştirme için sahte veriler üretir (çalıştırmadan önce onay ve yedek sorar). |
