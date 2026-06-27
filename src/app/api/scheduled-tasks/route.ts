@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
   const dateFrom = searchParams.get("dateFrom") || "";
   const dateTo = searchParams.get("dateTo") || "";
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-  const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get("pageSize") || "20")));
+  const pageSizeLimit = dateFrom || dateTo ? 1000 : 100;
+  const pageSize = Math.min(pageSizeLimit, Math.max(1, parseInt(searchParams.get("pageSize") || "20")));
 
   const where: Record<string, unknown> = { companyId: session.companyId };
 

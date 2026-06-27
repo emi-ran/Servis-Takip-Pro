@@ -57,6 +57,10 @@ export default function DashboardPage() {
     queryFn: () => apiClient("/api/dashboard"),
   });
 
+  const unpaidBalance = data?.unpaidBalance ?? 0;
+  const unpaidBalanceDirection = unpaidBalance > 0 ? "receivable" : unpaidBalance < 0 ? "payable" : "settled";
+  const unpaidBalanceColor = unpaidBalance > 0 ? "red" : unpaidBalance < 0 ? "orange" : "green";
+
   return (
     <Stack gap="lg">
       <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
@@ -97,11 +101,14 @@ export default function DashboardPage() {
                 <Text size="xs" tt="uppercase" c="dimmed" fw={600}>
                   {t("dashboard.unpaidBalance")}
                 </Text>
-                <Text fw={800} size="xl" c="red">
-                  {(data?.unpaidBalance ?? 0).toLocaleString("tr-TR", {
+                <Text fw={800} size="xl" c={unpaidBalanceColor}>
+                  {Math.abs(unpaidBalance).toLocaleString("tr-TR", {
                     style: "currency",
                     currency: "TRY",
                   })}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  {t(`payments.${unpaidBalanceDirection}`)}
                 </Text>
               </Stack>
             </Card>

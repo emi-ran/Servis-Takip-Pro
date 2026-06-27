@@ -114,7 +114,7 @@ const statusColors: Record<string, string> = {
   FIYAT_TEKLIFI_VERILDI: "violet",
   MUSTERI_REDDETTI: "red",
   HAZIR: "green",
-  ODEME_BEKIYOR: "orange",
+  ODEME_BEKLIYOR: "orange",
   TESLIM_EDILDI: "teal",
   IPTAL_EDILDI: "gray",
 };
@@ -165,6 +165,7 @@ export default function CustomerDetailPage() {
 
   const [paymentOpened, { open: openPayment, close: closePayment }] = useDisclosure(false);
   const [paymentType, setPaymentType] = useState<"BORC" | "TAHSILAT">("BORC");
+  const [showBalanceDetails, setShowBalanceDetails] = useState(false);
 
   const [paymentEditOpened, paymentEditHandlers] = useDisclosure(false);
   const [paymentDeleteOpened, paymentDeleteHandlers] = useDisclosure(false);
@@ -292,6 +293,9 @@ export default function CustomerDetailPage() {
   }
 
   const { customer, devices, serviceRecords, balance, totalDebt, totalCollection, payments, scheduledTasks } = data!;
+  const balanceDirection = balance > 0 ? "receivable" : balance < 0 ? "payable" : "settled";
+  const balanceColor = balance > 0 ? "red" : balance < 0 ? "orange" : "green";
+  const balanceAmount = Math.abs(balance);
 
   return (
     <Stack gap="lg">
@@ -367,54 +371,44 @@ export default function CustomerDetailPage() {
               <IconCurrencyDollar size={20} stroke={1.5} opacity={0.5} />
               <Text fw={600}>{pt("customerBalance")}</Text>
             </Group>
-            <Stack gap="xs" hiddenFrom="sm">
-              <Group justify="space-between" wrap="nowrap">
-                <Text size="sm" c="dimmed">{pt("debtAmount")}</Text>
-                <Text fw={800} size="lg" c="red">
-                  {totalDebt.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-                </Text>
-              </Group>
-              <Group justify="space-between" wrap="nowrap">
-                <Text size="sm" c="dimmed">{pt("collectionAmount")}</Text>
-                <Text fw={800} size="lg" c="green">
-                  {totalCollection.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-                </Text>
-              </Group>
-              <Group justify="space-between" wrap="nowrap">
-                <Text size="sm" c="dimmed">{pt("balance")}</Text>
-                <Text
-                  fw={900}
-                  size="lg"
-                  c={balance > 0 ? "red" : balance < 0 ? "green" : undefined}
-                >
-                  {balance.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-                </Text>
-              </Group>
+            <Stack gap={4} align="center">
+              <Text size="sm" c="dimmed">{pt(balanceDirection)}</Text>
+              <Text fw={900} size="xl" c={balanceColor}>
+                {balanceAmount.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+              </Text>
+              <Text size="xs" c="dimmed" ta="center">
+                {pt(`${balanceDirection}Subtext`)}
+              </Text>
             </Stack>
-            <SimpleGrid cols={3} visibleFrom="sm">
-              <Stack gap={0} align="center">
-                <Text size="xs" c="dimmed">{pt("debtAmount")}</Text>
-                <Text fw={700} size="lg" c="red">
-                  {totalDebt.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-                </Text>
-              </Stack>
-              <Stack gap={0} align="center">
-                <Text size="xs" c="dimmed">{pt("collectionAmount")}</Text>
-                <Text fw={700} size="lg" c="green">
-                  {totalCollection.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-                </Text>
-              </Stack>
-              <Stack gap={0} align="center">
-                <Text size="xs" c="dimmed">{pt("balance")}</Text>
-                <Text
-                  fw={800}
-                  size="lg"
-                  c={balance > 0 ? "red" : balance < 0 ? "green" : undefined}
-                >
-                  {balance.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-                </Text>
-              </Stack>
-            </SimpleGrid>
+            <Button
+              variant="subtle"
+              size="xs"
+              onClick={() => setShowBalanceDetails((current) => !current)}
+            >
+              {showBalanceDetails ? pt("hideDetails") : pt("showDetails")}
+            </Button>
+            {showBalanceDetails && (
+              <SimpleGrid cols={{ base: 1, sm: 3 }}>
+                <Stack gap={0} align="center">
+                  <Text size="xs" c="dimmed">{pt("debtAmount")}</Text>
+                  <Text fw={700} size="sm" c="red">
+                    {totalDebt.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                  </Text>
+                </Stack>
+                <Stack gap={0} align="center">
+                  <Text size="xs" c="dimmed">{pt("collectionAmount")}</Text>
+                  <Text fw={700} size="sm" c="green">
+                    {totalCollection.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                  </Text>
+                </Stack>
+                <Stack gap={0} align="center">
+                  <Text size="xs" c="dimmed">{pt("currentBalance")}</Text>
+                  <Text fw={700} size="sm" c={balanceColor}>
+                    {balanceAmount.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                  </Text>
+                </Stack>
+              </SimpleGrid>
+            )}
             <Group gap="sm" grow hiddenFrom="sm">
               <Button
                 size="sm"
@@ -639,7 +633,7 @@ export default function CustomerDetailPage() {
                     </Group>
                     <Group justify="space-between" gap="xs">
                       <Badge size="sm" variant="outline" color="gray">
-                        {pt(methodLabels[payment.paymentMethod] || "method_label.DIGER")}
+                        {payment.type === "TAHSILAT" ? pt(methodLabels[payment.paymentMethod] || "method_label.DIGER") : "—"}
                       </Badge>
                       <Text size="xs" c="dimmed">
                         {new Date(payment.date).toLocaleDateString("tr-TR")}
@@ -710,7 +704,7 @@ export default function CustomerDetailPage() {
                       </Table.Td>
                       <Table.Td>
                         <Badge size="sm" variant="outline" color="gray">
-                          {pt(methodLabels[payment.paymentMethod] || "method_label.DIGER")}
+                          {payment.type === "TAHSILAT" ? pt(methodLabels[payment.paymentMethod] || "method_label.DIGER") : "—"}
                         </Badge>
                       </Table.Td>
                       <Table.Td>

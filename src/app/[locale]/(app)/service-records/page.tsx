@@ -21,6 +21,7 @@ import {
   Alert,
   Card,
   Badge,
+  Collapse,
   Tooltip,
   Select,
   Textarea,
@@ -67,6 +68,10 @@ type ServiceRecordsResponse = {
   page: number;
   pageSize: number;
 };
+
+type RecordScope = "active" | "all";
+
+const closedStatuses = new Set(["TESLIM_EDILDI", "IPTAL_EDILDI", "MUSTERI_REDDETTI"]);
 
 const statusColors: Record<string, string> = {
   KAYIT_ACILDI: "blue",
@@ -278,6 +283,8 @@ export default function ServiceRecordsPage() {
   const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearch] = useDebouncedValue(searchValue, 300);
+  const [recordScope, setRecordScope] = useState<RecordScope>("active");
+  const [filtersOpened, setFiltersOpened] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [serviceModeFilter, setServiceModeFilter] = useState<string>("");
   const [dateFrom, setDateFrom] = useState<string | null>(null);
@@ -290,6 +297,7 @@ export default function ServiceRecordsPage() {
 
   const params: Record<string, string> = { page: String(page), pageSize: "20" };
   if (debouncedSearch) params.query = debouncedSearch;
+  if (recordScope === "active") params.scope = "active";
   if (statusFilter) params.status = statusFilter;
   if (serviceModeFilter) params.serviceMode = serviceModeFilter;
   if (dateFrom) params.dateFrom = dateFrom;
@@ -298,7 +306,7 @@ export default function ServiceRecordsPage() {
   params.sortDir = sortDir;
 
   const { data, isLoading, isError, error } = useQuery<ServiceRecordsResponse>({
-    queryKey: ["service-records", page, debouncedSearch, statusFilter, serviceModeFilter, dateFrom, dateTo, sortBy, sortDir],
+    queryKey: ["service-records", page, debouncedSearch, recordScope, statusFilter, serviceModeFilter, dateFrom, dateTo, sortBy, sortDir],
     queryFn: () => apiClient("/api/service-records", { params }),
   });
 
@@ -317,12 +325,34 @@ export default function ServiceRecordsPage() {
 
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
+  const statusEntries = Object.entries(t.raw("status_change") as Record<string, string>);
+  const visibleStatusEntries = recordScope === "active"
+    ? statusEntries.filter(([value]) => !closedStatuses.has(value))
+    : statusEntries;
   const statusOptions = [
     { value: "", label: t("allStatuses") },
-    ...Object.entries(t.raw("status_change") as Record<string, string>).map(
+    ...visibleStatusEntries.map(
       ([value, label]) => ({ value, label })
     ),
   ];
+
+  const advancedFilterCount = [statusFilter, serviceModeFilter, dateFrom, dateTo].filter(Boolean).length;
+
+  function updateRecordScope(nextScope: RecordScope) {
+    setRecordScope(nextScope);
+    if (nextScope === "active" && closedStatuses.has(statusFilter)) {
+      setStatusFilter("");
+    }
+    setPage(1);
+  }
+
+  function clearAdvancedFilters() {
+    setStatusFilter("");
+    setServiceModeFilter("");
+    setDateFrom(null);
+    setDateTo(null);
+    setPage(1);
+  }
 
   function toggleSort(nextSortBy: string) {
     if (sortBy === nextSortBy) {
@@ -456,7 +486,8 @@ export default function ServiceRecordsPage() {
           </Button>
         </Group>
 
-        <Group gap="sm" wrap="wrap">
+        <Stack gap="sm">
+          <Group gap="sm" wrap="wrap" align="center">
           <TextInput
             placeholder={t("searchByTracking")}
             leftSection={<IconSearch size={16} stroke={1.5} />}
@@ -467,12 +498,42 @@ export default function ServiceRecordsPage() {
               setPage(1);
             }}
             w={{ base: "100%", sm: "auto" }}
-            style={{ flex: 1, minWidth: 240 }}
+            miw={{ sm: 320 }}
+            flex={1}
           />
+          <Group gap={6} grow w={{ base: "100%", sm: "auto" }}>
+            <Button
+              variant={recordScope === "active" ? "filled" : "default"}
+              onClick={() => updateRecordScope("active")}
+            >
+              {t("activeRecords")}
+            </Button>
+            <Button
+              variant={recordScope === "all" ? "filled" : "default"}
+              onClick={() => updateRecordScope("all")}
+            >
+              {t("allRecords")}
+            </Button>
+          </Group>
+          <Button
+            variant={filtersOpened || advancedFilterCount > 0 ? "light" : "default"}
+            onClick={() => setFiltersOpened((current) => !current)}
+            w={{ base: "100%", sm: "auto" }}
+          >
+            <Group gap="xs" wrap="nowrap">
+              <Text size="sm" fw={600}>{t("filters")}</Text>
+              {advancedFilterCount > 0 && <Badge size="sm" variant="filled">{advancedFilterCount}</Badge>}
+            </Group>
+          </Button>
+          </Group>
+
+          <Collapse expanded={filtersOpened || advancedFilterCount > 0}>
+            <Card withBorder radius="md" p="md">
+              <Group gap="sm" wrap="wrap" align="flex-end">
           <Select
             placeholder={t("filterByStatus")}
             data={statusOptions}
-            value={statusFilter}
+            value={statusFilter || null}
             onChange={(v) => {
               setStatusFilter(v || "");
               setPage(1);
@@ -484,7 +545,7 @@ export default function ServiceRecordsPage() {
           <Select
             placeholder={t("filterByServiceMode")}
             data={serviceModeOptions}
-            value={serviceModeFilter}
+            value={serviceModeFilter || null}
             onChange={(v) => {
               setServiceModeFilter(v || "");
               setPage(1);
@@ -507,7 +568,18 @@ export default function ServiceRecordsPage() {
             clearable
             w={{ base: "100%", sm: 170 }}
           />
-        </Group>
+          <Button
+            variant="subtle"
+            onClick={clearAdvancedFilters}
+            disabled={advancedFilterCount === 0}
+            w={{ base: "100%", sm: "auto" }}
+          >
+            {t("clearFilters")}
+          </Button>
+              </Group>
+            </Card>
+          </Collapse>
+        </Stack>
 
         {isLoading ? (
           <Card withBorder p={0} radius="md" style={{ overflow: "hidden" }}>

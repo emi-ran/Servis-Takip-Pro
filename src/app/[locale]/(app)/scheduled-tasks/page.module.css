@@ -1,0 +1,113 @@
+.calendarLayout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: var(--mantine-spacing-md);
+  align-items: start;
+}
+
+.dayRailCard,
+.agendaCard {
+  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+}
+
+.dayRail {
+  display: grid;
+  gap: 8px;
+}
+
+.dayButton {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  align-items: center;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+  color: var(--mantine-color-text);
+  cursor: pointer;
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.dayButton:hover {
+  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+}
+
+.dayButtonActive {
+  border-color: var(--mantine-color-blue-6);
+  background: light-dark(var(--mantine-color-blue-0), var(--mantine-color-dark-5));
+}
+
+.dayButtonDate {
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.dayButtonWeekday {
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-xs);
+  line-height: 1.2;
+}
+
+.dayButtonCount {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  color: var(--mantine-color-blue-6);
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.agendaTask {
+  border-left-width: 5px;
+  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+}
+
+.detailBlock {
+  min-width: 180px;
+}
+
+.statusPlanned {
+  border-left-color: var(--mantine-color-blue-6);
+}
+
+.statusInProgress {
+  border-left-color: var(--mantine-color-yellow-6);
+}
+
+.statusDone {
+  border-left-color: var(--mantine-color-green-6);
+}
+
+.statusCancelled {
+  border-left-color: var(--mantine-color-gray-6);
+}
+
+@media (max-width: 48em) {
+  .calendarLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .dayRail {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .dayButton {
+    min-width: 152px;
+    scroll-snap-align: start;
+  }
+
+  .agendaTask :global(.mantine-Group-root) {
+    align-items: flex-start;
+  }
+
+  .detailBlock {
+    min-width: 100%;
+  }
+}

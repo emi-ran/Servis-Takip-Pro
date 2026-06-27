@@ -14,7 +14,6 @@ import {
   Group,
   Modal,
   Select,
-  SimpleGrid,
   Skeleton,
   Stack,
   Table,
@@ -25,7 +24,7 @@ import {
   Title,
 } from "@mantine/core";
 import { Pagination } from "@/components/ui/pagination";
-import { DatePickerInput, DateTimePicker } from "@mantine/dates";
+import { DateTimePicker, MonthPickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -39,6 +38,7 @@ import {
 } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { formatPhone } from "@/lib/phone";
+import classes from "./page.module.css";
 
 type TaskType = "CIHAZ_ALINACAK" | "CIHAZ_BIRAKILACAK" | "BAKIM" | "KURULUM" | "DIGER";
 type TaskStatus = "PLANLANDI" | "DEVAM_EDIYOR" | "TAMAMLANDI" | "IPTAL";
@@ -101,10 +101,28 @@ const statusColors: Record<TaskStatus, string> = {
   IPTAL: "gray",
 };
 
+const statusClassNames: Record<TaskStatus, string> = {
+  PLANLANDI: classes.statusPlanned,
+  DEVAM_EDIYOR: classes.statusInProgress,
+  TAMAMLANDI: classes.statusDone,
+  IPTAL: classes.statusCancelled,
+};
+
+function padDatePart(part: number) {
+  return String(part).padStart(2, "0");
+}
+
+function toDateKey(date: Date) {
+  return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`;
+}
+
+function toTimeLabel(value: string) {
+  return new Date(value).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+}
+
 function toDateTimeInputValue(value: string) {
   const date = new Date(value);
-  const pad = (part: number) => String(part).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
+  return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())} ${padDatePart(date.getHours())}:${padDatePart(date.getMinutes())}:00`;
 }
 
 function getMonthDays(monthValue: string) {
@@ -115,7 +133,7 @@ function getMonthDays(monthValue: string) {
 
   for (let day = 1; day <= lastDay.getDate(); day += 1) {
     const date = new Date(firstDay.getFullYear(), firstDay.getMonth(), day);
-    days.push(date.toISOString().split("T")[0]);
+    days.push(toDateKey(date));
   }
 
   return days;
@@ -129,6 +147,7 @@ export default function ScheduledTasksPage() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
   const [calendarMonth, setCalendarMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState(toDateKey(new Date()));
   const [opened, { open, close }] = useDisclosure(false);
   const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false);
   const [editingTask, setEditingTask] = useState<ScheduledTask | null>(null);
@@ -141,7 +160,7 @@ export default function ScheduledTasksPage() {
   if (typeFilter) listParams.taskType = typeFilter;
 
   const calendarParams: Record<string, string> = {
-    pageSize: "100",
+    pageSize: "1000",
     dateFrom: `${calendarMonth}-01`,
     dateTo: `${calendarMonth}-${String(new Date(Number(calendarMonth.slice(0, 4)), Number(calendarMonth.slice(5, 7)), 0).getDate()).padStart(2, "0")}`,
   };
@@ -265,10 +284,27 @@ export default function ScheduledTasksPage() {
 
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 1;
   const calendarTasksByDate = (calendarData?.scheduledTasks ?? []).reduce<Record<string, ScheduledTask[]>>((acc, task) => {
-    const key = new Date(task.date).toISOString().split("T")[0];
+    const key = toDateKey(new Date(task.date));
     acc[key] = [...(acc[key] ?? []), task];
     return acc;
   }, {});
+  const calendarDays = getMonthDays(calendarMonth);
+  const calendarTaskDays = calendarDays.filter((day) => (calendarTasksByDate[day]?.length ?? 0) > 0);
+  const calendarTaskCount = calendarData?.total ?? calendarData?.scheduledTasks.length ?? 0;
+  const selectedDayHasTasks = (calendarTasksByDate[selectedCalendarDay]?.length ?? 0) > 0;
+  const activeCalendarDay = selectedCalendarDay.startsWith(calendarMonth) && (selectedDayHasTasks || calendarTaskDays.length === 0)
+    ? selectedCalendarDay
+    : calendarTaskDays[0] ?? `${calendarMonth}-01`;
+
+  const { data: activeDayData } = useQuery<ListResponse>({
+    queryKey: ["scheduled-tasks-day", activeCalendarDay],
+    queryFn: () => apiClient("/api/scheduled-tasks", {
+      params: { pageSize: "1000", dateFrom: activeCalendarDay, dateTo: activeCalendarDay },
+    }),
+  });
+
+  const activeDayTasks = activeDayData?.scheduledTasks ?? calendarTasksByDate[activeCalendarDay] ?? [];
+  const activeDayTaskCount = activeDayData?.total ?? activeDayTasks.length;
 
   return (
     <Stack gap="lg">
@@ -477,49 +513,143 @@ export default function ScheduledTasksPage() {
 
         <Tabs.Panel value="calendar" pt="md">
           <Stack gap="md">
-            <DatePickerInput
-              type="default"
-              label={t("month")}
-              value={calendarMonth}
-              onChange={(value) => { if (value) setCalendarMonth(value.slice(0, 7)); }}
-              valueFormat="MMMM YYYY"
-              w={{ base: "100%", sm: 260 }}
-            />
-            <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }}>
-              {getMonthDays(calendarMonth).map((day) => {
-                const dayTasks = calendarTasksByDate[day] ?? [];
-                return (
-                  <Card key={day} withBorder radius="md" p="md">
-                    <Stack gap="xs">
-                      <Group justify="space-between">
-                        <Text fw={700}>{new Date(day).toLocaleDateString("tr-TR", { day: "2-digit", month: "short" })}</Text>
-                        {dayTasks.length > 0 && <Badge variant="light">{dayTasks.length}</Badge>}
-                      </Group>
-                      {dayTasks.length === 0 ? (
-                        <Text size="xs" c="dimmed">{t("noTaskForDay")}</Text>
-                      ) : (
-                        <Stack gap="xs">
-                          {dayTasks.map((task) => (
-                            <Card key={task.id} p="xs" radius="sm" withBorder>
-                              <Stack gap={2}>
-                                <Group justify="space-between" wrap="nowrap">
-                                  <Text size="sm" fw={600} lineClamp={1}>{task.title}</Text>
-                                  <Text size="xs" c="dimmed">{new Date(task.date).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</Text>
+            <Group justify="space-between" align="flex-end" wrap="wrap">
+              <MonthPickerInput
+                label={t("month")}
+                value={`${calendarMonth}-01`}
+                onChange={(value) => {
+                  if (value) {
+                    const nextMonth = value.slice(0, 7);
+                    setCalendarMonth(nextMonth);
+                    setSelectedCalendarDay(`${nextMonth}-01`);
+                  }
+                }}
+                valueFormat="MMMM YYYY"
+                dropdownType="modal"
+                allowDeselect={false}
+                w={{ base: "100%", sm: 260 }}
+              />
+              <Group gap="xs">
+                <Badge variant="light" color="blue" size="lg">
+                  {t("taskCount", { count: calendarTaskCount })}
+                </Badge>
+                <Badge variant="light" color="gray" size="lg">
+                  {t("busyDayCount", { count: calendarTaskDays.length })}
+                </Badge>
+              </Group>
+            </Group>
+
+            <div className={classes.calendarLayout}>
+              <Card withBorder radius="lg" p="md" className={classes.dayRailCard}>
+                <Stack gap="sm">
+                  <Text size="sm" fw={800}>{t("daysWithTasks")}</Text>
+                  {calendarTaskDays.length === 0 ? (
+                    <Text size="sm" c="dimmed">{t("noTaskForMonth")}</Text>
+                  ) : (
+                    <div className={classes.dayRail}>
+                      {calendarTaskDays.map((day) => {
+                        const dayTasks = calendarTasksByDate[day] ?? [];
+                        const isActive = day === activeCalendarDay;
+                        return (
+                          <button
+                            key={day}
+                            type="button"
+                            className={`${classes.dayButton} ${isActive ? classes.dayButtonActive : ""}`}
+                            onClick={() => setSelectedCalendarDay(day)}
+                          >
+                            <span className={classes.dayButtonDate}>
+                              {new Date(day).toLocaleDateString("tr-TR", { day: "2-digit", month: "short" })}
+                            </span>
+                            <span className={classes.dayButtonWeekday}>
+                              {new Date(day).toLocaleDateString("tr-TR", { weekday: "long" })}
+                            </span>
+                            <span className={classes.dayButtonCount}>{t("taskCount", { count: dayTasks.length })}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </Stack>
+              </Card>
+
+              <Card withBorder radius="lg" p="md" className={classes.agendaCard}>
+                <Stack gap="md">
+                  <Group justify="space-between" align="flex-start" wrap="wrap">
+                    <Stack gap={2}>
+                      <Text size="lg" fw={900}>
+                        {new Date(activeCalendarDay).toLocaleDateString("tr-TR", { day: "2-digit", month: "long" })}
+                      </Text>
+                      <Text size="sm" c="dimmed">
+                        {new Date(activeCalendarDay).toLocaleDateString("tr-TR", { weekday: "long" })}
+                      </Text>
+                    </Stack>
+                    <Badge variant="light" color="blue" size="lg">
+                      {t("taskCount", { count: activeDayTaskCount })}
+                    </Badge>
+                  </Group>
+
+                  {activeDayTasks.length === 0 ? (
+                    <Stack align="center" gap="xs" py="xl">
+                      <IconCalendar size={40} stroke={1} opacity={0.35} />
+                      <Text size="sm" c="dimmed">{t("noTaskForDay")}</Text>
+                    </Stack>
+                  ) : (
+                    <Stack gap="sm">
+                      {activeDayTasks.map((task) => (
+                        <Card key={task.id} withBorder radius="md" p="md" className={`${classes.agendaTask} ${statusClassNames[task.status]}`}>
+                          <Stack gap="sm">
+                            <Group justify="space-between" align="flex-start" wrap="nowrap">
+                              <Stack gap={4} style={{ minWidth: 0 }}>
+                                <Group gap="xs" wrap="nowrap">
+                                  <Text fw={900} size="lg">{toTimeLabel(task.date)}</Text>
+                                  <Badge size="sm" variant="light" color={statusColors[task.status]}>{t(`status_label.${task.status}`)}</Badge>
+                                  <Badge size="sm" variant="outline" color={taskTypeColors[task.taskType]}>{t(`type_label.${task.taskType}`)}</Badge>
                                 </Group>
-                                <Anchor component={Link} href={`/customers/${task.customer.id}`} prefetch={false} size="xs" c="dimmed" lineClamp={1}>
+                                <Text fw={800} size="md" lineClamp={2}>{task.title}</Text>
+                              </Stack>
+                              <Group gap={4} wrap="nowrap">
+                                <ActionIcon variant="subtle" color="blue" onClick={() => openEditModal(task)} aria-label={ct("edit")}>
+                                  <IconEdit size={16} />
+                                </ActionIcon>
+                                <ActionIcon
+                                  variant="subtle"
+                                  color="red"
+                                  onClick={() => { setDeleteId(task.id); openDelete(); }}
+                                  aria-label={ct("delete")}
+                                >
+                                  <IconTrash size={16} />
+                                </ActionIcon>
+                              </Group>
+                            </Group>
+
+                            <Group gap="lg" align="flex-start" wrap="wrap">
+                              <Stack gap={2} className={classes.detailBlock}>
+                                <Text size="xs" c="dimmed">{t("customer")}</Text>
+                                <Anchor component={Link} href={`/customers/${task.customer.id}`} prefetch={false} size="sm" fw={700}>
                                   {task.customer.name} {task.customer.surname}
                                 </Anchor>
-                                <Badge size="xs" variant="light" color={statusColors[task.status]}>{t(`status_label.${task.status}`)}</Badge>
+                                <Text size="xs" c="dimmed">{formatPhone(task.customer.phone)}</Text>
                               </Stack>
-                            </Card>
-                          ))}
-                        </Stack>
-                      )}
+                              <Stack gap={2} className={classes.detailBlock}>
+                                <Text size="xs" c="dimmed">{t("assignedUser")}</Text>
+                                <Text size="sm" fw={600}>{task.assignedUser ? `${task.assignedUser.name} ${task.assignedUser.surname}` : "—"}</Text>
+                              </Stack>
+                            </Group>
+
+                            {task.description && (
+                              <Text size="sm" c="dimmed">{task.description}</Text>
+                            )}
+                            {task.customer.address && (
+                              <Text size="xs" c="dimmed">{task.customer.address}</Text>
+                            )}
+                          </Stack>
+                        </Card>
+                      ))}
                     </Stack>
-                  </Card>
-                );
-              })}
-            </SimpleGrid>
+                  )}
+                </Stack>
+              </Card>
+            </div>
           </Stack>
         </Tabs.Panel>
       </Tabs>

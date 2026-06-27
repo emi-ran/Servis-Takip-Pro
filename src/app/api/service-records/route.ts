@@ -13,6 +13,8 @@ const createServiceRecordSchema = z.object({
   scheduledAt: z.string().optional().or(z.literal("")),
 });
 
+const closedStatuses = ["TESLIM_EDILDI", "IPTAL_EDILDI", "MUSTERI_REDDETTI"];
+
 export async function GET(request: NextRequest) {
   const session = await verifySession();
   if (!session) {
@@ -22,6 +24,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query") || "";
   const status = searchParams.get("status") || "";
+  const scope = searchParams.get("scope") || "";
   const serviceMode = searchParams.get("serviceMode") || "";
   const sortBy = searchParams.get("sortBy") || "createdAt";
   const sortDir: "asc" | "desc" = searchParams.get("sortDir") === "asc" ? "asc" : "desc";
@@ -38,7 +41,9 @@ export async function GET(request: NextRequest) {
   }
 
   if (status) {
-    where.status = status;
+    where.status = scope === "active" ? { equals: status, notIn: closedStatuses } : status;
+  } else if (scope === "active") {
+    where.status = { notIn: closedStatuses };
   }
 
   if (serviceMode) {

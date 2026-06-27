@@ -384,7 +384,7 @@ export default function PaymentsPage() {
                     <Group justify="space-between" gap="xs" wrap="nowrap">
                       <Text size="xs" c="dimmed">{t("paymentMethod")}</Text>
                       <Badge size="xs" variant="outline" color="gray">
-                        {t(methodLabels[payment.paymentMethod] || "method_label.DIGER")}
+                        {payment.type === "TAHSILAT" ? t(methodLabels[payment.paymentMethod] || "method_label.DIGER") : "—"}
                       </Badge>
                     </Group>
                     <Group justify="space-between" gap="xs" wrap="nowrap">
@@ -472,7 +472,7 @@ export default function PaymentsPage() {
                       </Table.Td>
                       <Table.Td>
                         <Badge size="sm" variant="outline" color="gray">
-                          {t(methodLabels[payment.paymentMethod] || "method_label.DIGER")}
+                          {payment.type === "TAHSILAT" ? t(methodLabels[payment.paymentMethod] || "method_label.DIGER") : "—"}
                         </Badge>
                       </Table.Td>
                       <Table.Td>
