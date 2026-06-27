@@ -1,6 +1,5 @@
 import { mantineHtmlProps } from "@mantine/core";
 import type { Metadata } from "next";
-import { ColorSchemeScript } from "@/components/layout/color-scheme-script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,9 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" {...mantineHtmlProps}>
-      <head>
-        <ColorSchemeScript />
-      </head>
+      <head />
       <body>
         {children}
       </body>

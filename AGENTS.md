@@ -172,7 +172,7 @@ src/
 
 ## CSS / Renk Modu
 
-- `ColorSchemeScript` renk modu flash'ını önlemek için `<head>` içine inline `<script>` olarak yerleştirilir (`src/components/layout/color-scheme-script.tsx`).
+- Next.js 16 geliştirme modunda `<script>` render uyarısı nedeniyle root layout'ta `ColorSchemeScript` kullanılmaz; `MantineProvider` `defaultColorScheme="auto"` ile çalışır.
 - Renk modu toggle'ı hydration mismatch'ını önlemek için `ThemeToggle` component'inde `useState+mounted` pattern'i kullanılır (SSR'da boş placeholder render eder).
 - `MantineProvider`'a `defaultColorScheme="auto"` eklenir.
 

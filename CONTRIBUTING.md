@@ -25,6 +25,7 @@ Yerel geliştirme ortamını kurmak için aşağıdaki adımları izleyin.
     ```bash
     cp .env.example .env
     ```
+    Yerel `npm run dev` Windows ana makinede çalışırken `DATABASE_URL` içindeki host, ana makineden erişilebilir olmalıdır. Docker konteyneri içinden kullanılan `host.docker.internal` değeri host sürecinde her zaman çalışmaz; yerel PostgreSQL için genellikle `localhost`, Docker Compose ile yayınlanan PostgreSQL için yayınlanan port kullanılmalıdır.
 
 3.  **Veritabanı Migrasyonlarını Uygulayın:**
     Prisma migrasyonlarını veritabanına uygulayarak tabloları oluşturun:
