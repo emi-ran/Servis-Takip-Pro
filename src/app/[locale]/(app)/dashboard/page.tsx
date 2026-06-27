@@ -10,33 +10,49 @@ import {
   SimpleGrid,
   Skeleton,
   Alert,
-  Table,
   Badge,
   Anchor,
   Group,
+  Button,
 } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons-react";
+import { IconAlertCircle, IconArrowRight, IconCalendar, IconCash, IconTool } from "@tabler/icons-react";
 import { apiClient } from "@/lib/api";
 import { Link } from "@/lib/navigation";
+import { formatPhone } from "@/lib/phone";
 
-
-type RecentRecord = {
+interface DashboardRecord {
   id: string;
   trackingNo: number;
   status: string;
+  priority: string;
+  faultDescription: string;
   createdAt: string;
-  customer: { id: string; name: string; surname: string };
+  customer: { id: string; name: string; surname: string; phone: string };
   device: { brand: string; model: string };
-};
+}
 
-type DashboardData = {
+interface TodayTask {
+  id: string;
+  title: string;
+  taskType: string;
+  status: string;
+  date: string;
+  customer: { id: string; name: string; surname: string; phone: string };
+  assignedUser: { id: string; name: string; surname: string } | null;
+}
+
+interface DashboardData {
   dailyCollection: number;
   unpaidBalance: number;
   pendingServices: number;
   readyDevices: number;
   todayTasks: number;
-  recentRecords: RecentRecord[];
-};
+  todayTaskList: TodayTask[];
+  urgentRecords: DashboardRecord[];
+  readyRecords: DashboardRecord[];
+  paymentWaitingRecords: DashboardRecord[];
+  recentRecords: DashboardRecord[];
+}
 
 const statusColor: Record<string, string> = {
   KAYIT_ACILDI: "blue",
@@ -47,6 +63,13 @@ const statusColor: Record<string, string> = {
   ODEME_BEKLIYOR: "violet",
   TESLIM_EDILDI: "teal",
   IPTAL_EDILDI: "gray",
+};
+
+const priorityColor: Record<string, string> = {
+  DUSUK: "gray",
+  NORMAL: "blue",
+  YUKSEK: "orange",
+  ACIL: "red",
 };
 
 export default function DashboardPage() {
@@ -61,20 +84,62 @@ export default function DashboardPage() {
   const unpaidBalanceDirection = unpaidBalance > 0 ? "receivable" : unpaidBalance < 0 ? "payable" : "settled";
   const unpaidBalanceColor = unpaidBalance > 0 ? "red" : unpaidBalance < 0 ? "orange" : "green";
 
+  function renderServiceList(records: DashboardRecord[], emptyKey: string) {
+    if (records.length === 0) {
+      return <Text size="sm" c="dimmed">{t(emptyKey)}</Text>;
+    }
+
+    return (
+      <Stack gap="xs">
+        {records.map((record) => (
+          <Card key={record.id} withBorder radius="md" p="sm">
+            <Stack gap={6}>
+              <Group justify="space-between" align="flex-start" wrap="nowrap">
+                <Stack gap={2} style={{ minWidth: 0 }}>
+                  <Anchor component={Link} href={`/service-records/${record.id}`} size="sm" fw={800} prefetch={false} lineClamp={1}>
+                    #{record.trackingNo} · {record.device.brand} {record.device.model}
+                  </Anchor>
+                  <Anchor component={Link} href={`/customers/${record.customer.id}`} size="xs" prefetch={false} lineClamp={1}>
+                    {record.customer.name} {record.customer.surname} · {formatPhone(record.customer.phone)}
+                  </Anchor>
+                </Stack>
+                <Badge size="xs" variant="light" color={statusColor[record.status] ?? "gray"}>
+                  {t(`serviceRecords.status_change.${record.status}`)}
+                </Badge>
+              </Group>
+              <Group gap="xs">
+                <Badge size="xs" variant="outline" color={priorityColor[record.priority] ?? "gray"}>
+                  {t(`serviceRecords.priority_label.${record.priority}`)}
+                </Badge>
+                <Text size="xs" c="dimmed" lineClamp={1}>{record.faultDescription}</Text>
+              </Group>
+            </Stack>
+          </Card>
+        ))}
+      </Stack>
+    );
+  }
+
   return (
     <Stack gap="lg">
-      <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
-        {t("dashboard.title")}
-      </Title>
+      <Group justify="space-between" align="flex-start" wrap="wrap">
+        <Stack gap={4}>
+          <Title order={2} fw={800}>{t("dashboard.title")}</Title>
+          <Text c="dimmed" size="sm">{t("dashboard.subtitle")}</Text>
+        </Stack>
+        <Button component={Link} href="/service-records" rightSection={<IconArrowRight size={16} />}>
+          {t("dashboard.allJobs")}
+        </Button>
+      </Group>
 
       {isLoading ? (
         <>
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing="md">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} height={120} radius="md" />
+          <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} height={104} radius="md" />
             ))}
           </SimpleGrid>
-          <Skeleton height={300} radius="md" />
+          <Skeleton height={360} radius="md" />
         </>
       ) : isError ? (
         <Alert icon={<IconAlertCircle size={16} />} title={t("common.errorTitle")} color="red" radius="md">
@@ -82,147 +147,90 @@ export default function DashboardPage() {
         </Alert>
       ) : (
         <>
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
             <Card withBorder radius="md" padding="lg">
               <Stack gap={4}>
-                <Text size="xs" tt="uppercase" c="dimmed" fw={600}>
-                  {t("dashboard.dailyCollection")}
-                </Text>
-                <Text fw={800} size="xl" c="green">
-                  {(data?.dailyCollection ?? 0).toLocaleString("tr-TR", {
-                    style: "currency",
-                    currency: "TRY",
-                  })}
-                </Text>
+                <Group gap="xs"><IconCalendar size={18} /><Text size="xs" tt="uppercase" c="dimmed" fw={700}>{t("dashboard.todayTasks")}</Text></Group>
+                <Text fw={900} size="xl">{data?.todayTasks ?? 0}</Text>
               </Stack>
             </Card>
             <Card withBorder radius="md" padding="lg">
               <Stack gap={4}>
-                <Text size="xs" tt="uppercase" c="dimmed" fw={600}>
-                  {t("dashboard.unpaidBalance")}
-                </Text>
-                <Text fw={800} size="xl" c={unpaidBalanceColor}>
-                  {Math.abs(unpaidBalance).toLocaleString("tr-TR", {
-                    style: "currency",
-                    currency: "TRY",
-                  })}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  {t(`payments.${unpaidBalanceDirection}`)}
-                </Text>
+                <Group gap="xs"><IconTool size={18} /><Text size="xs" tt="uppercase" c="dimmed" fw={700}>{t("dashboard.pendingServices")}</Text></Group>
+                <Text fw={900} size="xl">{data?.pendingServices ?? 0}</Text>
               </Stack>
             </Card>
             <Card withBorder radius="md" padding="lg">
               <Stack gap={4}>
-                <Text size="xs" tt="uppercase" c="dimmed" fw={600}>
-                  {t("dashboard.pendingServices")}
+                <Group gap="xs"><IconCash size={18} /><Text size="xs" tt="uppercase" c="dimmed" fw={700}>{t("dashboard.unpaidBalance")}</Text></Group>
+                <Text fw={900} size="xl" c={unpaidBalanceColor}>
+                  {Math.abs(unpaidBalance).toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
                 </Text>
-                <Text fw={800} size="xl">
-                  {data?.pendingServices ?? 0}
-                </Text>
+                <Text size="xs" c="dimmed">{t(`payments.${unpaidBalanceDirection}`)}</Text>
               </Stack>
             </Card>
             <Card withBorder radius="md" padding="lg">
               <Stack gap={4}>
-                <Text size="xs" tt="uppercase" c="dimmed" fw={600}>
-                  {t("dashboard.readyDevices")}
-                </Text>
-                <Text fw={800} size="xl">
-                  {data?.readyDevices ?? 0}
+                <Group gap="xs"><IconCash size={18} /><Text size="xs" tt="uppercase" c="dimmed" fw={700}>{t("dashboard.dailyCollection")}</Text></Group>
+                <Text fw={900} size="xl" c="green">
+                  {(data?.dailyCollection ?? 0).toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
                 </Text>
               </Stack>
             </Card>
+          </SimpleGrid>
+
+          <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
             <Card withBorder radius="md" padding="lg">
-              <Stack gap={4}>
-                <Text size="xs" tt="uppercase" c="dimmed" fw={600}>
-                  {t("dashboard.todayTasks")}
-                </Text>
-                <Text fw={800} size="xl">
-                  {data?.todayTasks ?? 0}
-                </Text>
+              <Stack gap="md">
+                <Group justify="space-between"><Title order={4}>{t("dashboard.todayAgenda")}</Title><Badge variant="light">{data?.todayTaskList.length ?? 0}</Badge></Group>
+                {(data?.todayTaskList.length ?? 0) === 0 ? (
+                  <Text size="sm" c="dimmed">{t("dashboard.noTodayTasks")}</Text>
+                ) : (
+                  <Stack gap="xs">
+                    {data?.todayTaskList.map((task) => (
+                      <Card key={task.id} withBorder radius="md" p="sm">
+                        <Group justify="space-between" align="flex-start" wrap="nowrap">
+                          <Stack gap={2} style={{ minWidth: 0 }}>
+                            <Text fw={800} size="sm" lineClamp={1}>{new Date(task.date).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })} · {task.title}</Text>
+                            <Anchor component={Link} href={`/customers/${task.customer.id}`} size="xs" prefetch={false} lineClamp={1}>
+                              {task.customer.name} {task.customer.surname} · {formatPhone(task.customer.phone)}
+                            </Anchor>
+                          </Stack>
+                          <Badge size="xs" variant="light">{t(`scheduledTasks.status_label.${task.status}`)}</Badge>
+                        </Group>
+                      </Card>
+                    ))}
+                  </Stack>
+                )}
+              </Stack>
+            </Card>
+
+            <Card withBorder radius="md" padding="lg">
+              <Stack gap="md">
+                <Group justify="space-between"><Title order={4}>{t("dashboard.urgentJobs")}</Title><Badge color="red" variant="light">{data?.urgentRecords.length ?? 0}</Badge></Group>
+                {renderServiceList(data?.urgentRecords ?? [], "dashboard.noUrgentJobs")}
+              </Stack>
+            </Card>
+
+            <Card withBorder radius="md" padding="lg">
+              <Stack gap="md">
+                <Group justify="space-between"><Title order={4}>{t("dashboard.readyJobs")}</Title><Badge color="green" variant="light">{data?.readyRecords.length ?? 0}</Badge></Group>
+                {renderServiceList(data?.readyRecords ?? [], "dashboard.noReadyJobs")}
+              </Stack>
+            </Card>
+
+            <Card withBorder radius="md" padding="lg">
+              <Stack gap="md">
+                <Group justify="space-between"><Title order={4}>{t("dashboard.paymentWaitingJobs")}</Title><Badge color="violet" variant="light">{data?.paymentWaitingRecords.length ?? 0}</Badge></Group>
+                {renderServiceList(data?.paymentWaitingRecords ?? [], "dashboard.noPaymentWaitingJobs")}
               </Stack>
             </Card>
           </SimpleGrid>
 
           <Card withBorder radius="md" padding="lg">
             <Stack gap="md">
-              <Title order={4}>{t("dashboard.recentRecords")}</Title>
-              {(data?.recentRecords?.length ?? 0) === 0 ? (
-                <Text c="dimmed" size="sm">{t("serviceRecords.noRecords")}</Text>
-              ) : (
-                <>
-                <Stack gap="sm" hiddenFrom="sm">
-                  {data?.recentRecords?.map((record) => (
-                    <Card key={record.id} withBorder radius="md" p="sm">
-                      <Stack gap="xs">
-                        <Group justify="space-between" align="flex-start" wrap="nowrap">
-                          <Stack gap={2} style={{ minWidth: 0 }}>
-                            <Anchor component={Link} href={`/service-records/${record.id}`} size="sm" fw={700} prefetch={false}>
-                              #{record.trackingNo}
-                            </Anchor>
-                            <Anchor component={Link} href={`/customers/${record.customer.id}`} size="sm" prefetch={false} lineClamp={1}>
-                              {record.customer.name} {record.customer.surname}
-                            </Anchor>
-                          </Stack>
-                          <Badge color={statusColor[record.status] ?? "gray"} size="xs" variant="light">
-                            {t(`serviceRecords.status_change.${record.status}`)}
-                          </Badge>
-                        </Group>
-                        <Group justify="space-between" gap="xs" wrap="nowrap">
-                          <Text size="xs" c="dimmed" lineClamp={1}>{record.device.brand} {record.device.model}</Text>
-                          <Text size="xs" c="dimmed">
-                            {new Date(record.createdAt).toLocaleDateString("tr-TR")}
-                          </Text>
-                        </Group>
-                      </Stack>
-                    </Card>
-                  ))}
-                </Stack>
-
-                <Table.ScrollContainer minWidth={500} visibleFrom="sm">
-                  <Table>
-                    <Table.Thead>
-                      <Table.Tr>
-                        <Table.Th>{t("serviceRecords.trackingNo")}</Table.Th>
-                        <Table.Th>{t("serviceRecords.customer")}</Table.Th>
-                        <Table.Th>{t("devices.brandModel")}</Table.Th>
-                        <Table.Th>{t("serviceRecords.status")}</Table.Th>
-                        <Table.Th>{t("serviceRecords.date")}</Table.Th>
-                      </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                      {data?.recentRecords?.map((record) => (
-                        <Table.Tr key={record.id}>
-                          <Table.Td>
-                            <Anchor component={Link} href={`/service-records/${record.id}`} size="sm" prefetch={false}>
-                              #{record.trackingNo}
-                            </Anchor>
-                          </Table.Td>
-                          <Table.Td>
-                            <Anchor component={Link} href={`/customers/${record.customer.id}`} size="sm" prefetch={false}>
-                              {record.customer.name} {record.customer.surname}
-                            </Anchor>
-                          </Table.Td>
-                          <Table.Td>
-                            <Text size="sm">{record.device.brand} {record.device.model}</Text>
-                          </Table.Td>
-                          <Table.Td>
-                            <Badge color={statusColor[record.status] ?? "gray"} size="sm">
-                              {t(`serviceRecords.status_change.${record.status}`)}
-                            </Badge>
-                          </Table.Td>
-                          <Table.Td>
-                            <Text size="sm">
-                              {new Date(record.createdAt).toLocaleDateString("tr-TR")}
-                            </Text>
-                          </Table.Td>
-                        </Table.Tr>
-                      ))}
-                    </Table.Tbody>
-                  </Table>
-                </Table.ScrollContainer>
-                </>
-              )}
+              <Group justify="space-between"><Title order={4}>{t("dashboard.activeJobs")}</Title><Button component={Link} href="/service-records" variant="subtle" size="xs">{t("dashboard.allJobs")}</Button></Group>
+              {renderServiceList(data?.recentRecords ?? [], "dashboard.noActiveJobs")}
             </Stack>
           </Card>
         </>

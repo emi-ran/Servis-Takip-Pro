@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
+import type { Prisma, ServiceStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth";
+
+const closedStatuses: ServiceStatus[] = ["TESLIM_EDILDI", "IPTAL_EDILDI", "MUSTERI_REDDETTI"];
 
 export async function GET() {
   const session = await verifySession();
@@ -13,7 +16,35 @@ export async function GET() {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const [dailyCollectionResult, debtResult, collectionResult, pendingCount, readyCount, todayTaskCount, recentRecords] =
+  const activeServiceWhere: Prisma.ServiceRecordWhereInput = {
+    companyId: session.companyId,
+    status: { notIn: closedStatuses },
+  };
+
+  const serviceSelect: Prisma.ServiceRecordSelect = {
+    id: true,
+    trackingNo: true,
+    status: true,
+    priority: true,
+    faultDescription: true,
+    createdAt: true,
+    customer: { select: { id: true, name: true, surname: true, phone: true } },
+    device: { select: { brand: true, model: true } },
+  };
+
+  const [
+    dailyCollectionResult,
+    debtResult,
+    collectionResult,
+    pendingCount,
+    readyCount,
+    todayTaskCount,
+    todayTasks,
+    urgentRecords,
+    readyRecords,
+    paymentWaitingRecords,
+    recentRecords,
+  ] =
     await Promise.all([
       prisma.payment.aggregate({
         where: {
@@ -32,10 +63,7 @@ export async function GET() {
         _sum: { amount: true },
       }),
       prisma.serviceRecord.count({
-        where: {
-          companyId: session.companyId,
-          status: { notIn: ["TESLIM_EDILDI", "IPTAL_EDILDI", "MUSTERI_REDDETTI"] },
-        },
+        where: activeServiceWhere,
       }),
       prisma.serviceRecord.count({
         where: {
@@ -49,18 +77,46 @@ export async function GET() {
           date: { gte: today, lt: tomorrow },
         },
       }),
-      prisma.serviceRecord.findMany({
-        where: { companyId: session.companyId },
-        orderBy: { createdAt: "desc" },
-        take: 10,
+      prisma.scheduledTask.findMany({
+        where: {
+          companyId: session.companyId,
+          date: { gte: today, lt: tomorrow },
+        },
+        orderBy: { date: "asc" },
+        take: 8,
         select: {
           id: true,
-          trackingNo: true,
+          title: true,
+          taskType: true,
           status: true,
-          createdAt: true,
-          customer: { select: { id: true, name: true, surname: true } },
-          device: { select: { brand: true, model: true } },
+          date: true,
+          customer: { select: { id: true, name: true, surname: true, phone: true } },
+          assignedUser: { select: { id: true, name: true, surname: true } },
         },
+      }),
+      prisma.serviceRecord.findMany({
+        where: { ...activeServiceWhere, priority: "ACIL" },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+        select: serviceSelect,
+      }),
+      prisma.serviceRecord.findMany({
+        where: { companyId: session.companyId, status: "HAZIR" },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+        select: serviceSelect,
+      }),
+      prisma.serviceRecord.findMany({
+        where: { companyId: session.companyId, status: "ODEME_BEKLIYOR" },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+        select: serviceSelect,
+      }),
+      prisma.serviceRecord.findMany({
+        where: activeServiceWhere,
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: serviceSelect,
       }),
     ]);
 
@@ -73,6 +129,10 @@ export async function GET() {
     pendingServices: pendingCount,
     readyDevices: readyCount,
     todayTasks: todayTaskCount,
+    todayTaskList: todayTasks,
+    urgentRecords,
+    readyRecords,
+    paymentWaitingRecords,
     recentRecords,
   });
 }

@@ -47,6 +47,7 @@ import {
 import { apiClient } from "@/lib/api";
 import { useAuth } from "@/components/providers/auth-provider";
 import { formatPhone } from "@/lib/phone";
+import styles from "./page.module.css";
 
 type ServiceRecord = {
   id: string;
@@ -145,6 +146,7 @@ export default function ServiceRecordDetailPage() {
   const [paymentEditOpened, paymentEditHandlers] = useDisclosure(false);
   const [paymentDeleteOpened, paymentDeleteHandlers] = useDisclosure(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [manualStatus, setManualStatus] = useState<string | null>(null);
 
   const paymentForm = useForm({
     mode: "uncontrolled" as const,
@@ -251,6 +253,7 @@ export default function ServiceRecordDetailPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["service-record", params.id] });
       notifications.show({ title: ct("success"), message: t("statusUpdated"), color: "green" });
+      setManualStatus(null);
     },
     onError: (err: Error) => {
       notifications.show({ title: ct("errorTitle"), message: err.message, color: "red" });
@@ -377,7 +380,59 @@ export default function ServiceRecordDetailPage() {
     "TESLIM_EDILDI",
     "IPTAL_EDILDI",
   ];
-  const transitions = record ? allStatuses.filter((s) => s !== record.status) : [];
+  const transitions = record ? validTransitions[record.status] ?? [] : [];
+  const manualStatusOptions = record
+    ? allStatuses
+      .filter((status) => status !== record.status)
+      .map((status) => ({ value: status, label: t(`status_change.${status}`) }))
+    : [];
+  const totalDebt = record?.payments
+    .filter((p) => p.type === "BORC")
+    .reduce((sum, p) => sum + Number(p.amount), 0) ?? 0;
+  const totalCollection = record?.payments
+    .filter((p) => p.type === "TAHSILAT")
+    .reduce((sum, p) => sum + Number(p.amount), 0) ?? 0;
+  const balance = totalDebt - totalCollection;
+  const balanceLabel = balance > 0 ? "receivable" : balance < 0 ? "payable" : "settled";
+  const balanceColor = balance > 0 ? "red" : balance < 0 ? "orange" : "green";
+
+  function formatMoney(value: number) {
+    return value.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+  }
+
+  function openEditModal() {
+    if (!record) {
+      return;
+    }
+
+    editForm.setValues({
+      faultDescription: record.faultDescription,
+      priority: record.priority,
+      assignedUserId: record.assignedUser?.id || "",
+      serviceMode: record.serviceMode || "SERVISTE",
+      pricing: record.pricing?.toString() || "",
+    });
+    editHandlers.open();
+  }
+
+  function openDebtModal() {
+    if (!record) {
+      return;
+    }
+
+    setPaymentType("BORC");
+    paymentForm.reset();
+    const defaultAmount = record.pricing ? Math.max(0, Number(record.pricing) - totalDebt) : 0;
+    paymentForm.setFieldValue("amount", defaultAmount);
+    openPayment();
+  }
+
+  function openCollectionModal() {
+    setPaymentType("TAHSILAT");
+    paymentForm.reset();
+    paymentForm.setFieldValue("amount", Math.max(0, totalDebt - totalCollection));
+    openPayment();
+  }
 
   if (isLoading) {
     return (
@@ -406,7 +461,7 @@ export default function ServiceRecordDetailPage() {
     <>
       <Stack gap="lg">
         <Group justify="space-between" align="flex-start" wrap="wrap">
-          <Group align="flex-start" wrap="wrap">
+          <Stack gap={4}>
             <Button
               variant="subtle"
               component={Link}
@@ -415,195 +470,182 @@ export default function ServiceRecordDetailPage() {
             >
               {t("backToList")}
             </Button>
-            <Title order={2} fw={800} style={{ letterSpacing: "-0.5px" }}>
-              {t("detail")} — #{record.trackingNo}
+            <Title order={2} fw={800} className={styles.summaryTitle}>
+              #{record.trackingNo} · {record.device.brand} {record.device.model}
             </Title>
-          </Group>
-          <Group gap="xs" grow hiddenFrom="xs" w="100%">
-            <Button
-              variant="light"
-              leftSection={<IconEdit size={16} />}
-              onClick={() => {
-                editForm.setValues({
-                  faultDescription: record.faultDescription,
-                  priority: record.priority,
-                  assignedUserId: record.assignedUser?.id || "",
-                  serviceMode: record.serviceMode || "SERVISTE",
-                  pricing: record.pricing?.toString() || "",
-                });
-                editHandlers.open();
-              }}
-            >
+            <Group gap="xs">
+              <Badge size="lg" variant="filled" color={statusColors[record.status] || "gray"}>
+                {t(`status_change.${record.status}`)}
+              </Badge>
+              <Badge size="lg" variant="outline" color={priorityColors[record.priority] || "gray"}>
+                {t(`priority_label.${record.priority}`)}
+              </Badge>
+              <Badge size="lg" variant="light" color="indigo">
+                {t(`serviceMode_label.${record.serviceMode || "SERVISTE"}`)}
+              </Badge>
+            </Group>
+          </Stack>
+          <Group gap="xs">
+            <Button variant="light" leftSection={<IconEdit size={16} />} onClick={openEditModal}>
               {ct("edit")}
             </Button>
-            <Button
-              variant="light"
-              color="red"
-              leftSection={<IconTrash size={16} />}
-              onClick={deleteHandlers.open}
-            >
-              {ct("delete")}
-            </Button>
-          </Group>
-          <Group gap="xs" visibleFrom="xs">
-            <Button
-              variant="light"
-              leftSection={<IconEdit size={16} />}
-              onClick={() => {
-                editForm.setValues({
-                  faultDescription: record.faultDescription,
-                  priority: record.priority,
-                  assignedUserId: record.assignedUser?.id || "",
-                  serviceMode: record.serviceMode || "SERVISTE",
-                  pricing: record.pricing?.toString() || "",
-                });
-                editHandlers.open();
-              }}
-            >
-              {ct("edit")}
-            </Button>
-            <Button
-              variant="light"
-              color="red"
-              leftSection={<IconTrash size={16} />}
-              onClick={deleteHandlers.open}
-            >
+            <Button variant="light" color="red" leftSection={<IconTrash size={16} />} onClick={deleteHandlers.open}>
               {ct("delete")}
             </Button>
           </Group>
         </Group>
 
-        <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
+        <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
           <Card withBorder shadow="sm" radius="md" p="lg">
             <Stack gap="sm">
-              <Group gap="xs">
-                <Badge size="lg" variant="light" color={statusColors[record.status] || "gray"}>
-                  {t(`status_change.${record.status}`)}
-                </Badge>
-                <Badge size="lg" variant="outline" color={priorityColors[record.priority] || "gray"}>
-                  {t(`priority_label.${record.priority}`)}
-                </Badge>
-              </Group>
-              <Divider />
+              <Text fw={700}>{t("summary")}</Text>
               <Text size="sm" c="dimmed">{t("faultDescription")}</Text>
-              <Text size="sm">{record.faultDescription}</Text>
-              {record.assignedUser && (
-                <>
-                  <Divider />
-                  <Text size="sm" c="dimmed">{t("assignedUser")}</Text>
-                  <Group gap="xs">
-                    <IconUser size={14} stroke={1.5} />
-                    <Text size="sm">{record.assignedUser.name} {record.assignedUser.surname}</Text>
-                  </Group>
-                </>
-              )}
-              <Divider />
-              <Text size="sm" c="dimmed">{t("serviceMode")}</Text>
-              <Badge size="sm" variant="light" color="indigo">
-                {t(`serviceMode_label.${record.serviceMode || "SERVISTE"}`)}
-              </Badge>
-              {record.pricing != null && (
-                <>
-                  <Divider />
-                  <Text size="sm" c="dimmed">{t("pricing")}</Text>
-                  <Text size="sm" fw={600}>{record.pricing.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</Text>
-                </>
-              )}
-              <Divider />
-              <Text size="sm" c="dimmed">{t("trackingNo")}</Text>
-              <Text size="sm">#{record.trackingNo}</Text>
-              <Text size="xs" c="dimmed">
-                {new Date(record.createdAt).toLocaleDateString("tr-TR", {
-                  day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
-                })}
-              </Text>
+              <Text>{record.faultDescription}</Text>
+              <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="sm">
+                <Card withBorder radius="md" p="sm">
+                  <Text size="xs" c="dimmed">{t("assignedUser")}</Text>
+                  <Text size="sm" fw={700}>
+                    {record.assignedUser ? `${record.assignedUser.name} ${record.assignedUser.surname}` : "—"}
+                  </Text>
+                </Card>
+                <Card withBorder radius="md" p="sm">
+                  <Text size="xs" c="dimmed">{t("pricing")}</Text>
+                  <Text size="sm" fw={700}>{record.pricing != null ? formatMoney(Number(record.pricing)) : "—"}</Text>
+                </Card>
+                <Card withBorder radius="md" p="sm">
+                  <Text size="xs" c="dimmed">{t("createdAt")}</Text>
+                  <Text size="sm" fw={700}>
+                    {new Date(record.createdAt).toLocaleDateString("tr-TR", {
+                      day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
+                    })}
+                  </Text>
+                </Card>
+              </SimpleGrid>
             </Stack>
           </Card>
 
-          <Card
-            withBorder
-            shadow="sm"
-            radius="md"
-            p="lg"
-            component={Link}
-            href={`/customers/${record.customer.id}`}
-            style={{ cursor: "pointer", textDecoration: "none" }}
-          >
+          <Card withBorder shadow="sm" radius="md" p="lg">
+            <Stack gap="sm">
+              <Group gap="xs">
+                <ThemeIcon variant="light" color="orange" size="sm" radius="xl">
+                  <IconCheck size={14} />
+                </ThemeIcon>
+                <Text fw={700}>{t("actions")}</Text>
+              </Group>
+              <Button fullWidth variant="light" leftSection={<IconCurrencyDollar size={14} />} onClick={openCollectionModal}>
+                {pt("newCollection")}
+              </Button>
+              <Button fullWidth variant="light" color="red" leftSection={<IconPlus size={14} />} onClick={openDebtModal}>
+                {pt("newDebt")}
+              </Button>
+              {transitions.length === 0 ? (
+                <Text size="sm" c="dimmed">{t("noNextStatus")}</Text>
+              ) : (
+                <Stack gap="xs">
+                  <Text size="xs" c="dimmed">{t("changeStatus")}</Text>
+                  {transitions.map((targetStatus) => (
+                    <Button
+                      key={targetStatus}
+                      fullWidth
+                      variant="light"
+                      color={statusColors[targetStatus] || "gray"}
+                      size="sm"
+                      loading={statusMutation.isPending}
+                      onClick={() => statusMutation.mutate(targetStatus)}
+                      leftSection={<IconCheck size={14} />}
+                    >
+                      {t(`status_change.${targetStatus}`)}
+                    </Button>
+                  ))}
+                </Stack>
+              )}
+              <Divider />
+              <Stack gap="xs">
+                <Text size="xs" c="dimmed">{t("manualStatus")}</Text>
+                <Select
+                  data={manualStatusOptions}
+                  value={manualStatus}
+                  onChange={setManualStatus}
+                  placeholder={t("manualStatusPlaceholder")}
+                  searchable
+                  clearable
+                />
+                <Button
+                  fullWidth
+                  variant="default"
+                  disabled={!manualStatus}
+                  loading={statusMutation.isPending}
+                  onClick={() => {
+                    if (manualStatus) {
+                      statusMutation.mutate(manualStatus);
+                    }
+                  }}
+                >
+                  {t("applyStatus")}
+                </Button>
+              </Stack>
+            </Stack>
+          </Card>
+        </SimpleGrid>
+
+        <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
+          <Card withBorder shadow="sm" radius="md" p="lg" component={Link} href={`/customers/${record.customer.id}`} className={styles.linkCard}>
             <Stack gap="sm">
               <Group gap="xs">
                 <ThemeIcon variant="light" color="blue" size="sm" radius="xl">
                   <IconUser size={14} />
                 </ThemeIcon>
-                <Text fw={600}>{t("customer")}</Text>
+                <Text fw={700}>{t("customer")}</Text>
               </Group>
               <Text size="lg" fw={700}>
                 {record.customer.name} {record.customer.surname}
               </Text>
               <Text size="sm" c="dimmed">{formatPhone(record.customer.phone)}</Text>
               {record.customer.email && <Text size="sm" c="dimmed">{record.customer.email}</Text>}
-              {record.customer.address && (
-                <Text size="sm" c="dimmed" lineClamp={2}>{record.customer.address}</Text>
-              )}
+              {record.customer.address && <Text size="sm" c="dimmed" lineClamp={2}>{record.customer.address}</Text>}
             </Stack>
           </Card>
 
-          <Card
-            withBorder
-            shadow="sm"
-            radius="md"
-            p="lg"
-            component={Link}
-            href={`/devices/${record.device.id}`}
-            style={{ cursor: "pointer", textDecoration: "none" }}
-          >
+          <Card withBorder shadow="sm" radius="md" p="lg" component={Link} href={`/devices/${record.device.id}`} className={styles.linkCard}>
             <Stack gap="sm">
               <Group gap="xs">
                 <ThemeIcon variant="light" color="teal" size="sm" radius="xl">
                   <IconDeviceLaptop size={14} />
                 </ThemeIcon>
-                <Text fw={600}>{t("device")}</Text>
+                <Text fw={700}>{t("device")}</Text>
               </Group>
-              <Text size="lg" fw={700}>
-                {record.device.brand} {record.device.model}
-              </Text>
-              <Badge size="sm" variant="light" color="gray">
-                {record.device.category}
-              </Badge>
+              <Text size="lg" fw={700}>{record.device.brand} {record.device.model}</Text>
+              <Badge size="sm" variant="light" color="gray">{record.device.category}</Badge>
               {record.device.serialNo && (
                 <Text size="sm" c="dimmed">{record.device.serialNo}</Text>
               )}
             </Stack>
           </Card>
-        </SimpleGrid>
 
-        {transitions.length > 0 && (
           <Card withBorder shadow="sm" radius="md" p="lg">
-            <Stack gap="md">
+            <Stack gap="sm">
               <Group gap="xs">
-                <IconHistory size={20} stroke={1.5} />
-                <Text fw={600}>{t("changeStatus")}</Text>
+                <ThemeIcon variant="light" color={balanceColor} size="sm" radius="xl">
+                  <IconCurrencyDollar size={14} />
+                </ThemeIcon>
+                <Text fw={700}>{t("financialSummary")}</Text>
               </Group>
-              <Group gap="sm">
-                <Badge size="lg" variant="filled" color={statusColors[record.status] || "gray"}>
-                  {t(`status_change.${record.status}`)}
-                </Badge>
-                {transitions.map((targetStatus) => (
-                  <Button
-                    key={targetStatus}
-                    variant="light"
-                    color={statusColors[targetStatus] || "gray"}
-                    size="sm"
-                    loading={statusMutation.isPending}
-                    onClick={() => statusMutation.mutate(targetStatus)}
-                    leftSection={<IconCheck size={14} />}
-                  >
-                    {t(`status_change.${targetStatus}`)}
-                  </Button>
-                ))}
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">{pt("totalDebt")}</Text>
+                <Text size="sm" fw={700}>{formatMoney(totalDebt)}</Text>
+              </Group>
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">{pt("totalCollection")}</Text>
+                <Text size="sm" fw={700}>{formatMoney(totalCollection)}</Text>
+              </Group>
+              <Divider />
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">{pt(balanceLabel)}</Text>
+                <Text size="lg" fw={800} c={balanceColor}>{formatMoney(Math.abs(balance))}</Text>
               </Group>
             </Stack>
           </Card>
-        )}
+        </SimpleGrid>
 
         <Card withBorder shadow="sm" radius="md" p="lg">
           <Stack gap="md">
@@ -616,76 +658,6 @@ export default function ServiceRecordDetailPage() {
                     {record.payments.length}
                   </Badge>
                 )}
-              </Group>
-              <Group gap="xs" grow hiddenFrom="xs" w="100%">
-                <Button
-                  size="xs"
-                  variant="light"
-                  color="red"
-                  leftSection={<IconPlus size={14} />}
-                  onClick={() => {
-                    setPaymentType("BORC");
-                    paymentForm.reset();
-                    const existingDebts = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
-                    const defaultAmount = record.pricing ? Math.max(0, Number(record.pricing) - existingDebts) : 0;
-                    paymentForm.setFieldValue("amount", defaultAmount);
-                    openPayment();
-                  }}
-                >
-                  {pt("newDebt")}
-                </Button>
-                <Button
-                  size="xs"
-                  variant="light"
-                  color="green"
-                  leftSection={<IconCurrencyDollar size={14} />}
-                  onClick={() => {
-                    setPaymentType("TAHSILAT");
-                    paymentForm.reset();
-                    const totalDebt = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
-                    const totalCollection = record.payments.filter((p) => p.type === "TAHSILAT").reduce((sum, p) => sum + Number(p.amount), 0);
-                    const defaultAmount = Math.max(0, totalDebt - totalCollection);
-                    paymentForm.setFieldValue("amount", defaultAmount);
-                    openPayment();
-                  }}
-                >
-                  {pt("newCollection")}
-                </Button>
-              </Group>
-              <Group gap="xs" visibleFrom="xs">
-                <Button
-                  size="xs"
-                  variant="light"
-                  color="red"
-                  leftSection={<IconPlus size={14} />}
-                  onClick={() => {
-                    setPaymentType("BORC");
-                    paymentForm.reset();
-                    const existingDebts = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
-                    const defaultAmount = record.pricing ? Math.max(0, Number(record.pricing) - existingDebts) : 0;
-                    paymentForm.setFieldValue("amount", defaultAmount);
-                    openPayment();
-                  }}
-                >
-                  {pt("newDebt")}
-                </Button>
-                <Button
-                  size="xs"
-                  variant="light"
-                  color="green"
-                  leftSection={<IconCurrencyDollar size={14} />}
-                  onClick={() => {
-                    setPaymentType("TAHSILAT");
-                    paymentForm.reset();
-                    const totalDebt = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
-                    const totalCollection = record.payments.filter((p) => p.type === "TAHSILAT").reduce((sum, p) => sum + Number(p.amount), 0);
-                    const defaultAmount = Math.max(0, totalDebt - totalCollection);
-                    paymentForm.setFieldValue("amount", defaultAmount);
-                    openPayment();
-                  }}
-                >
-                  {pt("newCollection")}
-                </Button>
               </Group>
             </Group>
 
@@ -947,7 +919,7 @@ export default function ServiceRecordDetailPage() {
                 {record.notes.map((note) => (
                   <Card key={note.id} withBorder p="sm" radius="md">
                     <Group justify="space-between" align="flex-start" wrap="nowrap">
-                      <Text size="sm" style={{ flexGrow: 1, whiteSpace: "pre-line" }}>{note.content}</Text>
+                      <Text size="sm" className={styles.noteContent}>{note.content}</Text>
                       {(currentUser?.role === "ADMIN" || currentUser?.id === note.author.id) && (
                         <Group gap={4} wrap="nowrap">
                           <ActionIcon
@@ -1021,7 +993,7 @@ export default function ServiceRecordDetailPage() {
         <form
           autoComplete="nope"
           onSubmit={editForm.onSubmit((values) => updateMutation.mutate(values))}
-          style={{ paddingTop: "8px" }}
+          className={styles.modalForm}
         >
           <Stack gap="md">
             <Textarea

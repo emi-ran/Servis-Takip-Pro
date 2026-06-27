@@ -1,0 +1,18 @@
+.summaryTitle {
+  letter-spacing: -0.5px;
+}
+
+.linkCard {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.noteContent {
+  flex-grow: 1;
+  white-space: pre-line;
+}
+
+.modalForm {
+  padding-top: 8px;
+}
