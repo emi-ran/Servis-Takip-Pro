@@ -190,7 +190,41 @@ export default function DeviceDetailPage() {
           {serviceRecords.length === 0 ? (
             <Text px="lg" pb="md" size="sm" c="dimmed">{t("noRecords")}</Text>
           ) : (
-            <Table.ScrollContainer minWidth={600}>
+            <>
+            <Stack gap="xs" px="md" pb="md" hiddenFrom="sm">
+              {serviceRecords.map((record) => (
+                <Card key={record.id} withBorder radius="md" p="sm">
+                  <Stack gap="xs">
+                    <Group justify="space-between" align="flex-start">
+                      <Anchor
+                        component={Link}
+                        href={`/service-records/${record.id}`}
+                        prefetch={false}
+                        size="sm"
+                        fw={700}
+                      >
+                        {record.trackingNo}
+                      </Anchor>
+                      <Badge size="sm" variant="light" color={statusColors[record.status] || "gray"}>
+                        {sr(`status_change.${record.status}`)}
+                      </Badge>
+                    </Group>
+                    <Group gap="xs">
+                      <Badge size="sm" variant="outline" color={priorityColors[record.priority] || "gray"}>
+                        {sr(`priority_label.${record.priority}`)}
+                      </Badge>
+                      <Text size="xs" c="dimmed">
+                        {new Date(record.createdAt).toLocaleDateString("tr-TR")}
+                      </Text>
+                    </Group>
+                    <Text size="sm" lineClamp={3}>
+                      {record.faultDescription || "—"}
+                    </Text>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+            <Table.ScrollContainer minWidth={600} visibleFrom="sm">
               <Table striped>
                 <Table.Thead>
                   <Table.Tr>
@@ -234,6 +268,7 @@ export default function DeviceDetailPage() {
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            </>
           )}
         </Stack>
       </Card>

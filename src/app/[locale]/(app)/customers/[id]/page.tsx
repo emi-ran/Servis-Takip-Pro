@@ -314,60 +314,84 @@ export default function CustomerDetailPage() {
         </Title>
       </Group>
 
-      <SimpleGrid cols={{ base: 1, sm: 2 }}>
-        <Card withBorder radius="md" p="lg">
-          <Stack gap="md">
-            <Group>
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+        <Card withBorder radius="md" p={{ base: "md", sm: "lg" }}>
+          <Stack gap="sm">
+            <Group gap="sm" wrap="nowrap">
               <IconUser size={20} stroke={1.5} opacity={0.5} />
-              <Text fw={600}>{customer.name} {customer.surname}</Text>
+              <Text fw={700} lineClamp={1}>{customer.name} {customer.surname}</Text>
             </Group>
-            <SimpleGrid cols={{ base: 1, sm: 2 }}>
-              <Group gap="xs">
+            <Stack gap="xs">
+              <Group gap="xs" wrap="nowrap">
                 <IconPhone size={16} stroke={1.5} opacity={0.5} />
-                <Anchor component="a" href={`tel:${customer.phone}`} size="sm">
+                <Anchor component="a" href={`tel:${customer.phone}`} size="sm" lineClamp={1}>
                   {formatPhone(customer.phone)}
                 </Anchor>
               </Group>
               {customer.email && (
-                <Group gap="xs">
+                <Group gap="xs" wrap="nowrap">
                   <IconMail size={16} stroke={1.5} opacity={0.5} />
-                  <Anchor component="a" href={`mailto:${customer.email}`} size="sm">
+                  <Anchor component="a" href={`mailto:${customer.email}`} size="sm" lineClamp={1}>
                     {customer.email}
                   </Anchor>
                 </Group>
               )}
               {customer.nickname && (
-                <Group gap="xs" style={{ gridColumn: "span 2" }}>
+                <Group gap="xs" wrap="nowrap">
                   <IconUser size={16} stroke={1.5} opacity={0.5} />
                   <Text size="sm" c="dimmed" fs="italic">&ldquo;{customer.nickname}&rdquo;</Text>
                 </Group>
               )}
               {customer.address && (
-                <Group gap="xs" style={{ gridColumn: "span 2" }} wrap="nowrap">
-                  <IconMapPin size={16} stroke={1.5} opacity={0.5} style={{ flexShrink: 0 }} />
+                <Group gap="xs" wrap="nowrap" align="flex-start">
+                  <IconMapPin size={16} stroke={1.5} opacity={0.5} />
                   <Anchor
                     component="a"
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(customer.address)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     size="sm"
-                    style={{ flex: 1, textDecoration: "none" }}
+                    lineClamp={2}
                   >
                     {customer.address}
                   </Anchor>
                 </Group>
               )}
-            </SimpleGrid>
+            </Stack>
           </Stack>
         </Card>
 
-        <Card withBorder radius="md" p="lg">
+        <Card withBorder radius="md" p={{ base: "md", sm: "lg" }}>
           <Stack gap="md">
-            <Group>
+            <Group gap="sm" wrap="nowrap">
               <IconCurrencyDollar size={20} stroke={1.5} opacity={0.5} />
               <Text fw={600}>{pt("customerBalance")}</Text>
             </Group>
-            <SimpleGrid cols={{ base: 1, sm: 3 }}>
+            <Stack gap="xs" hiddenFrom="sm">
+              <Group justify="space-between" wrap="nowrap">
+                <Text size="sm" c="dimmed">{pt("debtAmount")}</Text>
+                <Text fw={800} size="lg" c="red">
+                  {totalDebt.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                </Text>
+              </Group>
+              <Group justify="space-between" wrap="nowrap">
+                <Text size="sm" c="dimmed">{pt("collectionAmount")}</Text>
+                <Text fw={800} size="lg" c="green">
+                  {totalCollection.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                </Text>
+              </Group>
+              <Group justify="space-between" wrap="nowrap">
+                <Text size="sm" c="dimmed">{pt("balance")}</Text>
+                <Text
+                  fw={900}
+                  size="lg"
+                  c={balance > 0 ? "red" : balance < 0 ? "green" : undefined}
+                >
+                  {balance.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                </Text>
+              </Group>
+            </Stack>
+            <SimpleGrid cols={3} visibleFrom="sm">
               <Stack gap={0} align="center">
                 <Text size="xs" c="dimmed">{pt("debtAmount")}</Text>
                 <Text fw={700} size="lg" c="red">
@@ -391,7 +415,27 @@ export default function CustomerDetailPage() {
                 </Text>
               </Stack>
             </SimpleGrid>
-            <Group justify="center" gap="sm">
+            <Group gap="sm" grow hiddenFrom="sm">
+              <Button
+                size="sm"
+                variant="light"
+                color="red"
+                leftSection={<IconPlus size={14} />}
+                onClick={() => openPaymentModal("BORC")}
+              >
+                {pt("newDebt")}
+              </Button>
+              <Button
+                size="sm"
+                variant="light"
+                color="green"
+                leftSection={<IconCurrencyDollar size={14} />}
+                onClick={() => openPaymentModal("TAHSILAT")}
+              >
+                {pt("newCollection")}
+              </Button>
+            </Group>
+            <Group justify="center" gap="sm" visibleFrom="sm">
               <Button
                 size="sm"
                 variant="light"
@@ -427,7 +471,28 @@ export default function CustomerDetailPage() {
           {devices.length === 0 ? (
             <Text px="lg" pb="md" size="sm" c="dimmed">{dt("noDevices")}</Text>
           ) : (
-            <Table.ScrollContainer minWidth={500}>
+            <>
+            <Stack gap="xs" px="md" pb="md" hiddenFrom="sm">
+              {devices.map((device) => (
+                <Card key={device.id} withBorder radius="md" p="sm">
+                  <Stack gap="xs">
+                    <Group justify="space-between" align="flex-start">
+                      <Anchor component={Link} href={`/devices/${device.id}`} prefetch={false} size="sm" fw={700}>
+                        {device.brand} {device.model}
+                      </Anchor>
+                      <Badge size="sm" variant="light" color="gray">{device.category}</Badge>
+                    </Group>
+                    <Group justify="space-between" gap="sm" wrap="nowrap">
+                      <Text size="xs" c="dimmed">{dt("serialNo")}</Text>
+                      <Text size="sm" fw={600} ta="right" lineClamp={1}>
+                        {device.serialNo || "—"}
+                      </Text>
+                    </Group>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+            <Table.ScrollContainer minWidth={500} visibleFrom="sm">
               <Table striped>
                 <Table.Thead>
                   <Table.Tr>
@@ -455,6 +520,7 @@ export default function CustomerDetailPage() {
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            </>
           )}
         </Stack>
       </Card>
@@ -471,7 +537,33 @@ export default function CustomerDetailPage() {
           {serviceRecords.length === 0 ? (
             <Text px="lg" pb="md" size="sm" c="dimmed">{sr("noRecords")}</Text>
           ) : (
-            <Table.ScrollContainer minWidth={600}>
+            <>
+            <Stack gap="xs" px="md" pb="md" hiddenFrom="sm">
+              {serviceRecords.map((record) => (
+                <Card key={record.id} withBorder radius="md" p="sm">
+                  <Stack gap="xs">
+                    <Group justify="space-between" align="flex-start">
+                      <Anchor component={Link} href={`/service-records/${record.id}`} prefetch={false} size="sm" fw={700}>
+                        {record.trackingNo}
+                      </Anchor>
+                      <Badge size="sm" variant="light" color={statusColors[record.status] || "gray"}>
+                        {sr(`status_change.${record.status}`)}
+                      </Badge>
+                    </Group>
+                    <Group gap="xs">
+                      <Badge size="sm" variant="outline" color={priorityColors[record.priority] || "gray"}>
+                        {sr(`priority_label.${record.priority}`)}
+                      </Badge>
+                      <Text size="xs" c="dimmed" lineClamp={1}>
+                        {record.device ? `${record.device.brand} ${record.device.model}` : "—"}
+                      </Text>
+                    </Group>
+                    <Text size="sm" lineClamp={3}>{record.faultDescription || "—"}</Text>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+            <Table.ScrollContainer minWidth={600} visibleFrom="sm">
               <Table striped>
                 <Table.Thead>
                   <Table.Tr>
@@ -515,6 +607,7 @@ export default function CustomerDetailPage() {
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            </>
           )}
         </Stack>
       </Card>
@@ -531,7 +624,66 @@ export default function CustomerDetailPage() {
           {payments.length === 0 ? (
             <Text px="lg" pb="md" size="sm" c="dimmed">{pt("noPayments")}</Text>
           ) : (
-            <Table.ScrollContainer minWidth={600}>
+            <>
+            <Stack gap="xs" px="md" pb="md" hiddenFrom="sm">
+              {payments.map((payment) => (
+                <Card key={payment.id} withBorder radius="md" p="sm">
+                  <Stack gap="xs">
+                    <Group justify="space-between" align="flex-start">
+                      <Badge size="sm" variant="light" color={typeColors[payment.type] || "gray"}>
+                        {pt(`type_label.${payment.type}`)}
+                      </Badge>
+                      <Text fw={700} size="sm">
+                        {payment.amount.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" gap="xs">
+                      <Badge size="sm" variant="outline" color="gray">
+                        {pt(methodLabels[payment.paymentMethod] || "method_label.DIGER")}
+                      </Badge>
+                      <Text size="xs" c="dimmed">
+                        {new Date(payment.date).toLocaleDateString("tr-TR")}
+                      </Text>
+                    </Group>
+                    <Text size="sm" lineClamp={2}>{payment.description || "—"}</Text>
+                    <Group gap={4} justify="flex-end" wrap="nowrap">
+                      <ActionIcon
+                        size="sm"
+                        variant="subtle"
+                        color="gray"
+                        aria-label={ct("edit")}
+                        onClick={() => {
+                          setSelectedPayment(payment);
+                          paymentEditForm.setValues({
+                            amount: Number(payment.amount),
+                            paymentMethod: payment.paymentMethod,
+                            date: new Date(payment.date),
+                            description: payment.description || "",
+                            serviceRecordId: payment.serviceRecordId || "",
+                          });
+                          paymentEditHandlers.open();
+                        }}
+                      >
+                        <IconEdit size={14} />
+                      </ActionIcon>
+                      <ActionIcon
+                        size="sm"
+                        variant="subtle"
+                        color="red"
+                        aria-label={ct("delete")}
+                        onClick={() => {
+                          setSelectedPayment(payment);
+                          paymentDeleteHandlers.open();
+                        }}
+                      >
+                        <IconTrash size={14} />
+                      </ActionIcon>
+                    </Group>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+            <Table.ScrollContainer minWidth={600} visibleFrom="sm">
               <Table striped>
                 <Table.Thead>
                   <Table.Tr>
@@ -577,6 +729,7 @@ export default function CustomerDetailPage() {
                             size="sm"
                             variant="subtle"
                             color="gray"
+                            aria-label={ct("edit")}
                             onClick={() => {
                               setSelectedPayment(payment);
                               paymentEditForm.setValues({
@@ -595,6 +748,7 @@ export default function CustomerDetailPage() {
                             size="sm"
                             variant="subtle"
                             color="red"
+                            aria-label={ct("delete")}
                             onClick={() => {
                               setSelectedPayment(payment);
                               paymentDeleteHandlers.open();
@@ -609,6 +763,7 @@ export default function CustomerDetailPage() {
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            </>
           )}
         </Stack>
       </Card>
@@ -625,7 +780,37 @@ export default function CustomerDetailPage() {
           {scheduledTasks.length === 0 ? (
             <Text px="lg" pb="md" size="sm" c="dimmed">{st("noTasks")}</Text>
           ) : (
-            <Table.ScrollContainer minWidth={700}>
+            <>
+            <Stack gap="xs" px="md" pb="md" hiddenFrom="sm">
+              {scheduledTasks.map((task) => (
+                <Card key={task.id} withBorder radius="md" p="sm">
+                  <Stack gap="xs">
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="sm" fw={700} lineClamp={2}>{task.title}</Text>
+                      <Badge size="sm" variant="light" color={taskStatusColors[task.status] || "gray"}>
+                        {st(`status_label.${task.status}`)}
+                      </Badge>
+                    </Group>
+                    <Group gap="xs">
+                      <Badge size="sm" variant="light" color={taskTypeColors[task.taskType] || "gray"}>
+                        {st(`type_label.${task.taskType}`)}
+                      </Badge>
+                      <Text size="xs" c="dimmed">
+                        {new Date(task.date).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" })}
+                      </Text>
+                    </Group>
+                    {task.description && <Text size="sm" c="dimmed" lineClamp={2}>{task.description}</Text>}
+                    <Group gap="xs">
+                      <Text size="xs" c="dimmed">{st("assignedUser")}</Text>
+                      <Text size="sm" lineClamp={1}>
+                        {task.assignedUser ? `${task.assignedUser.name} ${task.assignedUser.surname}` : "—"}
+                      </Text>
+                    </Group>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+            <Table.ScrollContainer minWidth={700} visibleFrom="sm">
               <Table striped>
                 <Table.Thead>
                   <Table.Tr>
@@ -670,6 +855,7 @@ export default function CustomerDetailPage() {
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            </>
           )}
         </Stack>
       </Card>

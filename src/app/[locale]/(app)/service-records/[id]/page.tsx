@@ -405,8 +405,8 @@ export default function ServiceRecordDetailPage() {
   return (
     <>
       <Stack gap="lg">
-        <Group justify="space-between">
-          <Group>
+        <Group justify="space-between" align="flex-start" wrap="wrap">
+          <Group align="flex-start" wrap="wrap">
             <Button
               variant="subtle"
               component={Link}
@@ -419,7 +419,33 @@ export default function ServiceRecordDetailPage() {
               {t("detail")} — #{record.trackingNo}
             </Title>
           </Group>
-          <Group gap="xs">
+          <Group gap="xs" grow hiddenFrom="xs" w="100%">
+            <Button
+              variant="light"
+              leftSection={<IconEdit size={16} />}
+              onClick={() => {
+                editForm.setValues({
+                  faultDescription: record.faultDescription,
+                  priority: record.priority,
+                  assignedUserId: record.assignedUser?.id || "",
+                  serviceMode: record.serviceMode || "SERVISTE",
+                  pricing: record.pricing?.toString() || "",
+                });
+                editHandlers.open();
+              }}
+            >
+              {ct("edit")}
+            </Button>
+            <Button
+              variant="light"
+              color="red"
+              leftSection={<IconTrash size={16} />}
+              onClick={deleteHandlers.open}
+            >
+              {ct("delete")}
+            </Button>
+          </Group>
+          <Group gap="xs" visibleFrom="xs">
             <Button
               variant="light"
               leftSection={<IconEdit size={16} />}
@@ -581,7 +607,7 @@ export default function ServiceRecordDetailPage() {
 
         <Card withBorder shadow="sm" radius="md" p="lg">
           <Stack gap="md">
-            <Group justify="space-between" align="center">
+            <Group justify="space-between" align="flex-start" wrap="wrap">
               <Group gap="xs">
                 <IconCurrencyDollar size={20} stroke={1.5} opacity={0.5} />
                 <Text fw={600}>{t("paymentsSection")}</Text>
@@ -591,7 +617,42 @@ export default function ServiceRecordDetailPage() {
                   </Badge>
                 )}
               </Group>
-              <Group gap="xs">
+              <Group gap="xs" grow hiddenFrom="xs" w="100%">
+                <Button
+                  size="xs"
+                  variant="light"
+                  color="red"
+                  leftSection={<IconPlus size={14} />}
+                  onClick={() => {
+                    setPaymentType("BORC");
+                    paymentForm.reset();
+                    const existingDebts = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
+                    const defaultAmount = record.pricing ? Math.max(0, Number(record.pricing) - existingDebts) : 0;
+                    paymentForm.setFieldValue("amount", defaultAmount);
+                    openPayment();
+                  }}
+                >
+                  {pt("newDebt")}
+                </Button>
+                <Button
+                  size="xs"
+                  variant="light"
+                  color="green"
+                  leftSection={<IconCurrencyDollar size={14} />}
+                  onClick={() => {
+                    setPaymentType("TAHSILAT");
+                    paymentForm.reset();
+                    const totalDebt = record.payments.filter((p) => p.type === "BORC").reduce((sum, p) => sum + Number(p.amount), 0);
+                    const totalCollection = record.payments.filter((p) => p.type === "TAHSILAT").reduce((sum, p) => sum + Number(p.amount), 0);
+                    const defaultAmount = Math.max(0, totalDebt - totalCollection);
+                    paymentForm.setFieldValue("amount", defaultAmount);
+                    openPayment();
+                  }}
+                >
+                  {pt("newCollection")}
+                </Button>
+              </Group>
+              <Group gap="xs" visibleFrom="xs">
                 <Button
                   size="xs"
                   variant="light"
@@ -633,7 +694,72 @@ export default function ServiceRecordDetailPage() {
                 {t("noPayments")}
               </Text>
             ) : (
-              <Table.ScrollContainer minWidth={500}>
+              <>
+              <Stack gap="xs" hiddenFrom="sm">
+                {record.payments.map((p) => (
+                  <Card key={p.id} withBorder radius="md" p="sm">
+                    <Stack gap="xs">
+                      <Group justify="space-between" align="flex-start">
+                        <Badge
+                          size="sm"
+                          variant="light"
+                          color={p.type === "BORC" ? "red" : "green"}
+                        >
+                          {pt(`type_label.${p.type}`)}
+                        </Badge>
+                        <Text fw={700} size="sm">
+                          {Number(p.amount).toLocaleString("tr-TR", {
+                            style: "currency",
+                            currency: "TRY",
+                          })}
+                        </Text>
+                      </Group>
+                      <Group justify="space-between" gap="xs">
+                        <Badge size="sm" variant="outline" color="gray">
+                          {p.type === "TAHSILAT" ? pt(`method_label.${p.paymentMethod}`) : "—"}
+                        </Badge>
+                        <Text size="xs" c="dimmed">
+                          {new Date(p.date).toLocaleDateString("tr-TR")}
+                        </Text>
+                      </Group>
+                      <Text size="sm" lineClamp={2}>{p.description || "—"}</Text>
+                      <Group gap={4} justify="flex-end" wrap="nowrap">
+                        <ActionIcon
+                          size="sm"
+                          variant="subtle"
+                          color="gray"
+                          aria-label={ct("edit")}
+                          onClick={() => {
+                            setSelectedPayment(p);
+                            paymentEditForm.setValues({
+                              amount: Number(p.amount),
+                              paymentMethod: p.paymentMethod,
+                              date: new Date(p.date),
+                              description: p.description || "",
+                            });
+                            paymentEditHandlers.open();
+                          }}
+                        >
+                          <IconEdit size={14} />
+                        </ActionIcon>
+                        <ActionIcon
+                          size="sm"
+                          variant="subtle"
+                          color="red"
+                          aria-label={ct("delete")}
+                          onClick={() => {
+                            setSelectedPayment(p);
+                            paymentDeleteHandlers.open();
+                          }}
+                        >
+                          <IconTrash size={14} />
+                        </ActionIcon>
+                      </Group>
+                    </Stack>
+                  </Card>
+                ))}
+              </Stack>
+              <Table.ScrollContainer minWidth={500} visibleFrom="sm">
                 <Table striped>
                   <Table.Thead>
                     <Table.Tr>
@@ -686,6 +812,7 @@ export default function ServiceRecordDetailPage() {
                               size="sm"
                               variant="subtle"
                               color="gray"
+                              aria-label={ct("edit")}
                               onClick={() => {
                                 setSelectedPayment(p);
                                 paymentEditForm.setValues({
@@ -703,6 +830,7 @@ export default function ServiceRecordDetailPage() {
                               size="sm"
                               variant="subtle"
                               color="red"
+                              aria-label={ct("delete")}
                               onClick={() => {
                                 setSelectedPayment(p);
                                 paymentDeleteHandlers.open();
@@ -717,6 +845,7 @@ export default function ServiceRecordDetailPage() {
                   </Table.Tbody>
                 </Table>
               </Table.ScrollContainer>
+              </>
             )}
           </Stack>
         </Card>

@@ -31,7 +31,7 @@ export function Header({ onToggle, opened }: HeaderProps) {
           <Burger opened={opened} onClick={onToggle} hiddenFrom="sm" size="sm" />
           <Group gap="xs" wrap="nowrap" miw={0}>
             <LogoMark size={24} />
-            <Text fw={800} size="sm" truncate maw={130} hiddenFrom="xs">
+            <Text fw={800} size="sm" truncate maw={180} hiddenFrom="xs">
               {brandName}
             </Text>
             <Text fw={800} size="lg" truncate maw={260} visibleFrom="xs">
