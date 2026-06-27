@@ -86,12 +86,12 @@ async function main() {
 
   let newPasswordHash = undefined;
   while (true) {
-    const newPassword = await ask("Yeni Şifre (Değiştirmek istemiyorsanız boş bırakın, en az 12 karakter): ");
+    const newPassword = await ask("Yeni Şifre (Değiştirmek istemiyorsanız boş bırakın, en az 8 karakter): ");
     if (newPassword === "") {
       break;
     }
-    if (newPassword.length < 12) {
-      console.log("❌ Şifre en az 12 karakter olmalıdır. Lütfen tekrar deneyin.");
+    if (newPassword.length < 8) {
+      console.log("❌ Şifre en az 8 karakter olmalıdır. Lütfen tekrar deneyin.");
       continue;
     }
     newPasswordHash = await bcrypt.hash(newPassword, 12);

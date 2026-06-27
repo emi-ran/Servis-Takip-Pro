@@ -20,8 +20,8 @@ async function main() {
     return;
   }
 
-  if (adminPassword.length < 12) {
-    throw new Error("ADMIN_PASSWORD en az 12 karakter olmalıdır");
+  if (adminPassword.length < 8) {
+    throw new Error("ADMIN_PASSWORD en az 8 karakter olmalıdır");
   }
 
   const existingAdmin = await prisma.user.findFirst({
