@@ -26,24 +26,21 @@ export function Header({ onToggle, opened }: HeaderProps) {
 
   return (
     <AppShell.Header style={{ borderBottom: "1px solid var(--mantine-color-default-border)" }}>
-      <Group h="100%" px="md" justify="space-between">
-        <Group gap="md">
+      <Group h="100%" px={{ base: "xs", sm: "md" }} justify="space-between" wrap="nowrap">
+        <Group gap="md" wrap="nowrap" miw={0}>
           <Burger opened={opened} onClick={onToggle} hiddenFrom="sm" size="sm" />
-          <Group gap="xs" wrap="nowrap">
+          <Group gap="xs" wrap="nowrap" miw={0}>
             <LogoMark size={24} />
-            <Text
-              fw={800}
-              size="lg"
-              variant="gradient"
-              gradient={{ from: "blue", to: "cyan", deg: 90 }}
-              style={{ letterSpacing: "-0.5px" }}
-            >
+            <Text fw={800} size="sm" truncate maw={130} hiddenFrom="xs">
+              {brandName}
+            </Text>
+            <Text fw={800} size="lg" truncate maw={260} visibleFrom="xs">
               {brandName}
             </Text>
           </Group>
         </Group>
 
-        <Group gap="md">
+        <Group gap="xs" wrap="nowrap">
           <ThemeToggle />
 
           <Menu shadow="md" width={220} radius="md" transitionProps={{ transition: "pop-top-right", duration: 150 }}>

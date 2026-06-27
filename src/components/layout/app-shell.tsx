@@ -73,12 +73,12 @@ function AppShellContent({ children }: ShellProps) {
         breakpoint: "sm",
         collapsed: { mobile: !opened },
       }}
-      padding="md"
+      padding={{ base: "xs", sm: "md" }}
     >
       <Header onToggle={toggle} opened={opened} />
       <Sidebar onClose={close} />
       <MantineShell.Main>
-        <Container size="xl" py="md">
+        <Container size="xl" py="md" px={{ base: "xs", sm: "md" }}>
           {children}
         </Container>
       </MantineShell.Main>

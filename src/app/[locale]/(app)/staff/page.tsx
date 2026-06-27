@@ -21,6 +21,7 @@ import {
   Tooltip,
   PasswordInput,
   Select,
+  Card,
 } from "@mantine/core";
 import {
   IconPlus,
@@ -223,10 +224,14 @@ export default function StaffPage() {
       <Stack gap="lg">
         <Group justify="space-between" align="center">
           <Title order={2}>{t("title")}</Title>
-          <Button leftSection={<IconPlus size={18} />} onClick={openCreateForm}>
+          <Button leftSection={<IconPlus size={18} />} onClick={openCreateForm} visibleFrom="sm">
             {t("new")}
           </Button>
         </Group>
+
+        <Button leftSection={<IconPlus size={18} />} onClick={openCreateForm} fullWidth hiddenFrom="sm">
+          {t("new")}
+        </Button>
 
         <Text c="dimmed" size="sm">{t("pageDescription")}</Text>
 
@@ -248,68 +253,122 @@ export default function StaffPage() {
             </Button>
           </Alert>
         ) : (
-          <Table.ScrollContainer minWidth={500}>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>{t("name")}</Table.Th>
-                  <Table.Th>{t("surname")}</Table.Th>
-                  <Table.Th>{t("email")}</Table.Th>
-                  <Table.Th>{t("role")}</Table.Th>
-                  <Table.Th w={100}>{ct("actions")}</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {data?.users?.map((staffUser) => (
-                  <Table.Tr key={staffUser.id}>
-                    <Table.Td>
-                      <Text size="sm">{staffUser.name}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">{staffUser.surname}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">{staffUser.email}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge size="sm" variant="light" color={roleColors[staffUser.role] || "gray"}>
+          <>
+            <Table.ScrollContainer minWidth={500} visibleFrom="sm">
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>{t("name")}</Table.Th>
+                    <Table.Th>{t("surname")}</Table.Th>
+                    <Table.Th>{t("email")}</Table.Th>
+                    <Table.Th>{t("role")}</Table.Th>
+                    <Table.Th w={100}>{ct("actions")}</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {data?.users?.map((staffUser) => (
+                    <Table.Tr key={staffUser.id}>
+                      <Table.Td>
+                        <Text size="sm">{staffUser.name}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">{staffUser.surname}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm">{staffUser.email}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge size="sm" variant="light" color={roleColors[staffUser.role] || "gray"}>
+                          {staffUser.role === "ADMIN" ? t("role_admin") : t("role_technician")}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Group gap="xs" wrap="nowrap">
+                          {staffUser.id !== user?.id && (
+                            <Tooltip label={ct("edit")} position="top" withArrow>
+                              <ActionIcon
+                                variant="subtle"
+                                color="gray"
+                                onClick={() => openEditForm(staffUser)}
+                                aria-label={ct("edit")}
+                              >
+                                <IconEdit size={16} stroke={1.5} />
+                              </ActionIcon>
+                            </Tooltip>
+                          )}
+                          {staffUser.id !== user?.id && (
+                            <Tooltip label={ct("delete")} position="top" withArrow>
+                              <ActionIcon
+                                variant="subtle"
+                                color="red"
+                                onClick={() => {
+                                  setDeletingId(staffUser.id);
+                                  deleteHandlers.open();
+                                }}
+                                aria-label={ct("delete")}
+                              >
+                                <IconTrash size={16} stroke={1.5} />
+                              </ActionIcon>
+                            </Tooltip>
+                          )}
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
+
+            <Stack hiddenFrom="sm" gap="sm">
+              {data?.users?.map((staffUser) => (
+                <Card key={staffUser.id} withBorder padding="sm" radius="sm">
+                  <Group justify="space-between" align="flex-start" wrap="nowrap">
+                    <Stack gap={4} miw={0}>
+                      <Text fw={600} size="sm" truncate>
+                        {staffUser.name} {staffUser.surname}
+                      </Text>
+                      <Text size="xs" c="dimmed" truncate>
+                        {staffUser.email}
+                      </Text>
+                      <Badge
+                        size="sm"
+                        variant="light"
+                        color={roleColors[staffUser.role] || "gray"}
+                        mt={4}
+                      >
                         {staffUser.role === "ADMIN" ? t("role_admin") : t("role_technician")}
                       </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap="xs" wrap="nowrap">
-                        {staffUser.id !== user?.id && (
-                          <Tooltip label={ct("edit")} position="top" withArrow>
-                            <ActionIcon
-                              variant="subtle"
-                              color="gray"
-                              onClick={() => openEditForm(staffUser)}
-                            >
-                              <IconEdit size={16} stroke={1.5} />
-                            </ActionIcon>
-                          </Tooltip>
-                        )}
-                        {staffUser.id !== user?.id && (
-                          <Tooltip label={ct("delete")} position="top" withArrow>
-                            <ActionIcon
-                              variant="subtle"
-                              color="red"
-                              onClick={() => {
-                                setDeletingId(staffUser.id);
-                                deleteHandlers.open();
-                              }}
-                            >
-                              <IconTrash size={16} stroke={1.5} />
-                            </ActionIcon>
-                          </Tooltip>
-                        )}
+                    </Stack>
+                    {staffUser.id !== user?.id && (
+                      <Group gap={4} wrap="nowrap">
+                        <ActionIcon
+                          variant="subtle"
+                          color="gray"
+                          onClick={() => openEditForm(staffUser)}
+                          size={44}
+                          aria-label={ct("edit")}
+                        >
+                          <IconEdit size={20} stroke={1.5} />
+                        </ActionIcon>
+                        <ActionIcon
+                          variant="subtle"
+                          color="red"
+                          onClick={() => {
+                            setDeletingId(staffUser.id);
+                            deleteHandlers.open();
+                          }}
+                          size={44}
+                          aria-label={ct("delete")}
+                        >
+                          <IconTrash size={20} stroke={1.5} />
+                        </ActionIcon>
                       </Group>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
-          </Table.ScrollContainer>
+                    )}
+                  </Group>
+                </Card>
+              ))}
+            </Stack>
+          </>
         )}
       </Stack>
 

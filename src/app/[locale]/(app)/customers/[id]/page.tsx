@@ -367,7 +367,7 @@ export default function CustomerDetailPage() {
               <IconCurrencyDollar size={20} stroke={1.5} opacity={0.5} />
               <Text fw={600}>{pt("customerBalance")}</Text>
             </Group>
-            <SimpleGrid cols={3}>
+            <SimpleGrid cols={{ base: 1, sm: 3 }}>
               <Stack gap={0} align="center">
                 <Text size="xs" c="dimmed">{pt("debtAmount")}</Text>
                 <Text fw={700} size="lg" c="red">
